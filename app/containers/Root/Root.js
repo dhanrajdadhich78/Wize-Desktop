@@ -11,19 +11,28 @@ import Registration from '../../components/Auth/Registration/Registration';
 
 class Root extends Component {
   state = {
-    auth: false
+    auth: true,
+    password: null
   };
   // handleRegister = (e) => {
   //   e.preventDefault();
   //   this.props.onRegister();
   // };
   render() {
-    let view = <Auth />;
+    let view = (
+      <Auth
+        authError={this.props.authError}
+        cachePassword={this.state.password}
+        userData={this.props.userData}
+        handleAuth={(password, filePath) => this.props.handleAuth(password, filePath)}
+      />
+    );
     if (!this.state.auth) {
       view = (
         <Registration
           userData={this.props.userData}
           handleRegister={password => this.props.handleRegister(password)}
+          cachePassword={password => this.setState({ password })}
         />
       );
     }
@@ -52,7 +61,9 @@ Root.propTypes = {
     cpk: PropTypes.string,
     address: PropTypes.string
   }),
-  handleRegister: PropTypes.func.isRequired
+  handleRegister: PropTypes.func.isRequired,
+  handleAuth: PropTypes.func.isRequired,
+  authError: PropTypes.string
 };
 
 Root.defaultProps = {
@@ -60,15 +71,18 @@ Root.defaultProps = {
     csk: null,
     cpk: null,
     address: null
-  }
+  },
+  authError: null
 };
 
 const mapStateToProps = state => ({
-  userData: state.auth.userData
+  userData: state.auth.userData,
+  authError: state.auth.error
 });
 
 const mapDispatchToProps = dispatch => ({
   handleRegister: password => dispatch(actions.registration(password)),
+  handleAuth: (password, filePath) => dispatch(actions.auth(password, filePath))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Root);

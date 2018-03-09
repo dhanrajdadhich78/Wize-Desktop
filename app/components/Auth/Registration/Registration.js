@@ -11,7 +11,7 @@ class Registration extends Component {
       password: {
         elementType: 'input',
         elementConfig: {
-          type: 'text'
+          type: 'password'
         },
         label: 'Password',
         value: '',
@@ -24,11 +24,11 @@ class Registration extends Component {
         errorMessage: 'Password field is empty'
       },
       repeatPassword: {
-        elementType: 'input',
+        elementType: 'password',
         elementConfig: {
           type: 'text'
         },
-        label: 'Repeat password',
+        label: 'Repeat Password',
         value: '',
         validation: {
           required: true,
@@ -36,7 +36,7 @@ class Registration extends Component {
         },
         valid: false,
         touched: false,
-        errorMessage: 'Repeat password field is empty'
+        errorMessage: 'Repeat Password field is empty'
       }
     }
   };
@@ -59,11 +59,14 @@ class Registration extends Component {
   };
   handleSubmit = (e) => {
     e.preventDefault();
+    //  check standart validation
     const cV0 = checkValidity(this.state.controls.password.value, this.state.controls.password.validation, 'password');
     const cV1 = checkValidity(this.state.controls.repeatPassword.value, this.state.controls.repeatPassword.validation, 'repeatPassword');
+    //  check if there is valid password and it match
     if (this.state.controls.password.value && this.state.controls.repeatPassword.value
       && cV0.isValid && cV1.isValid
       && this.state.controls.password.value === this.state.controls.repeatPassword.value) {
+      //  update state to valid
       const updatedControls = {
         ...this.state.controls,
         password: {
@@ -80,8 +83,11 @@ class Registration extends Component {
       this.setState({
         controls: updatedControls
       });
+      //  and register
+      this.props.cachePassword(this.state.controls.password.value);
       this.props.handleRegister(this.state.controls.password.value);
     } else {
+      //  if password doesnt match
       let notMatch;
       if (this.state.controls.password.value && this.state.controls.repeatPassword.value
         && this.state.controls.password.value !== this.state.controls.repeatPassword.value) {
@@ -102,6 +108,7 @@ class Registration extends Component {
           touched: true
         }
       };
+      //  show the message
       this.setState({
         controls: updatedControls
       });
@@ -132,7 +139,6 @@ class Registration extends Component {
             }
             <Button>Generate</Button>
           </form>
-
         </div>
         <div>
           {
@@ -159,7 +165,8 @@ Registration.propTypes = {
     cpk: PropTypes.string,
     address: PropTypes.string
   }),
-  handleRegister: PropTypes.func.isRequired
+  handleRegister: PropTypes.func.isRequired,
+  cachePassword: PropTypes.func.isRequired
 };
 
 Registration.defaultProps = {
@@ -169,4 +176,5 @@ Registration.defaultProps = {
     address: null
   }
 };
+
 export default Registration;
