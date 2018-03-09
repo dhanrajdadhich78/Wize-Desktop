@@ -10,12 +10,16 @@
  *
  * @flow
  */
-import { app, BrowserWindow, ipcMain } from 'electron';
-import MenuBuilder from './menu';
-
 const bitcoin = require('bitcoinjs-lib');
 const bigi = require('bigi');
 const bs58check = require('bs58check');
+const path = require('path');
+const fs = require('fs');
+const aesjs = require('aes-js');
+const pbkdf2 = require('pbkdf2');
+
+const { app, BrowserWindow, ipcMain } = require('electron');
+const MenuBuilder = require('./menu');
 
 let mainWindow;
 
@@ -26,7 +30,6 @@ if (process.env.NODE_ENV === 'production') {
 
 if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
-  const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
 }
@@ -42,6 +45,17 @@ const installExtensions = async () => {
   return Promise
     .all(extensions.map(name => installer.default(installer[name], forceDownload)))
     .catch(console.log);
+};
+
+/**
+ * Common func
+ */
+const ensureDirectoryExistence = filePath => {
+  if (fs.existsSync(filePath)) {
+    return 1;
+  }
+  fs.mkdirSync(filePath);
+  ensureDirectoryExistence(filePath);
 };
 
 
@@ -81,11 +95,10 @@ app.on('ready', async () => {
 });
 
 ipcMain.on('registration:start', (event, password) => {
-  console.log(password);
   //  random sha256 hash
   const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
   const d = bigi.fromBuffer(hash);
-  //  generate keypair
+  //  generate key pair
   const keyPair = new bitcoin.ECPair(d);
   //  extract public key buffer(compressed)
   const cpkBuffer = keyPair.getPublicKeyBuffer();
@@ -94,14 +107,62 @@ ipcMain.on('registration:start', (event, password) => {
   const cpk = cpkBuffer.toString('hex');
   //  get private key
   const csk = bs58check.decode(keyPair.toWIF()).toString('hex');
-  //  get adress
+  //  get address
   const address = keyPair.getAddress();
-
+  //  json with credentials
   const userData = {
     csk,
     cpk,
     address
   };
+  const strData = JSON.stringify(userData);
+  //  save to file
+  if (ensureDirectoryExistence(`${__dirname}/.wizeconfig`)) {
+    //  create salt
+    const salt = bitcoin.crypto.sha256(Buffer.from(password)).toString('hex').substring(0, 4);
+    //  create key
+    const aesKey256 = pbkdf2.pbkdf2Sync(password, salt, 1, 128 / 8, 'sha256');
+    const dataBytes = aesjs.utils.utf8.toBytes(strData);
+    //  eslint-disable-next-line new-cap
+    const aesCtr = new aesjs.ModeOfOperation.ctr(aesKey256, new aesjs.Counter(5));
+    //  encrypt password
+    const encryptedBytes = aesCtr.encrypt(dataBytes);
+    const encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
+    fs.writeFile(`${__dirname}/.wizeconfig/credentials.bak`, encryptedHex, err => {
+      if (err) {
+        mainWindow.webContents.send('registration:error', err);
+      }
+      mainWindow.webContents.send('registration:complete', strData);
+    });
+  }
+});
 
-  mainWindow.webContents.send('registration:complete', JSON.stringify(userData));
+ipcMain.on('auth:start', (event, { password, filePath }) => {
+  let encryptedHex;
+  fs.readFile(`${__dirname}/.wizeconfig/credentials.bak`, (err, data) => {
+    if (!err) {
+      encryptedHex = data;
+    } else {
+      encryptedHex = fs.readFile(filePath);
+    }
+
+    if (!encryptedHex) {
+      mainWindow.webContents.send('auth:error', 'There is no credentials file');
+    } else {
+      console.log(encryptedHex);
+      //  create salt
+      const salt = bitcoin.crypto.sha256(Buffer.from(password)).toString('hex').substring(0, 4);
+      //  create key
+      const aesKey256 = pbkdf2.pbkdf2Sync(password, salt, 1, 128 / 8, 'sha256');
+      //  from file to bytes
+      const encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
+      //  eslint-disable-next-line new-cap
+      const aesCtr = new aesjs.ModeOfOperation.ctr(aesKey256, new aesjs.Counter(5));
+      // decrypt...
+      const decryptedBytes = aesCtr.decrypt(encryptedBytes);
+      const strData = aesjs.utils.utf8.fromBytes(decryptedBytes);
+      console.log(salt, aesKey256, strData, aesCtr, encryptedBytes, encryptedHex);
+      mainWindow.webContents.send('auth:complete', strData);
+    }
+  });
 });

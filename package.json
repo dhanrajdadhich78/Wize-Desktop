@@ -187,13 +187,17 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
+    "aes-js": "^3.1.0",
     "bitcoinjs-lib": "^3.3.2",
     "devtron": "^1.4.0",
     "electron-debug": "^1.5.0",
     "font-awesome": "^4.7.0",
+    "fs": "0.0.1-security",
     "history": "^4.7.2",
+    "pbkdf2": "^3.0.14",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-dropzone": "^4.2.9",
     "react-hot-loader": "^4.0.0-beta.13",
     "react-redux": "^5.0.6",
     "react-router": "^4.2.0",

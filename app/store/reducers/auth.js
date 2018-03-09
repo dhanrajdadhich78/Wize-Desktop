@@ -37,7 +37,11 @@ const authStart = state => (updateObject(state, {
 }));
 
 const authSuccess = (state, action) => (updateObject(state, {
-  authKey: action.authData.accessToken,
+  userData: {
+    csk: action.userData.csk,
+    cpk: action.userData.cpk,
+    address: action.userData.address
+  },
   error: null,
   loading: false
 }));
