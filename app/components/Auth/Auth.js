@@ -6,6 +6,7 @@ import Dropzone from 'react-dropzone';
 import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 import checkValidity from '../../utils/validation';
+import Heading from '../UI/Heading/Heading';
 
 class Auth extends Component {
   state = {
@@ -134,7 +135,7 @@ class Auth extends Component {
 
     return (
       <div>
-        <h1>Login to system</h1>
+        <Heading fontSize={50} fontWeight={200}>Login to system</Heading>
         {content}
       </div>
     );

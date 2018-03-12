@@ -1,0 +1,30 @@
+.Heading {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.Line {
+  opacity: 1;
+  position: absolute;
+  bottom: 0;
+  left: -15px;
+  width: calc(100% + 15px);
+  border-top: 1px solid #d0d0d0;
+}
+
+.Line::before {
+  content: '';
+  display: block;
+  width: 10px;
+  height: 11px;
+  background: #0cf;
+  position: absolute;
+  left: 0;
+  top: -6px;
+}
+
+span {
+  color: #0cf;
+}

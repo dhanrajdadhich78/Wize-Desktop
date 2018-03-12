@@ -1,10 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import classes from './NavList.css';
+import classes from './SideMenu.css';
 
 import NavItem from './NavItem/NavItem';
 
-const sidebarList = () => {
+const sidebarList = props => {
   const items = [
     {
       link: '/',
@@ -34,7 +35,7 @@ const sidebarList = () => {
   ];
 
   return (
-    <aside className={classes.SidebarList}>
+    <aside className={classes.SidebarList} style={props.menuClosed ? null : { right: 0 }}>
       <ul>
         {
           items.map((item, index) => (
@@ -43,6 +44,7 @@ const sidebarList = () => {
               <NavItem
                 id={index}
                 link={item.link}
+                toggleMenu={() => props.toggleMenu()}
               >
                 <i className={`fa ${item.icon}`} />
                 {item.label}
@@ -53,6 +55,11 @@ const sidebarList = () => {
       </ul>
     </aside>
   );
+};
+
+sidebarList.propTypes = {
+  menuClosed: PropTypes.bool.isRequired,
+  toggleMenu: PropTypes.func.isRequired
 };
 
 export default sidebarList;

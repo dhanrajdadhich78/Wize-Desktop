@@ -5,20 +5,23 @@
 
 .Label {
   display: block;
-  color: #8d8d8d;
-  font-size: 16px;
   font-weight: 400;
   margin: 0 0 4px;
   padding: 0;
   border: none;
-  font-family: "Droid Sans", sans-serif;
   vertical-align: baseline;
   cursor: pointer;
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #727171;
+  font-size: 14px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
 .InputElement {
   outline: none;
-  border: 1px solid #2b9dc4;
+  border: 1px solid #0cf;
   font: inherit;
   padding: 16px 20px;
   display: block;
@@ -30,14 +33,14 @@
   letter-spacing: 0.2px;
   margin-bottom: 10px;
   line-height: 23px;
-  transition: 0.4s;
+  transition: opacity 0.2s linear;
   min-height: 55px;
   background-color: transparent;
-  color: #2b9dc4;
+  color: #0cf;
 }
 
 .InputElement::placeholder {
-  color: #2b9dc4;
+  color: #0cf;
 }
 
 .InputElement:focus {
@@ -66,7 +69,7 @@
   right: -1px;
   top: 100%;
   overflow: hidden;
-  transition: 0.4s;
+  transition: opacity 0.2s linear;
 }
 
 .ActiveDatepicker .DatepickerPicker {

@@ -16,7 +16,7 @@ import CreateTransaction from './containers/CreateTransaction/CreateTransaction'
 class App extends Component {
   render() {
     let routes = (
-      <div style={{ padding: 30 }}>
+      <div style={{ padding: '0 30px 30px' }}>
         <Switch>
           <Route exact path="/" component={Root} />
           <Redirect to="/" />
