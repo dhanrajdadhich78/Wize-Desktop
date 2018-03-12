@@ -10,6 +10,7 @@ const navItem = (props) => (
     activeClassName={[classes.NavigationItem, classes.Active].join(' ')}
     exact
     to={props.link}
+    onClick={() => props.toggleMenu()}
   >
     {props.children}
   </NavLink>
@@ -17,7 +18,8 @@ const navItem = (props) => (
 
 navItem.propTypes = {
   link: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  toggleMenu: PropTypes.func.isRequired
 };
 
 export default navItem;

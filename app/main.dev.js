@@ -10,11 +10,11 @@
  *
  * @flow
  */
+const path = require('path');
+const fs = require('fs');
 const bitcoin = require('bitcoinjs-lib');
 const bigi = require('bigi');
 const bs58check = require('bs58check');
-const path = require('path');
-const fs = require('fs');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
 
@@ -78,8 +78,8 @@ app.on('ready', async () => {
   }
   mainWindow = new BrowserWindow({
     show: false,
-    width: 800,
-    height: 600
+    minWidth: 800,
+    minHeight: 600
   });
   mainWindow.loadURL(`file://${__dirname}/app.html`);
   mainWindow.on('closed', () => app.quit());
@@ -117,7 +117,7 @@ ipcMain.on('registration:start', (event, password) => {
   };
   const strData = JSON.stringify(userData);
   //  save to file
-  if (ensureDirectoryExistence(`${__dirname}/.wizeconfig`)) {
+  if (ensureDirectoryExistence('./.wizeconfig')) {
     //  create salt
     const salt = bitcoin.crypto.sha256(Buffer.from(password)).toString('hex').substring(0, 4);
     //  create key
@@ -128,7 +128,7 @@ ipcMain.on('registration:start', (event, password) => {
     //  encrypt password
     const encryptedBytes = aesCtr.encrypt(dataBytes);
     const encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
-    fs.writeFile(`${__dirname}/.wizeconfig/credentials.bak`, encryptedHex, err => {
+    fs.writeFile('./.wizeconfig/credentials.bak', encryptedHex, err => {
       if (err) {
         mainWindow.webContents.send('registration:error', err);
       }
@@ -139,7 +139,7 @@ ipcMain.on('registration:start', (event, password) => {
 
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
-  fs.readFile(`${__dirname}/.wizeconfig/credentials.bak`, (err, data) => {
+  fs.readFile('./.wizeconfig/credentials.bak', (err, data) => {
     if (!err) {
       encryptedHex = data.toString();
     } else {

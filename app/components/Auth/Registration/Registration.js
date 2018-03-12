@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Button from '../../UI/Button/Button';
 import Input from '../../UI/Input/Input';
+import Heading from '../../UI/Heading/Heading';
 import checkValidity from '../../../utils/validation';
 
 class Registration extends Component {
@@ -24,9 +25,9 @@ class Registration extends Component {
         errorMessage: 'Password field is empty'
       },
       repeatPassword: {
-        elementType: 'password',
+        elementType: 'input',
         elementConfig: {
-          type: 'text'
+          type: 'password'
         },
         label: 'Repeat Password',
         value: '',
@@ -117,7 +118,7 @@ class Registration extends Component {
   render() {
     return (
       <div>
-        <h1>New wallet registration</h1>
+        <Heading fontSize={50} fontWeight={200}>WIZE<span>BIT</span> wallet registration</Heading>
         <div>
           <form onSubmit={e => this.handleSubmit(e)}>
             {
@@ -137,22 +138,15 @@ class Registration extends Component {
                 />
               ))
             }
-            <Button>Generate</Button>
+            <Button
+              disabled={
+                !this.state.controls.password.value && !this.state.controls.repeatPassword.value
+                && !this.state.controls.password.valid && !this.state.controls.repeatPassword.valid
+              }
+            >
+              Generate
+            </Button>
           </form>
-        </div>
-        <div>
-          {
-            this.props.userData.csk
-              ?
-              (
-                <div>
-                  <p>csk: {this.props.userData.csk}</p>
-                  <p>cpk: {this.props.userData.cpk}</p>
-                  <p>address: {this.props.userData.address}</p>
-                </div>
-              )
-              : null
-          }
         </div>
       </div>
     );
@@ -160,21 +154,21 @@ class Registration extends Component {
 }
 
 Registration.propTypes = {
-  userData: PropTypes.shape({
-    csk: PropTypes.string,
-    cpk: PropTypes.string,
-    address: PropTypes.string
-  }),
+  // userData: PropTypes.shape({
+  //   csk: PropTypes.string,
+  //   cpk: PropTypes.string,
+  //   address: PropTypes.string
+  // }),
   handleRegister: PropTypes.func.isRequired,
   cachePassword: PropTypes.func.isRequired
 };
 
 Registration.defaultProps = {
-  userData: {
-    csk: null,
-    cpk: null,
-    address: null
-  }
+  // userData: {
+  //   csk: null,
+  //   cpk: null,
+  //   address: null
+  // }
 };
 
 export default Registration;
