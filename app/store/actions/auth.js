@@ -28,9 +28,9 @@ export const authStart = (password, filePath) => {
   return { type: actionTypes.AUTH_START };
 };
 
-export const authSuccess = authData => ({
+export const authSuccess = userData => ({
   type: actionTypes.AUTH_SUCCESS,
-  authData
+  userData
 });
 
 export const authFail = error => ({

@@ -141,15 +141,16 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
   fs.readFile(`${__dirname}/.wizeconfig/credentials.bak`, (err, data) => {
     if (!err) {
-      encryptedHex = data;
+      encryptedHex = data.toString();
     } else {
-      encryptedHex = fs.readFile(filePath);
+      fs.readFile(filePath, (error, altData) => {
+        encryptedHex = altData.toString();
+      });
     }
 
     if (!encryptedHex) {
       mainWindow.webContents.send('auth:error', 'There is no credentials file');
     } else {
-      console.log(encryptedHex);
       //  create salt
       const salt = bitcoin.crypto.sha256(Buffer.from(password)).toString('hex').substring(0, 4);
       //  create key
@@ -161,7 +162,6 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       // decrypt...
       const decryptedBytes = aesCtr.decrypt(encryptedBytes);
       const strData = aesjs.utils.utf8.fromBytes(decryptedBytes);
-      console.log(salt, aesKey256, strData, aesCtr, encryptedBytes, encryptedHex);
       mainWindow.webContents.send('auth:complete', strData);
     }
   });
