@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 
@@ -67,7 +68,8 @@ class Auth extends Component {
   };
   handleSubmitForm = e => {
     e.preventDefault();
-    console.log(this.state.controls.password.value, this.state.filePath);
+
+    //  eslint-disable-next-line max-len
     this.props.handleAuth(this.state.controls.password.value, this.state.filePath !== 1 ? this.state.filePath : null);
   };
   render() {
@@ -124,6 +126,10 @@ class Auth extends Component {
           </form>
         </div>
       );
+    }
+
+    if (this.props.userData.csk && this.props.userData.cpk && this.props.userData.address) {
+      content = <Redirect to="/dashboard" />;
     }
 
     return (

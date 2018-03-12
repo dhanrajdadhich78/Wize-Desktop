@@ -14,10 +14,6 @@ class Root extends Component {
     auth: true,
     password: null
   };
-  // handleRegister = (e) => {
-  //   e.preventDefault();
-  //   this.props.onRegister();
-  // };
   render() {
     let view = (
       <Auth

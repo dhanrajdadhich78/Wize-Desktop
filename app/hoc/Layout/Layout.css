@@ -2,3 +2,35 @@
   height: 100%;
   width: 100%;
 }
+
+.Layout main {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+}
+
+.Layout main article {
+  width: calc(100vw - 180px);
+  padding: 30px;
+}
+
+.SpinnerToMiddle {
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .Layout main article {
+    padding: 15px;
+  }
+}

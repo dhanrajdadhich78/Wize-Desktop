@@ -1,0 +1,50 @@
+.DropzoneWrapper > div {
+  width: 100% !important;
+  height: 50vh !important;
+  padding: 30px !important;
+  border-width: 2px !important;
+  border-color: rgb(102, 102, 102) !important;
+  border-style: dashed !important;
+  border-radius: 5px !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.DropzoneWrapper > div p {
+  margin: 0 !important;
+}
+
+.ProgressBar {
+  margin-top: 30px;
+  border: 2px solid white;
+  border-radius: 5px;
+  width: 100%;
+  height: 50px;
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.ProgressLine,
+.Percentage {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+}
+
+.ProgressLine {
+  background-color: green;
+}
+
+.Percentage {
+  right: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
