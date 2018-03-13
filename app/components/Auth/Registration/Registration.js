@@ -140,8 +140,8 @@ class Registration extends Component {
             }
             <Button
               disabled={
-                !this.state.controls.password.value && !this.state.controls.repeatPassword.value
-                && !this.state.controls.password.valid && !this.state.controls.repeatPassword.valid
+                !this.state.controls.password.value || !this.state.controls.repeatPassword.value
+                || !this.state.controls.password.valid || !this.state.controls.repeatPassword.valid
               }
             >
               Generate
