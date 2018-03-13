@@ -24,7 +24,7 @@ const header = props => {
     <header>
       <div className={classes.Logo}>
         <NavLink to="/">
-          <img src="../internals/img/wizebit_logo.svg" alt="logo" />
+          <img src="https://projects.udtech.co/wizebit/assets/img/wizebit_logo.svg" alt="logo" />
         </NavLink>
       </div>
       <nav>
