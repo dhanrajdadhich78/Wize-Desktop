@@ -44,3 +44,9 @@
 .SidebarList ul li a:hover {
   color: #0cf;
 }
+
+@media (max-width: 1200px) {
+  .SidebarList {
+    right: -600px;
+  }
+}

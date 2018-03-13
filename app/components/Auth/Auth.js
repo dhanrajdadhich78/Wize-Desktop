@@ -135,7 +135,7 @@ class Auth extends Component {
 
     return (
       <div>
-        <Heading fontSize={50} fontWeight={200}>Login to system</Heading>
+        <Heading fontSize={50} fontWeight={200}>Log<span>in</span> to system</Heading>
         {content}
       </div>
     );

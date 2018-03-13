@@ -1,0 +1,43 @@
+.BodyWrapper {
+  display: flex;
+}
+
+.WaleltsInfo {
+  width: 30%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.WalletsList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.WalletsList li {
+  border: 1px solid #333;
+  padding: 15px;
+}
+
+.WalletsList li p span {
+  display: block;
+  font-size: 14px;
+  word-wrap: break-word;
+}
+
+.WalletOperations {
+  width: 70%;
+  display: block;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .WaleltsInfo {
+    width: 300px;
+  }
+
+  .WalletOperations {
+    width: calc(100% - 300px);
+  }
+}

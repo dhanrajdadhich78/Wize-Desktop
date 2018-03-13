@@ -2,7 +2,11 @@
   position: relative;
   display: block;
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
+}
+
+.WithoutLine {
+  margin-bottom: 0;
 }
 
 .Line {

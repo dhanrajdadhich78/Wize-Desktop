@@ -75,24 +75,30 @@ const heading = props => {
       break;
   }
   return (
-    <div className={classes.Heading}>
+    <div className={props.divider ? classes.Heading : [classes.Heading, classes.WithoutLine].join(' ')}>
       {body}
-      <div className={classes.Line} />
+      {
+        props.divider
+        ? <div className={classes.Line} />
+        : null
+      }
     </div>
   );
 };
 
 heading.propTypes = {
-  children: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
   size: PropTypes.number,
   fontSize: PropTypes.number,
-  fontWeight: PropTypes.number
+  fontWeight: PropTypes.number,
+  divider: PropTypes.bool
 };
 
 heading.defaultProps = {
   size: 1,
   fontSize: null,
-  fontWeight: null
+  fontWeight: null,
+  divider: true
 };
 
 export default heading;

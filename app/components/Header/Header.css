@@ -9,13 +9,16 @@ header {
   box-sizing: border-box;
 }
 
-header .Logo img {
-  height: 18px;
-  width: auto;
+header .Logo a {
   outline: none;
 }
 
-header .Logo img:hover {
+header .Logo a img {
+  height: 18px;
+  width: 80.9px;
+}
+
+header .Logo a img:hover {
   opacity: 0.6;
   transition: opacity 0.2s linear;
 }
