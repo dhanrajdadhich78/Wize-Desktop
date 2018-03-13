@@ -7,11 +7,12 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import Layout from './hoc/Layout/Layout';
 import Root from './containers/Root/Root';
-import Dashboard from './containers/Dashboard/Dashboard';
+import FilesList from './containers/FilesList/FilesList';
 import FileUpload from './containers/FileUpload/FileUpload';
-import WalletsList from './containers/WalletsList/WalletsList';
-import WalletCheck from './containers/WalletCheck/WalletCheck';
-import CreateTransaction from './containers/CreateTransaction/CreateTransaction';
+import Wallets from './containers/Wallets/Wallets';
+// import WalletsList from './containers/WalletsList/WalletsList';
+// import WalletCheck from './containers/WalletCheck/WalletCheck';
+// import CreateTransaction from './containers/CreateTransaction/CreateTransaction';
 
 class App extends Component {
   render() {
@@ -27,11 +28,12 @@ class App extends Component {
       routes = (
         <Layout>
           <Switch>
-            <Route exact path="/" component={Dashboard} />
+            <Route exact path="/" component={FilesList} />
             <Route exact path="/upload-files" component={FileUpload} />
-            <Route exact path="/wallets-list" component={WalletsList} />
-            <Route exact path="/wallet-check" component={WalletCheck} />
-            <Route exact path="/transaction-create" component={CreateTransaction} />
+            <Route exact path="/wallets" component={Wallets} />
+            {/* <Route exact path="/wallets-list" component={WalletsList} /> */}
+            {/* <Route exact path="/wallet-check" component={WalletCheck} /> */}
+            {/* <Route exact path="/transaction-create" component={CreateTransaction} /> */}
             <Redirect to="/" />
           </Switch>
         </Layout>

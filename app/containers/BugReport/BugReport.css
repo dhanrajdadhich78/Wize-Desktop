@@ -14,7 +14,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #2b9dc4;
+  background-color: #0cf;
   transition: opacity 0.2s linear;
   border: none;
   outline: none;
@@ -22,20 +22,19 @@
 }
 
 .BugReportButton:hover {
-  background-color: #30d3ff;
+  opacity: 0.6;
 }
 
 .BugReportButtonTooltip {
   color: white;
   background-color: black;
-  width: 70px;
   text-align: center;
   font-size: 13px;
   white-space: nowrap;
   position: absolute;
   padding: 0 2px;
   border-radius: 0 5px 5px 0;
-  left: -50px;
+  left: -65px;
   top: 42%;
   opacity: 0;
   transition: opacity 0.2s linear;

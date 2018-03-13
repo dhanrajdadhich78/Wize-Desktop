@@ -18,20 +18,25 @@ const sidebarList = props => {
       label: 'Upload Files'
     },
     {
-      link: '/wallets-list',
-      icon: 'fa-list-alt',
-      label: 'Wallets List'
+      link: '/wallets',
+      icon: 'fa-credit-card',
+      label: 'Wallets'
     },
-    {
-      link: '/wallet-check',
-      icon: 'fa-check',
-      label: 'Wallet Check'
-    },
-    {
-      link: '/transaction-create',
-      icon: 'fa-money',
-      label: 'New Transaction'
-    }
+    // {
+    //   link: '/wallets-list',
+    //   icon: 'fa-list-alt',
+    //   label: 'Wallets List'
+    // },
+    // {
+    //   link: '/wallet-check',
+    //   icon: 'fa-check',
+    //   label: 'Wallet Check'
+    // },
+    // {
+    //   link: '/transaction-create',
+    //   icon: 'fa-money',
+    //   label: 'New Transaction'
+    // }
   ];
 
   return (

@@ -18,7 +18,7 @@ class Input extends Component {
       inputClasses.push(classes.Invalid);
     }
     switch (this.props.elementType) {
-      case ('input'):
+      case 'input':
         inputElement = (
           <div>
             <input
@@ -34,7 +34,7 @@ class Input extends Component {
           </div>
         );
         break;
-      case ('textarea'):
+      case 'textarea':
         inputElement = (
           <div>
             <textarea
@@ -47,7 +47,7 @@ class Input extends Component {
           </div>
         );
         break;
-      case ('select'):
+      case 'select':
         inputElement = (
           <div>
             <select

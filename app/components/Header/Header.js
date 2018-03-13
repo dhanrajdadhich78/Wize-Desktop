@@ -15,8 +15,8 @@ const header = props => {
       label: 'Upload Files'
     },
     {
-      link: '/wallet',
-      label: 'My wallet'
+      link: '/wallets',
+      label: 'My wallets'
     }
   ];
 

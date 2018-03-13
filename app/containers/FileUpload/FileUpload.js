@@ -5,6 +5,7 @@ import Dropzone from 'react-dropzone';
 
 import classes from './FileUpload.css';
 
+import Heading from '../../components/UI/Heading/Heading';
 // import {API_URL} from "../../shared/const";
 
 class Files extends Component {
@@ -67,7 +68,7 @@ class Files extends Component {
 
     return (
       <div>
-        <h1>Files page</h1>
+        <Heading fontSize={50} fontWeight={200}>Upload <span>WIZE</span> files</Heading>
         <div className={classes.DropzoneWrapper}>
           <Dropzone
             onDrop={files => this.onDropHandler(files[0])}
@@ -96,7 +97,7 @@ class Files extends Component {
 }
 
 const mapStateToProps = state => ({
-  token: state.auth.authKey,
+  // token: state.auth.authKey,
   isAuth: state.auth.authKey !== null,
 });
 

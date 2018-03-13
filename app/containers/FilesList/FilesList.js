@@ -3,16 +3,26 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // import axios from 'axios';
 
-import classes from './Dashboard.css';
+import classes from './FilesList.css';
 
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Button from '../../components/UI/Button/Button';
 import Aux from '../../hoc/Aux/Aux';
 import Modal from '../../components/UI/Modal/Modal';
+import Heading from '../../components/UI/Heading/Heading';
 
-class Dashboard extends Component {
+class FilesList extends Component {
   state = {
-    files: null,
+    files: [
+      {
+        name: 'Test file',
+        uploadDate: ''
+      },
+      {
+        name: 'Test file - 2',
+        uploadDate: ''
+      }
+    ],
     // loading: false,
     // error: null,
     modalContent: null,
@@ -147,7 +157,7 @@ class Dashboard extends Component {
               <span>Name</span>
               <span>Upload Date</span>
               <span>&nbsp;</span>
-              <span>&nbsp;</span>
+              <span>Actions</span>
               <span>&nbsp;</span>
             </li>
             {
@@ -157,23 +167,23 @@ class Dashboard extends Component {
                   <span>{file.name}</span>
                   <span>{new Date(file.uploadDate * 1000).toString()}</span>
                   <span>
-                    <Button
-                      onClick={() => this.downloadFileHandler(file.relativePath, `${file.uploadDate}~${file.name}`)}
-                    >
+                    <Button>
+                      { /* onClick={() => this.downloadFileHandler(file.relativePath, `${file.uploadDate}~${file.name}`)}
+                    > */}
                       Download
                     </Button>
                   </span>
                   <span>
-                    <Button
-                      onClick={() => this.showDeleteModalHandler(file.uploadDate, file.name)}
-                    >
+                    <Button>
+                      { /* onClick={() => this.showDeleteModalHandler(file.uploadDate, file.name)}
+                    > */ }
                       Delete
                     </Button>
                   </span>
                   <span>
-                    <Button
-                      onClick={() => this.showTransferModalHandler(file.uploadDate, file.name)}
-                    >
+                    <Button>
+                      { /* onClick={() => this.showTransferModalHandler(file.uploadDate, file.name)}
+                    > */}
                       Transfer file
                     </Button>
                   </span>
@@ -185,7 +195,7 @@ class Dashboard extends Component {
       } else {
         list = (
           <div>
-            <h2>You don't have any files yet.</h2>
+            <h2>You don&apos;t have any files yet.</h2>
           </div>
         );
       }
@@ -200,7 +210,7 @@ class Dashboard extends Component {
           { this.state.modalContent }
         </Modal>
         <div>
-          <h1>Your files list</h1>
+          <Heading fontWeight={200} fontSize={50}>Your <span>files</span> list</Heading>
           {list}
         </div>
       </Aux>
@@ -208,7 +218,7 @@ class Dashboard extends Component {
   }
 }
 
-Dashboard.propTypes = {
+FilesList.propTypes = {
   userData: PropTypes.shape({
     csk: PropTypes.string,
     cpk: PropTypes.string,
@@ -216,7 +226,7 @@ Dashboard.propTypes = {
   })
 };
 
-Dashboard.defaultProps = {
+FilesList.defaultProps = {
   userData: {
     csk: null,
     cpk: null,
@@ -229,4 +239,4 @@ const mapStateToProps = state => ({
   // authError: state.auth.error
 });
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps)(FilesList);
