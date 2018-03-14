@@ -17,6 +17,8 @@ const bigi = require('bigi');
 const bs58check = require('bs58check');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
+const _ = require('lodash');
+const cF = require('./electron/commonFunc');
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
@@ -46,18 +48,6 @@ const installExtensions = async () => {
     .all(extensions.map(name => installer.default(installer[name], forceDownload)))
     .catch(console.log);
 };
-
-/**
- * Common func
- */
-const ensureDirectoryExistence = filePath => {
-  if (fs.existsSync(filePath)) {
-    return 1;
-  }
-  fs.mkdirSync(filePath);
-  ensureDirectoryExistence(filePath);
-};
-
 
 /**
  * Add event listeners...
@@ -117,7 +107,7 @@ ipcMain.on('registration:start', (event, password) => {
   };
   const strData = JSON.stringify(userData);
   //  save to file
-  if (ensureDirectoryExistence('./.wizeconfig')) {
+  if (cF.ensureDirectoryExistence('./.wizeconfig')) {
     //  create salt
     const salt = bitcoin.crypto.sha256(Buffer.from(password)).toString('hex').substring(0, 4);
     //  create key
@@ -164,5 +154,37 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       const strData = aesjs.utils.utf8.fromBytes(decryptedBytes);
       mainWindow.webContents.send('auth:complete', strData);
     }
+  });
+});
+
+ipcMain.on('file:send', (event, { userData, files }) => {
+  files.map(file => {
+    const shards = cF.shardFile(file);
+    //  create aes key
+    const aesKey256 = pbkdf2.pbkdf2Sync(userData.csk, '', 1, 128 / 8, 'sha256');
+    //  eslint-disable-next-line new-cap
+    const aesCtr = new aesjs.ModeOfOperation.ctr(aesKey256, new aesjs.Counter(5));
+    //  aes name
+    const filenameDataBytes = aesjs.utils.utf8.toBytes(file.name.toString('base64'));
+    const filenameEncryptedBytes = aesCtr.encrypt(filenameDataBytes);
+    const filenameEncryptedHex = aesjs.utils.hex.fromBytes(filenameEncryptedBytes);
+    //  raft key
+    const key = bitcoin.crypto.sha256(`
+      ${file.name.toString('base64')}
+      ${file.size}
+      ${file.timestamp}
+    `).toString('base64');
+    const result = {
+      [key]: {
+        cpk: userData.cpk,
+        filename: filenameEncryptedHex,
+        size: file.size,
+        timestamp: file.timestamp,
+        key,
+        shards
+      }
+    };
+    console.log(result);
+    return result;
   });
 });

@@ -39,7 +39,6 @@ export const authFail = error => ({
 });
 
 export const auth = (password, filePath = null) => dispatch => {
-  console.log('auth', password, filePath);
   dispatch(authStart(password, filePath));
   ipcRenderer.on('auth:complete', (event, userData) => dispatch(authSuccess(JSON.parse(userData))));
   ipcRenderer.on('auth:error', (event, error) => dispatch(authFail(error)));
