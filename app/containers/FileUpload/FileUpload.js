@@ -57,20 +57,24 @@ class Files extends Component {
     //   });
     const userData = this.props.userData;
     const timestamp = Math.round(+new Date() / 1000);
-    const promises = _.map(accepted, file => {
-      return new Promise(resolve => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = event => resolve({
-          name: file.name,
-          size: file.size,
-          data: event.target.result,
-          timestamp
-        });
+    const promises = _.map(accepted, file => (new Promise(resolve => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = event => resolve({
+        name: file.name,
+        size: file.size,
+        data: event.target.result,
+        timestamp
       });
-    });
+    })));
     Promise.all(promises)
       .then(files => ipcRenderer.send('file:send', { userData, files }));
+  };
+
+  handleConvert = () => {
+    const userData = this.props.userData;
+    const filename = 'wb.mp4';
+    ipcRenderer.send('file:receive', { userData, filename });
   };
 
   render() {
@@ -89,6 +93,9 @@ class Files extends Component {
     return (
       <div>
         <Heading fontSize={50} fontWeight={200}>Upload <span>WIZE</span> files</Heading>
+        <div>
+          <button type="button" onClick={() => this.handleConvert()}>Convert</button>
+        </div>
         <div className={classes.DropzoneWrapper}>
           <Dropzone
             onDrop={(accepted, rejected) => this.onDropHandler(accepted, rejected)}

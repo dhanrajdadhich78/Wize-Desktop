@@ -15,8 +15,8 @@ const fs = require('fs');
 const bitcoin = require('bitcoinjs-lib');
 const bigi = require('bigi');
 const bs58check = require('bs58check');
-const aesjs = require('aes-js');
-const pbkdf2 = require('pbkdf2');
+// const aesjs = require('aes-js');
+// const pbkdf2 = require('pbkdf2');
 const _ = require('lodash');
 const cF = require('./electron/commonFunc');
 
@@ -108,17 +108,8 @@ ipcMain.on('registration:start', (event, password) => {
   const strData = JSON.stringify(userData);
   //  save to file
   if (cF.ensureDirectoryExistence('./.wizeconfig')) {
-    //  create salt
-    const salt = bitcoin.crypto.sha256(Buffer.from(password)).toString('hex').substring(0, 4);
-    //  create key
-    const aesKey256 = pbkdf2.pbkdf2Sync(password, salt, 1, 128 / 8, 'sha256');
-    const dataBytes = aesjs.utils.utf8.toBytes(strData);
-    //  eslint-disable-next-line new-cap
-    const aesCtr = new aesjs.ModeOfOperation.ctr(aesKey256, new aesjs.Counter(5));
-    //  encrypt password
-    const encryptedBytes = aesCtr.encrypt(dataBytes);
-    const encryptedHex = aesjs.utils.hex.fromBytes(encryptedBytes);
-    fs.writeFile('./.wizeconfig/credentials.bak', encryptedHex, err => {
+    const aes = cF.aesEncrypt(strData, password, 'hex');
+    fs.writeFile('./.wizeconfig/credentials.bak', aes.encryptedHex, err => {
       if (err) {
         mainWindow.webContents.send('registration:error', err);
       }
@@ -131,60 +122,113 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
   fs.readFile('./.wizeconfig/credentials.bak', (err, data) => {
     if (!err) {
-      encryptedHex = data.toString();
+      encryptedHex = data;
     } else {
       fs.readFile(filePath, (error, altData) => {
-        encryptedHex = altData.toString();
+        encryptedHex = altData;
       });
     }
 
     if (!encryptedHex) {
       mainWindow.webContents.send('auth:error', 'There is no credentials file');
     } else {
-      //  create salt
-      const salt = bitcoin.crypto.sha256(Buffer.from(password)).toString('hex').substring(0, 4);
-      //  create key
-      const aesKey256 = pbkdf2.pbkdf2Sync(password, salt, 1, 128 / 8, 'sha256');
-      //  from file to bytes
-      const encryptedBytes = aesjs.utils.hex.toBytes(encryptedHex);
-      //  eslint-disable-next-line new-cap
-      const aesCtr = new aesjs.ModeOfOperation.ctr(aesKey256, new aesjs.Counter(5));
-      // decrypt...
-      const decryptedBytes = aesCtr.decrypt(encryptedBytes);
-      const strData = aesjs.utils.utf8.fromBytes(decryptedBytes);
-      mainWindow.webContents.send('auth:complete', strData);
+      const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
+      mainWindow.webContents.send('auth:complete', decrypt.strData);
     }
   });
 });
 
 ipcMain.on('file:send', (event, { userData, files }) => {
-  files.map(file => {
-    const shards = cF.shardFile(file);
-    //  create aes key
-    const aesKey256 = pbkdf2.pbkdf2Sync(userData.csk, '', 1, 128 / 8, 'sha256');
-    //  eslint-disable-next-line new-cap
-    const aesCtr = new aesjs.ModeOfOperation.ctr(aesKey256, new aesjs.Counter(5));
-    //  aes name
-    const filenameDataBytes = aesjs.utils.utf8.toBytes(file.name.toString('base64'));
-    const filenameEncryptedBytes = aesCtr.encrypt(filenameDataBytes);
-    const filenameEncryptedHex = aesjs.utils.hex.fromBytes(filenameEncryptedBytes);
-    //  raft key
-    const key = bitcoin.crypto.sha256(`
-      ${file.name.toString('base64')}
-      ${file.size}
-      ${file.timestamp}
-    `).toString('base64');
-    const result = {
-      [key]: {
-        cpk: userData.cpk,
-        filename: filenameEncryptedHex,
-        size: file.size,
-        timestamp: file.timestamp,
-        key,
-        shards
-      }
+  //  empty info object
+  let updateObj = {};
+  //  get Store Nodes from digest
+  const digestServers = [
+    './.wizeconfig/testpieces/1/',
+    './.wizeconfig/testpieces/2/',
+    './.wizeconfig/testpieces/3/'
+  ];
+  //  loop through files
+  const promises = _.map(files, file => new Promise(resolve => {
+    const rawShards = cF.fileCrushing(file);
+    const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
+    resolve({ file, shards });
+  }));
+  Promise.all(promises)
+    // eslint-disable-next-line promise/always-return
+    .then(results => {
+      // eslint-disable-next-line array-callback-return
+      results.map(({ file, shards }) => {
+        const signature = bitcoin.crypto.sha256(Buffer.from(`
+            ${file.name}
+            ${file.size}
+            ${file.timestamp}
+            ${userData.cpk}
+        `)).toString('hex');
+        //  write into servers
+        const servers = _.map(shards, (shard, index) => (new Promise(resolve => {
+          fs.writeFile(`${digestServers[index]}${signature}`, shard, err => {
+            if (err) {
+              console.log(err);
+            }
+            resolve(`${digestServers[index]}${signature}`);
+          });
+        })));
+        Promise.all(servers)
+          // eslint-disable-next-line promise/always-return
+          .then(pathForShards => {
+            //  aes name
+            const filename = cF.aesEncrypt(file.name, userData.csk);
+            //  aes file info
+            const fileInfoObj = {
+              size: file.size,
+              timestamp: file.timestamp,
+              signature,
+              pathForShards
+            };
+            const fileInfo = cF.aesEncrypt(JSON.stringify(fileInfoObj), userData.csk);
+            updateObj = {
+              ...updateObj,
+              [filename.encryptedHex]: fileInfo.encryptedHex
+            };
+            // to the Raft Store
+            fs.writeFile(`./.wizeconfig/${userData.cpk}`, JSON.stringify(updateObj), err => {
+              if (err) {
+                console.log(err);
+              }
+            });
+          })
+          .catch(reason => console.log(reason));
+      });
+    })
+    .catch(reason => console.log(reason));
+});
+
+ipcMain.on('file:receive', (event, { userData, filename }) => {
+  let fileList = {};
+  fs.readFile(`./.wizeconfig/${userData.cpk}`, (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    fileList = {
+      ...fileList,
+      ...JSON.parse(data)
     };
-    console.log(result);
-    return result;
+    const pointer = cF.aesEncrypt(filename, userData.csk);
+    const encryptedData = fileList[pointer.encryptedHex];
+    const decryptedData = cF.aesDecrypt(encryptedData, userData.csk);
+    const fileDataObj = JSON.parse(decryptedData.strData);
+    // eslint-disable-next-line max-len
+    const shards = fileDataObj.pathForShards.map(path => (
+      cF.aesDecrypt(fs.readFileSync(path), userData.csk).strData
+    ));
+    const base64File = shards.join('');
+    const from = +base64File.indexOf(',') + 1;
+    const buf = Buffer.from(base64File.substring(from), 'base64');
+    // console.log(buf);
+    fs.writeFile(`./.wizeconfig/receive/${filename}`, buf, err => {
+      if (err) {
+        console.log(err);
+      }
+    });
   });
 });
