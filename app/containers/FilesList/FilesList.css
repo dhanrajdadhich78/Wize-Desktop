@@ -14,7 +14,7 @@
 }
 
 .FilesList li > span {
-  width: calc(70% / 3);
+  width: calc(65% / 3);
 }
 
 .FilesList li:first-of-type span {
@@ -23,12 +23,13 @@
   color: initial;
 }
 
-.FilesList li > span:first-of-type {
+.FilesList li > span:first-of-type,
+.FilesList li > span:nth-of-type(2) {
   width: 15%;
 }
 
-.FilesList li > span:nth-of-type(2) {
-  width: 15%;
+.FilesList li > span:nth-of-type(3) {
+  width: 5%;
 }
 
 .FilesList li > span button {
@@ -42,7 +43,7 @@
   font-size: 18px;
 }
 
-.FilesList li > span:nth-of-type(3),
-.FilesList li > span:nth-of-type(4) {
+.FilesList li > span:nth-of-type(4),
+.FilesList li > span:nth-of-type(5) {
   padding-right: 15px;
 }
