@@ -71,12 +71,6 @@ class Files extends Component {
       .then(files => ipcRenderer.send('file:send', { userData, files }));
   };
 
-  handleConvert = () => {
-    const userData = this.props.userData;
-    const filename = 'wb.mp4';
-    ipcRenderer.send('file:receive', { userData, filename });
-  };
-
   render() {
     let progress = null;
     if (this.state.loading) {
@@ -93,9 +87,6 @@ class Files extends Component {
     return (
       <div>
         <Heading fontSize={50} fontWeight={200}>Upload <span>WIZE</span> files</Heading>
-        <div>
-          <button type="button" onClick={() => this.handleConvert()}>Convert</button>
-        </div>
         <div className={classes.DropzoneWrapper}>
           <Dropzone
             onDrop={(accepted, rejected) => this.onDropHandler(accepted, rejected)}

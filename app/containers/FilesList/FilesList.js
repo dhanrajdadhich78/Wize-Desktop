@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import axios from 'axios';
+import { ipcRenderer } from 'electron';
+import FileSaver from 'file-saver';
 
 import classes from './FilesList.css';
 
+import b64toBlob from '../../utils/b64toBlob';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Button from '../../components/UI/Button/Button';
 import Aux from '../../hoc/Aux/Aux';
@@ -13,139 +15,49 @@ import Heading from '../../components/UI/Heading/Heading';
 
 class FilesList extends Component {
   state = {
-    files: [
-      {
-        name: 'Test file',
-        uploadDate: ''
-      },
-      {
-        name: 'Test file - 2',
-        uploadDate: ''
-      }
-    ],
-    // loading: false,
-    // error: null,
+    files: [],
     modalContent: null,
-    // transferTo: null
   };
-  //
-  // componentDidMount() {
-  //   this.getFilesHandler();
-  // }
-  //
-  // getFilesHandler = () => {
-  //   this.setState({ loading: true });
-  //
-  //   const config = {
-  //     headers: {
-  //       'X-ACCESS-TOKEN': this.props.token
-  //     }
-  //   };
-  //
-  //   axios.get(`${API_URL}/api/get-files-list`, config)
-  //     .then(response => {
-  //       this.setState({files: response.data.userFiles ? response.data.userFiles : [], loading: false}
-  //       )})
-  //     .catch(error => this.setState({error: error.response.data.message, loading: false}))
-  // };
-  //
-  // downloadFileHandler = (relativePath, filename) => {
-  //   // const url = window.URL.createObjectURL(new Blob([response.data]));
-  //   const link = document.createElement('a');
-  //   link.href = API_URL+relativePath;
-  //   link.setAttribute('download', filename);
-  //   document.body.appendChild(link);
-  //   link.click();
-  // };
-  //
-  // onDeleteHandler = (filename) => {
-  //   // console.log(filename);
-  //   this.setState({ loading: true });
-  //
-  //   const config = {
-  //     headers: {
-  //       'X-ACCESS-TOKEN': this.props.token
-  //     }
-  //   };
-  //
-  //   axios.post(`${API_URL}/api/delete-file`, { filename }, config)
-  //     .then(response => {
-  //       console.log(response.data.message);
-  //       this.setState({ loading: false });
-  //       this.getFilesHandler();
-  //       this.modalCloseHandler();
-  //     })
-  //     .catch(error => {
-  //       this.setState({
-  //         error: error.response.data.message,
-  //         modalContent: <p>{error.response.data.message}</p>,
-  //         loading: false
-  //       });
-  //       this.modalCloseHandler();
-  //     });
-  // };
-  //
-  // showDeleteModalHandler = (date, name) => {
-  //   this.setState({
-  //     modalContent: (
-  //       <div>
-  //         <p>Are you sure?</p>
-  //         <Button onClick={() => this.onDeleteHandler(`${date}~${name}`)}>Ok</Button>
-  //       </div>
-  //     )
-  //   });
-  // };
-  //
-  // onTransferHandler = (filename) => {
-  //   console.log({ filename, transfer_to: this.state.transferTo });
-  //   this.setState({ loading: true });
-  //
-  //   const config = {
-  //     headers: {
-  //       'X-ACCESS-TOKEN': this.props.token
-  //     }
-  //   };
-  //
-  //   axios.post(`${API_URL}/api/transfer-file`, { filename, transferTo: this.state.transferTo }, config)
-  //     .then(response => {
-  //       console.log(response.data.message);
-  //       this.setState({ loading: false });
-  //       this.getFilesHandler();
-  //       this.modalCloseHandler();
-  //     })
-  //     .catch(error => {
-  //       this.setState({
-  //         error: error.response.data.message,
-  //         modalContent: <p>{error.response.data.message}</p>,
-  //         loading: false
-  //       });
-  //       this.modalCloseHandler();
-  //     });
-  // };
-  //
-  // showTransferModalHandler = (date, name) => {
-  //   this.setState({
-  //     modalContent: (
-  //       <div>
-  //         <div>
-  //           <label htmlFor="transferTO">Enter public key of user, who will own this file.</label>
-  //           <input
-  //             type="text"
-  //             id="transferTO"
-  //             onChange={(e) => this.setState({ transferTo: e.target.value })}
-  //           />
-  //         </div>
-  //         <Button onClick={() => this.onTransferHandler(`${date}~${name}`)}>Ok</Button>
-  //       </div>
-  //     )
-  //   });
-  // };
-  //
-  //
-  // modalCloseHandler = () => {
-  //   this.setState({ modalContent: null });
-  // };
-
+  componentDidMount() {
+    this.handleGetFiles();
+  }
+  handleGetFiles = () => {
+    // eslint-disable-next-line prefer-destructuring
+    const userData = this.props.userData;
+    ipcRenderer.send('file:list', userData);
+    ipcRenderer.on('file:your-list', (event, filesList) => {
+      this.setState({
+        files: [
+          ...this.state.files,
+          ...filesList
+        ]
+      });
+    });
+  };
+  handleDownload = filename => {
+    // eslint-disable-next-line prefer-destructuring
+    const userData = this.props.userData;
+    ipcRenderer.send('file:compile', { userData, filename });
+    ipcRenderer.on('file:receive', (event, base64File) => {
+      const delimiterPosition = base64File.indexOf(',');
+      const b64str = base64File.substring(+delimiterPosition + 1);
+      const pre = base64File.substring(0, +delimiterPosition);
+      const delPos = pre.indexOf(';');
+      const type = pre.substring(0, +delPos);
+      const blob = b64toBlob(b64str, type);
+      FileSaver.saveAs(blob, filename);
+    });
+  };
+  hadleDelete = filename => {
+    // eslint-disable-next-line prefer-destructuring
+    const userData = this.props.userData;
+    ipcRenderer.send('file:delete', { userData, filename });
+  };
+  handleTransfer = (filename, to) => {
+    // eslint-disable-next-line prefer-destructuring
+    const userData = this.props.userData;
+    ipcRenderer.send('file:transfer', { userData, filename, to });
+  };
   render() {
     let list = <Spinner />;
 
@@ -156,20 +68,22 @@ class FilesList extends Component {
             <li>
               <span>Name</span>
               <span>Upload Date</span>
+              <span>Size (bytes)</span>
               <span>&nbsp;</span>
               <span>Actions</span>
               <span>&nbsp;</span>
             </li>
             {
-              this.state.files.map((file, index) => (
+              this.state.files.map(({ name, timestamp, size }, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <li key={index}>
-                  <span>{file.name}</span>
-                  <span>{new Date(file.uploadDate * 1000).toString()}</span>
+                  <span>{name}</span>
+                  <span>{new Date(timestamp * 1000).toString()}</span>
+                  <span>{size}</span>
                   <span>
-                    <Button>
-                      { /* onClick={() => this.downloadFileHandler(file.relativePath, `${file.uploadDate}~${file.name}`)}
-                    > */}
+                    <Button
+                      onClick={() => this.handleDownload(name)}
+                    >
                       Download
                     </Button>
                   </span>
@@ -220,19 +134,19 @@ class FilesList extends Component {
 
 FilesList.propTypes = {
   userData: PropTypes.shape({
-    csk: PropTypes.string,
-    cpk: PropTypes.string,
-    address: PropTypes.string
-  })
+    csk: PropTypes.string.isRequired,
+    cpk: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired
+  }).isRequired
 };
 
-FilesList.defaultProps = {
-  userData: {
-    csk: null,
-    cpk: null,
-    address: null
-  }
-};
+// FilesList.defaultProps = {
+//   userData: {
+//     csk: null,
+//     cpk: null,
+//     address: null
+//   }
+// };
 
 const mapStateToProps = state => ({
   userData: state.auth.userData,

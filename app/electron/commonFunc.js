@@ -1,22 +1,38 @@
 /* eslint-disable max-len */
 const fs = require('fs');
 const bitcoin = require('bitcoinjs-lib');
-const bigi = require('bigi');
-const bs58check = require('bs58check');
+// const bigi = require('bigi');
+// const bs58check = require('bs58check');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
+const axios = require('axios');
+
+/**
+ * clean array from null values
+ * @param actual
+ * @returns {Array}
+ */
+const cleanArray = actual => {
+  const newArray = [];
+  for (let i = 0; i < actual.length; i++) {
+    if (actual[i]) {
+      newArray.push(actual[i]);
+    }
+  }
+  return newArray;
+};
 
 /**
  * check does folder exist
  * @param filePath
- * @returns {number}
+ * @returns {bool}
  */
 const ensureDirectoryExistence = filePath => {
-  if (fs.existsSync(filePath)) {
-    return 1;
+  if (!fs.existsSync(filePath)) {
+    fs.mkdirSync(filePath);
+    ensureDirectoryExistence(filePath);
   }
-  fs.mkdirSync(filePath);
-  ensureDirectoryExistence(filePath);
+  return true;
 };
 
 /**
@@ -113,6 +129,7 @@ const fileCrushing = (file, shardsNumber = 3) => {
 };
 
 module.exports = {
+  cleanArray,
   ensureDirectoryExistence,
   aesEncrypt,
   aesDecrypt,
