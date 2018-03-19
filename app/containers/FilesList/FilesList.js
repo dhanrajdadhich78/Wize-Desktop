@@ -88,16 +88,16 @@ class FilesList extends Component {
                     </Button>
                   </span>
                   <span>
-                    <Button>
-                      { /* onClick={() => this.showDeleteModalHandler(file.uploadDate, file.name)}
-                    > */ }
+                    <Button
+                      onClick={() => this.hadleDelete(name)}
+                    >
                       Delete
                     </Button>
                   </span>
                   <span>
-                    <Button>
-                      { /* onClick={() => this.showTransferModalHandler(file.uploadDate, file.name)}
-                    > */}
+                    <Button
+                      onClick={() => this.handleTransfer(name)}
+                    >
                       Transfer file
                     </Button>
                   </span>
