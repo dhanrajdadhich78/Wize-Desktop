@@ -176,17 +176,17 @@ ipcMain.on('file:list', (event, userData) => {
     .catch(error => console.log(error.response));
 });
 
-const test = (id) => {
-  console.log(id);
-  if (id) {
-    test2();
-  }
-};
-const test2 = () => {
-  axios.post(`${FS_URL}/02870a4d229c0e46cc02f0c24aedc372335c2261f3333691e78eb7b8811695ddba/put`, { data: { name: 'suka', content: 'pzdc' } })
-    .then(response => console.log('ale'))
-    .catch(reason => console.log(reason));
-};
+// const test = (id) => {
+//   console.log(id);
+//   if (id) {
+//     test2();
+//   }
+// };
+// const test2 = () => {
+//   axios.post(`${FS_URL}/02870a4d229c0e46cc02f0c24aedc372335c2261f3333691e78eb7b8811695ddba/put`, { data: { name: 'suka', content: 'pzdc' } })
+//     .then(response => console.log('ale'))
+//     .catch(reason => console.log(reason));
+// };
 
 ipcMain.on('file:send', (event, { userData, files }) => {
   //  get Store Nodes from digest
@@ -195,177 +195,82 @@ ipcMain.on('file:send', (event, { userData, files }) => {
     `${FS_URL}`,
     `${FS_URL}`
   ];
-  //  user raft object
-  let updateObj = {};
-  // axios.get(`${RAFT_URL}/${userData.cpk}`)
-  // // eslint-disable-next-line promise/always-return
-  //   .then(response => {
-  //     updateObj = {
-  //       ...updateObj,
-  //       ...response.data
-  //     };
-  //     // files.map(file => {
-  //     //   const rawShards = cF.fileCrushing(file);
-  //     //   const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
-  //     //   const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
-  //     //   // const allShardsReq = shards.map((shard, index) => {
-  //     //   //   const data = {
-  //     //   //     data: {
-  //     //   //       name: `${signature}.${index}`,
-  //     //   //       content: shard
-  //     //   //     }
-  //     //   //   };
-  //     //   //   return axios.post(`${FS_URL}/${userData.cpk}/put`, data);
-  //     //   // });
-  //     //   // console.log(allShardsData);
-  //     //   // const pathForShards = [];
-  //     //   // eslint-disable-next-line promise/catch-or-return
-  //     //   axios.all([
-  //     //     axios.post(`${FS_URL}/02870a4d229c0e46cc02f0c24aedc372335c2261f3333691e78eb7b8811695ddba/put`, { data: { name: 'pidrila', content: 'ebanaya' } }),
-  //     //     axios.post(`${FS_URL}/02870a4d229c0e46cc02f0c24aedc372335c2261f3333691e78eb7b8811695ddba/put`, { data: { name: 'ebanaya', content: 'pidrila' } }) ])
-  //     //     .then(axios.spread(() => console.log('done')));
-  //     // });
-  //
-  //   })
-  //   .catch(reason => console.log(reason));
-
+  //  update user raft object
+  const updRaft = (defaultObj, signature, shardsAddresses, { name, size, timestamp }) => {
+    // console.log(`raft: ${defaultObj}`);
+    //  aes name
+    const filename = cF.aesEncrypt(name, userData.csk);
+    //  aes file info
+    const fileInfoObj = {
+      size,
+      timestamp,
+      signature,
+      shardsAddresses
+    };
+    const fileInfo = cF.aesEncrypt(JSON.stringify(fileInfoObj), userData.csk);
+    const updateObj = defaultObj[userData.cpk]
+      ? {
+        ...defaultObj,
+        [userData.cpk]: JSON.stringify({
+          ...JSON.parse(defaultObj[userData.cpk]),
+          [filename.encryptedHex]: fileInfo.encryptedHex
+        })
+      }
+      : {
+        ...defaultObj,
+        [userData.cpk]: JSON.stringify({
+          [filename.encryptedHex]: fileInfo.encryptedHex
+        })
+      };
+    //  update user raft object request
+    // return axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
+    //   .then(resp => console.log(resp.data))
+    //   .catch(error => console.log(error.response));
+    return new Promise((resolve, reject) => {
+      setTimeout(() => (
+        axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
+          .then(resp => resolve(resp.data))
+          .catch(error => reject(error.response))
+      ), 100);
+    });
+  };
+  // ask raft about user files, then create and send shards for digest servers
   files.map(file => {
+    //  create shards
     const rawShards = cF.fileCrushing(file);
+    //  encrypt shards info
     const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
+    //  create sha256 signature
     const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
+    //  shards addresses array
+    const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
+    //  shards upload requests array
+    const shardsReq = digestServers.map((url, index) => {
+      const data = {
+        data: {
+          name: `${cF.aesEncrypt(file.name, userData.csk).encryptedHex}.${index}`,
+          content: shards[index]
+        }
+      };
+      return axios.post(`${url}/${userData.cpk}/put`, data);
+    });
+    //  axios requests
     axios.all([
       axios.get(`${RAFT_URL}/${userData.cpk}`),
-      axios.post(`${digestServers[0]}/${userData.cpk}/put`, { data: { name: file.name, content: shards[0] } }),
-      axios.post(`${digestServers[1]}/${userData.cpk}/put`, { data: { name: file.name, content: shards[1] } }),
-      axios.post(`${digestServers[2]}/${userData.cpk}/put`, { data: { name: file.name, content: shards[2] } })
+      ...shardsReq
     ])
-      .then(axios.spread(response => {
-        console.log(response.data);
+      .then(axios.spread(res1 => {
+        // when all shards are uploaded - update user raft object
+        updRaft(res1.data, signature, shardsAddresses, file);
       }))
-      .then(() => test(1))
+      .then(() => console.log('send is end'))
       .catch(reason => console.log(reason));
   });
-
-  // test(1);
 });
-
-//       //  loop through files
-//       const promises = _.map(files, file => new Promise(resolve => {
-//         const rawShards = cF.fileCrushing(file);
-//         const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
-//         resolve({ file, shards });
-//       }));
-//       Promise.all(promises)
-//       // eslint-disable-next-line promise/always-return
-//         .then(results => {
-//           // eslint-disable-next-line array-callback-return
-//           results.map(({ file, shards }) => {
-//             const signature = bitcoin.crypto.sha256(Buffer.from(`
-//                 ${file.name}
-//                 ${file.size}
-//                 ${file.timestamp}
-//                 ${userData.cpk}
-//             `)).toString('hex');
-//             // console.log(shards);
-//             // const servers = _.map(shards, (shard, index) => (new Promise(resolve => {
-//             //   const data = {
-//             //     data: {
-//             //       name: `${signature}.${index}`,
-//             //       content: shard
-//             //     }
-//             //   };
-//             //   axios.post(`${FS_URL}/${userData.cpk}/put`, data)
-//             //     .then(() => {
-//             //       resolve(`${digestServers[index].substring(0, digestServers[index].lastIndexOf('/buckets'))}/${signature}.${index}`);
-//             //     })
-//             //     .catch(error => console.log(error.response));
-//             // })));
-//             // Promise.all(servers)
-//             //   .then(pathForShards => console.log(pathForShards), reason => console.log(reason))
-//             //   .catch(reason => console.log(reason));
-//             axios.all(shards.map((shard, index) => {
-//               const data = {
-//                 data: {
-//                   name: `${signature}.${index}`,
-//                   content: shard
-//                 }
-//               };
-//               return axios.post(`${FS_URL}/${userData.cpk}/put`, data);
-//             }))
-//               .then(axios.spread((resp => console.log(resp))))
-//               .catch(axios.spread(reason => console.log(reason)));
-//           });
-//         }, reason => console.log(reason))
-//         .catch(reason => console.log(reason));
-//     })
-//     .catch(reason => console.log(reason));
-// });
-            // //  write into servers
-            // const servers = _.map(shards, (shard, index) => (new Promise(resolve => {
-            //   console.log('hello world');
-            //   const data = {
-            //     data: {
-            //       name: `${signature}.${index}`,
-            //       content: shard
-            //     }
-            //   };
-            //   axios.post(`${FS_URL}/${userData.cpk}/put`, data)
-            //     .then(() => {
-            //       resolve(`${digestServers[index].substring(0, digestServers[index].lastIndexOf('/buckets'))}/${signature}.${index}`);
-            //     })
-            //     .catch(error => console.log(error.response));
-            //
-            //   // fs.writeFile(`${digestServers[index]}${signature}.${index}`, shard, err => {
-            //   //   if (err) {
-            //   //     console.log(err);
-            //   //   }
-            //   //   resolve(`${digestServers[index]}${signature}.${index}`);
-            //   // });
-            // })));
-            // Promise.all(servers)
-            //   // eslint-disable-next-line promise/always-return
-            //   .then(pathForShards => {
-            //     console.log(pathForShards);
-            //     //  aes name
-            //     const filename = cF.aesEncrypt(file.name, userData.csk);
-            //     //  aes file info
-            //     const fileInfoObj = {
-            //       size: file.size,
-            //       timestamp: file.timestamp,
-            //       signature,
-            //       pathForShards
-            //     };
-            //     const fileInfo = cF.aesEncrypt(JSON.stringify(fileInfoObj), userData.csk);
-            //     updateObj = {
-            //       ...updateObj,
-            //       [userData.cpk]: JSON.stringify({
-            //         ...JSON.parse(updateObj[userData.cpk]),
-            //         [filename.encryptedHex]: fileInfo.encryptedHex
-            //       })
-            //     };
-            //     // to the Raft Store
-            //     axios.post(`${RAFT_URL}`, updateObj)
-            //       .then(resp => console.log(resp.data))
-            //       .catch(error => console.log(error.response));
-            //     // console.log(updateObj);
-            //     // fs.writeFile(`./.wizeconfig/${userData.cpk}`, JSON.stringify(updateObj), err => {
-            //     //   if (err) {
-            //     //     console.log(err);
-            //     //   }
-            //     // });
-            //   })
-        //       .catch(reason => console.log(reason));
-        //   });
-        // })
-        // .catch(reason => console.log(reason));
-//     })
-//     .catch(error => console.log(error));
-// });
 
 ipcMain.on('file:compile', (event, { userData, filename }) => {
   let fileList = {};
   axios.get(`${RAFT_URL}/${userData.cpk}`)
-    // eslint-disable-next-line promise/always-return
     .then(response => {
       fileList = {
         ...fileList,
@@ -375,17 +280,25 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
       const encryptedData = fileList[pointer.encryptedHex];
       const decryptedData = cF.aesDecrypt(encryptedData, userData.csk);
       const fileDataObj = JSON.parse(decryptedData.strData);
-      const shards = fileDataObj.pathForShards.map(shardPath => {
-        // cF.aesDecrypt(fs.readFileSync(shardPath), userData.csk).strData
-        console.log(shardPath);
-        // axios.post(`${FS_URL}/${userData.cpk}/put`, { data: { name: `${digestServers[index]}${signature}.${index}`, content: shard } })
-        //   .then(() => resolve(`${digestServers[index]}${signature}.${index}`))
-        //   .catch(error => console.log(error.response))
+      const shardsReq = fileDataObj.shardsAddresses.map((shardAddress, index) => {
+        const fname = cF.aesEncrypt(filename, userData.csk).encryptedHex;
+        return axios.get(`${shardAddress}/files/${fname}.${index}`);
       });
+      return new Promise(resolve => {
+        setTimeout(() => (
+          axios.all(shardsReq)
+            .then(ress => resolve(ress))
+            .catch(error => console.log(error))
+        ), 100);
+      });
+    })
+    .then(responses => {
+      const shards = responses.map(({ data }) => cF.aesDecrypt(data, userData.csk).strData);
       const base64File = shards.join('');
+      console.log(base64File);
       mainWindow.webContents.send('file:receive', base64File);
     })
-    .catch(error => console.log(error.response));
+    .catch(error => console.log(error));
 });
 
 ipcMain.on('file:delete', (event, { userData, filename }) => {
