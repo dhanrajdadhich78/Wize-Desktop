@@ -68,8 +68,10 @@ app.on('ready', async () => {
   }
   mainWindow = new BrowserWindow({
     show: false,
+    width: 1048,
+    height: 600,
     minWidth: 800,
-    minHeight: 600
+    minHeight: 458
   });
   mainWindow.loadURL(`file://${__dirname}/app.html`);
   mainWindow.on('closed', () => app.quit());
@@ -153,6 +155,7 @@ ipcMain.on('file:list', (event, userData) => {
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     .then((response) => {
       let filesList = [];
+      // eslint-disable-next-line promise/always-return
       if (response.data && Object.keys(response.data)) {
         const encryptedData = JSON.parse(response.data[userData.cpk]);
         // console.log(`encryptedData: ${encryptedData}`);
@@ -176,18 +179,6 @@ ipcMain.on('file:list', (event, userData) => {
     .catch(error => console.log(error.response));
 });
 
-// const test = (id) => {
-//   console.log(id);
-//   if (id) {
-//     test2();
-//   }
-// };
-// const test2 = () => {
-//   axios.post(`${FS_URL}/02870a4d229c0e46cc02f0c24aedc372335c2261f3333691e78eb7b8811695ddba/put`, { data: { name: 'suka', content: 'pzdc' } })
-//     .then(response => console.log('ale'))
-//     .catch(reason => console.log(reason));
-// };
-
 ipcMain.on('file:send', (event, { userData, files }) => {
   //  get Store Nodes from digest
   const digestServers = [
@@ -195,31 +186,93 @@ ipcMain.on('file:send', (event, { userData, files }) => {
     `${FS_URL}`,
     `${FS_URL}`
   ];
-  //  update user raft object
-  const updRaft = (defaultObj, signature, shardsAddresses, { name, size, timestamp }) => {
-    // console.log(`raft: ${defaultObj}`);
-    //  aes name
-    const filename = cF.aesEncrypt(name, userData.csk);
-    //  aes file info
-    const fileInfoObj = {
-      size,
-      timestamp,
-      signature,
-      shardsAddresses
-    };
-    const fileInfo = cF.aesEncrypt(JSON.stringify(fileInfoObj), userData.csk);
+  // //  update user raft object
+  // const updRaft = (defaultObj, signature, shardsAddresses, { name, size, timestamp }) => {
+  //   // console.log(`raft: ${defaultObj}`);
+  //   //  aes name
+  //   const filename = cF.aesEncrypt(name, userData.csk);
+  //   //  aes file info
+  //   const fileInfoObj = {
+  //     size,
+  //     timestamp,
+  //     signature,
+  //     shardsAddresses
+  //   };
+  //   const fileInfo = cF.aesEncrypt(JSON.stringify(fileInfoObj), userData.csk);
+  //   const updateObj = defaultObj[userData.cpk]
+  //     ? {
+  //       ...defaultObj,
+  //       [userData.cpk]: JSON.stringify({
+  //         ...JSON.parse(defaultObj[userData.cpk]),
+  //         [filename.encryptedHex]: fileInfo.encryptedHex
+  //       })
+  //     }
+  //     : {
+  //       ...defaultObj,
+  //       [userData.cpk]: JSON.stringify({
+  //         [filename.encryptedHex]: fileInfo.encryptedHex
+  //       })
+  //     };
+  //   //  update user raft object request
+  //   // return axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
+  //   //   .then(resp => console.log(resp.data))
+  //   //   .catch(error => console.log(error.response));
+  //   return new Promise((resolve, reject) => {
+  //     setTimeout(() => (
+  //       axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
+  //         .then(resp => resolve(resp.data))
+  //         .catch(error => reject(error.response))
+  //     ), 100);
+  //   });
+  // };
+  // // ask raft about user files, then create and send shards for digest servers
+  // files.map(file => {
+  //   //  create shards
+  //   const rawShards = cF.fileCrushing(file);
+  //   //  encrypt shards info
+  //   const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
+  //   //  create sha256 signature
+  //   const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
+  //   //  shards addresses array
+  //   const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
+  //   //  shards upload requests array
+  //   const shardsReq = digestServers.map((url, index) => {
+  //     const data = {
+  //       data: {
+  //         name: `${cF.aesEncrypt(file.name, userData.csk).encryptedHex}.${index}`,
+  //         content: shards[index]
+  //       }
+  //     };
+  //     return axios.post(`${url}/${userData.cpk}/put`, data);
+  //   });
+  //   //  axios requests
+  //   axios.all([
+  //     axios.get(`${RAFT_URL}/${userData.cpk}`),
+  //     ...shardsReq
+  //   ])
+  //     .then(axios.spread(res1 => {
+  //       // when all shards are uploaded - update user raft object
+  //       updRaft(res1.data, signature, shardsAddresses, file);
+  //     }))
+  //     .then(() => console.log('send is end'))
+  //     .catch(reason => console.log(reason));
+  // });
+  // eslint-disable-next-line no-trailing-spaces
+
+  //  async way
+  const updRaft = (defaultObj, filename, fileInfo) => {
     const updateObj = defaultObj[userData.cpk]
       ? {
         ...defaultObj,
         [userData.cpk]: JSON.stringify({
           ...JSON.parse(defaultObj[userData.cpk]),
-          [filename.encryptedHex]: fileInfo.encryptedHex
+          [filename]: fileInfo
         })
       }
       : {
         ...defaultObj,
         [userData.cpk]: JSON.stringify({
-          [filename.encryptedHex]: fileInfo.encryptedHex
+          [filename]: fileInfo
         })
       };
     //  update user raft object request
@@ -234,38 +287,74 @@ ipcMain.on('file:send', (event, { userData, files }) => {
       ), 100);
     });
   };
-  // ask raft about user files, then create and send shards for digest servers
-  files.map(file => {
-    //  create shards
+  const filesPromise = _.map(files, file => new Promise(resolve => {
     const rawShards = cF.fileCrushing(file);
-    //  encrypt shards info
     const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
-    //  create sha256 signature
-    const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
-    //  shards addresses array
-    const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
-    //  shards upload requests array
-    const shardsReq = digestServers.map((url, index) => {
-      const data = {
-        data: {
-          name: `${cF.aesEncrypt(file.name, userData.csk).encryptedHex}.${index}`,
-          content: shards[index]
-        }
-      };
-      return axios.post(`${url}/${userData.cpk}/put`, data);
-    });
-    //  axios requests
-    axios.all([
-      axios.get(`${RAFT_URL}/${userData.cpk}`),
-      ...shardsReq
-    ])
-      .then(axios.spread(res1 => {
-        // when all shards are uploaded - update user raft object
-        updRaft(res1.data, signature, shardsAddresses, file);
-      }))
-      .then(() => console.log('send is end'))
-      .catch(reason => console.log(reason));
-  });
+    resolve({ file, shards });
+  }));
+  Promise.all(filesPromise)
+    .then(results => (
+      results.map(({ file, shards }) => {
+        //  create sha256 signature
+        const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
+        //  shards addresses array
+        const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
+        const filename = file.name;
+        //  aes info
+        const fileInfo = {
+          size: file.size,
+          timestamp: file.timestamp,
+          signature,
+          shardsAddresses
+        };
+        return {
+          filename,
+          fileInfo,
+          shards,
+          shardsAddresses
+        };
+      })
+    ))
+    .then(resultsArray => (
+      resultsArray.map(fileCred => {
+        const requests = fileCred.shardsAddresses.map((url, index) => {
+          const data = {
+            data: {
+              name: `${cF.aesEncrypt(fileCred.filename, userData.csk).encryptedHex}.${index}`,
+              content: fileCred.shards[index]
+            }
+          };
+          return { url: `${url}/put`, data };
+        });
+        //  aes name
+        const filename = cF.aesEncrypt(fileCred.filename, userData.csk).encryptedHex;
+        //  aes info
+        const fileInfo = cF.aesEncrypt(JSON.stringify(fileCred.fileInfo), userData.csk)
+          .encryptedHex;
+        return {
+          requests,
+          filename,
+          fileInfo
+        };
+      })
+    ))
+    .then(reqsArray => (
+      reqsArray.map((res, i) => {
+        return setTimeout(() => {
+          const reqs = res.requests.map(({url, data}) => axios.post(url, data));
+          return axios.all([
+            axios.get(`${RAFT_URL}/${userData.cpk}`),
+            ...reqs
+          ])
+            .then(axios.spread(res1 => {
+              // when all shards are uploaded - update user raft object
+              updRaft(res1.data, res.filename, res.fileInfo);
+            }))
+            .catch(reason => console.log(reason));
+        }, ((i + 1) * 1000))
+      })
+    ))
+    .catch(error => console.log(error));
 });
 
 ipcMain.on('file:compile', (event, { userData, filename }) => {
@@ -284,19 +373,23 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
         const fname = cF.aesEncrypt(filename, userData.csk).encryptedHex;
         return axios.get(`${shardAddress}/files/${fname}.${index}`);
       });
-      return new Promise(resolve => {
+      return new Promise(resolve => (
         setTimeout(() => (
           axios.all(shardsReq)
             .then(ress => resolve(ress))
             .catch(error => console.log(error))
-        ), 100);
-      });
+        ), 100)
+      ));
     })
     .then(responses => {
-      const shards = responses.map(({ data }) => cF.aesDecrypt(data, userData.csk).strData);
+      console.log(responses);
+      const shards = responses.map(res => cF.aesDecrypt(res.data, userData.csk).strData);
       const base64File = shards.join('');
-      console.log(base64File);
-      mainWindow.webContents.send('file:receive', base64File);
+      // eslint-disable-next-line promise/always-return
+      if (base64File) {
+        console.log(base64File);
+        // mainWindow.webContents.send('file:receive', base64File);
+      }
     })
     .catch(error => console.log(error));
 });
