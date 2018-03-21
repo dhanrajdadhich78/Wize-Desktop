@@ -137,14 +137,20 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
       // create and mount bucket
       const origin = JSON.parse(decrypt.strData).cpk;
-      // axios.post(`${FS_URL}`, { data: { origin } })
-      //   .then(() => {
-      // // response.data
-      axios.post(`${FS_URL}/${origin}/mount`)
-        .then(response => console.log(response.data))
-        .catch(error => console.log(error.response));
-      // })
-      // .catch(error => console.log(error.response.data));
+      axios.post(`${FS_URL}`, { data: { origin } })
+        .then(() => (
+          axios.post(`${FS_URL}/${origin}/mount`)
+            .then(response => console.log(response.data))
+            .catch(error => console.log(error.response))
+        ))
+        .catch(error => {
+          if (error.response.status === 500) {
+            return axios.post(`${FS_URL}/${origin}/mount`)
+              .then(response => console.log(response.data))
+              .catch(e => console.log(e.response));
+          }
+          console.log(error.response);
+        });
       // --
       mainWindow.webContents.send('auth:complete', decrypt.strData);
     }
@@ -164,13 +170,14 @@ ipcMain.on('file:list', (event, userData) => {
             // console.log(`key: ${cF.aesDecrypt(key, userData.csk).strData}`);
             const name = cF.aesDecrypt(key, userData.csk).strData;
             // eslint-disable-next-line max-len
-            const {size, timestamp} = JSON.parse(cF.aesDecrypt(encryptedData[key], userData.csk).strData);
+            const { size, timestamp } = JSON.parse(cF.aesDecrypt(encryptedData[key], userData.csk).strData);
             return {
               name,
               size,
               timestamp
             };
           }
+          return null;
         });
         filesList = cF.cleanArray(rawFileNames);
       }
@@ -382,13 +389,12 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
       ));
     })
     .then(responses => {
-      console.log(responses);
       const shards = responses.map(res => cF.aesDecrypt(res.data, userData.csk).strData);
       const base64File = shards.join('');
       // eslint-disable-next-line promise/always-return
       if (base64File) {
-        console.log(base64File);
-        // mainWindow.webContents.send('file:receive', base64File);
+        // console.log(base64File);
+        mainWindow.webContents.send('file:receive', base64File);
       }
     })
     .catch(error => console.log(error));

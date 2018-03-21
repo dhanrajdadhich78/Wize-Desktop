@@ -41,10 +41,10 @@ class FilesList extends Component {
     ipcRenderer.on('file:receive', (event, base64File) => {
       const delimiterPosition = base64File.indexOf(',');
       const b64str = base64File.substring(+delimiterPosition + 1);
-      const pre = base64File.substring(0, +delimiterPosition);
-      const delPos = pre.indexOf(';');
-      const type = pre.substring(0, +delPos);
-      const blob = b64toBlob(b64str, type);
+      const type = base64File.substring(0, +delimiterPosition);
+      // const delPos = type.indexOf(';');
+      // const type = { type: pre.substring(0, +delPos) };
+      const blob = type && type !== 'data:;base64' ? b64toBlob(b64str, type) : b64toBlob(b64str);
       FileSaver.saveAs(blob, filename);
     });
   };

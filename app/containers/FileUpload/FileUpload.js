@@ -68,7 +68,7 @@ class Files extends Component {
       });
     })));
     Promise.all(promises)
-      .then(files => ipcRenderer.send('file:send', { userData, files }));
+      .then(files => { console.log(files); return ipcRenderer.send('file:send', { userData, files }) });
   };
 
   render() {

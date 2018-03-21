@@ -1,5 +1,5 @@
-const b64toBlob = (b64Data, type, sliceSize = 512) => {
-  console.log(type);
+const b64toBlob = (b64Data, type = 'text/plain;base64', sliceSize = 512) => {
+  console.log(type, b64Data);
   const byteCharacters = atob(b64Data);
   const byteArrays = [];
 
@@ -16,8 +16,9 @@ const b64toBlob = (b64Data, type, sliceSize = 512) => {
 
     byteArrays.push(byteArray);
   }
-
-  return new Blob(byteArrays, { type });
+  const blob = new Blob(byteArrays, { type });
+  console.log(blob.type);
+  return blob;
 };
 
 export default b64toBlob;
