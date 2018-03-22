@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
-import FileSaver from 'file-saver';
+import * as FileSaver from 'file-saver';
 
 import classes from './FilesList.css';
 
@@ -17,6 +17,7 @@ class FilesList extends Component {
   state = {
     files: [],
     modalContent: null,
+    transferTo: null
   };
   componentDidMount() {
     this.handleGetFiles();
@@ -25,37 +26,52 @@ class FilesList extends Component {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     ipcRenderer.send('file:list', userData);
-    ipcRenderer.on('file:your-list', (event, filesList) => {
-      this.setState({
-        files: [
-          ...this.state.files,
-          ...filesList
-        ]
-      });
-    });
+    ipcRenderer.on('file:your-list', (event, filesList) => this.setState({ files: filesList }));
   };
   handleDownload = filename => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     ipcRenderer.send('file:compile', { userData, filename });
     ipcRenderer.on('file:receive', (event, base64File) => {
-      const delimiterPosition = base64File.indexOf(',');
-      const b64str = base64File.substring(+delimiterPosition + 1);
-      const type = base64File.substring(0, +delimiterPosition);
-      // const delPos = type.indexOf(';');
-      // const type = { type: pre.substring(0, +delPos) };
-      const blob = type && type !== 'data:;base64' ? b64toBlob(b64str, type) : b64toBlob(b64str);
-      FileSaver.saveAs(blob, filename);
+      const blob = b64toBlob(base64File);
+      FileSaver.default(blob, filename);
     });
   };
   hadleDelete = filename => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     ipcRenderer.send('file:delete', { userData, filename });
+    ipcRenderer.on('file:deleted', () => {
+      this.handleGetFiles();
+    });
   };
-  handleTransfer = (filename, to) => {
+  handleTransferModal = filename => (
+    this.setState({
+      modalContent: (
+        <div>
+          {/*<form*/}
+            {/*onSubmit={(e) => {*/}
+              {/*e.preventDefault();*/}
+              {/*this.handleTransfer(filename);*/}
+              {/*this.handleCloseModal();*/}
+            {/*}}*/}
+          {/*>*/}
+            {/*<input type="text" onChange={e => this.setState({ transferTo: e.target.value })} />*/}
+            {/*<Button type="submit">Transfer</Button>*/}
+          {/*</form>*/}
+          <Heading fontWeight={200} fontSize={24} size={2}>Coming soon...</Heading>
+        </div>
+      )
+    })
+  );
+  handleCloseModal = () => {
+    this.setState({ modalContent: null, transferTo: null });
+    this.handleGetFiles();
+  };
+  handleTransfer = filename => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
+    const to = this.state.transferTo;
     ipcRenderer.send('file:transfer', { userData, filename, to });
   };
   render() {
@@ -96,7 +112,7 @@ class FilesList extends Component {
                   </span>
                   <span>
                     <Button
-                      onClick={() => this.handleTransfer(name)}
+                      onClick={() => this.handleTransferModal(name)}
                     >
                       Transfer file
                     </Button>
@@ -119,7 +135,7 @@ class FilesList extends Component {
       <Aux>
         <Modal
           show={this.state.modalContent}
-          modalClosed={() => this.modalCloseHandler()}
+          modalClosed={() => this.handleCloseModal()}
         >
           { this.state.modalContent }
         </Modal>

@@ -1,11 +1,8 @@
 /* eslint-disable max-len */
 const fs = require('fs');
 const bitcoin = require('bitcoinjs-lib');
-// const bigi = require('bigi');
-// const bs58check = require('bs58check');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
-const axios = require('axios');
 
 /**
  * clean array from null values
@@ -14,6 +11,7 @@ const axios = require('axios');
  */
 const cleanArray = actual => {
   const newArray = [];
+  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < actual.length; i++) {
     if (actual[i]) {
       newArray.push(actual[i]);
@@ -106,25 +104,18 @@ const fileCrushing = (file, shardsNumber = 3) => {
   // console.log(file.name, shardsNumber);
   const fileLength = file.data.length;
   const pieceSize = Math.floor((fileLength - (file.size % shardsNumber)) / shardsNumber);
-  const rest = fileLength % shardsNumber;
   const resultArray = [];
+  // eslint-disable-next-line no-plusplus
   for (let i = 0; i <= shardsNumber - 1; i++) {
     let zeroPoint = pieceSize * i;
     const endPoint = pieceSize * (i + 1);
     if (i === shardsNumber - 1) {
-      zeroPoint = (fileLength - (pieceSize + rest));
+      zeroPoint = (2 * pieceSize);
       resultArray.push(file.data.substring(zeroPoint));
-      // console.log(zeroPoint);
-      // console.log(file.data.substring(zeroPoint));
       break;
     }
     resultArray.push(file.data.substring(zeroPoint, endPoint));
-    // console.log(zeroPoint);
-    // console.log(file.data.substring(zeroPoint, endPoint));
-    // console.log(endPoint);
   }
-  // resultArray.map(shard => { console.log(zeroPoint); console.log(shard); return console.log(endPoint); });
-  // console.log(file.size, rest, pieceSize);
   return resultArray;
 };
 

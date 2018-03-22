@@ -9,14 +9,14 @@ import Dropzone from 'react-dropzone';
 import classes from './FileUpload.css';
 
 import Heading from '../../components/UI/Heading/Heading';
-import Auth from "../../components/Auth/Auth";
-// import {API_URL} from "../../shared/const";
+// import Auth from "../../components/Auth/Auth";
+// import { API_URL } from "../../shared/const";
 
 class Files extends Component {
   state = {
     progress: 0,
     loading: false,
-    error: false
+    // error: false
   };
 
   onDropHandler = (accepted, rejected) => {
@@ -55,6 +55,7 @@ class Files extends Component {
     //       error: err.message
     //     });
     //   });
+    // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     const timestamp = Math.round(+new Date() / 1000);
     const promises = _.map(accepted, file => (new Promise(resolve => {
@@ -68,7 +69,8 @@ class Files extends Component {
       });
     })));
     Promise.all(promises)
-      .then(files => { console.log(files); return ipcRenderer.send('file:send', { userData, files }) });
+      .then(files => ipcRenderer.send('file:send', { userData, files }))
+      .catch(error => console.log(error));
   };
 
   render() {
