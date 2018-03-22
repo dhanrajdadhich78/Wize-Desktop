@@ -1,24 +1,24 @@
-const b64toBlob = (b64Data, type = 'text/plain;base64', sliceSize = 512) => {
-  console.log(type, b64Data);
-  const byteCharacters = atob(b64Data);
-  const byteArrays = [];
+const b64toBlob = b64string => {
+  // convert base64 to raw binary data held in a string
+  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  const byteString = atob(b64string.split(',')[1]);
 
-  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-    const slice = byteCharacters.slice(offset, offset + sliceSize);
+  // separate out the mime component
+  const mimeString = b64string.split(',')[0].split(':')[1].split(';')[0];
 
-    const byteNumbers = new Array(slice.length);
-    // eslint-disable-next-line no-plusplus
-    for (let i = 0; i < slice.length; i++) {
-      byteNumbers[i] = slice.charCodeAt(i);
-    }
+  // write the bytes of the string to an ArrayBuffer
+  const ab = new ArrayBuffer(byteString.length);
 
-    const byteArray = new Uint8Array(byteNumbers);
+  // create a view into the buffer
+  const ia = new Uint8Array(ab);
 
-    byteArrays.push(byteArray);
+  // set the bytes of the buffer to the correct values
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
   }
-  const blob = new Blob(byteArrays, { type });
-  console.log(blob.type);
-  return blob;
+  // write the ArrayBuffer to a blob, and you're done
+  return new Blob([ab], { type: mimeString });
 };
 
 export default b64toBlob;

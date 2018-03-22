@@ -239,6 +239,7 @@ ipcMain.on('file:send', (event, { userData, files }) => {
   //   //  encrypt shards info
   //   const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
   //   //  create sha256 signature
+  // eslint-disable-next-line max-len
   //   const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
   //   //  shards addresses array
   //   const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
@@ -346,9 +347,9 @@ ipcMain.on('file:send', (event, { userData, files }) => {
       })
     ))
     .then(reqsArray => (
-      reqsArray.map((res, i) => {
-        return setTimeout(() => {
-          const reqs = res.requests.map(({url, data}) => axios.post(url, data));
+      reqsArray.map((res, i) => (
+        setTimeout(() => {
+          const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
           return axios.all([
             axios.get(`${RAFT_URL}/${userData.cpk}`),
             ...reqs
@@ -359,17 +360,15 @@ ipcMain.on('file:send', (event, { userData, files }) => {
             }))
             .catch(reason => console.log(reason));
         }, ((i + 1) * 1000))
-      })
+      ))
     ))
     .catch(error => console.log(error));
 });
 
 ipcMain.on('file:compile', (event, { userData, filename }) => {
-  let fileList = {};
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     .then(response => {
-      fileList = {
-        ...fileList,
+      const fileList = {
         ...JSON.parse(response.data[userData.cpk])
       };
       const pointer = cF.aesEncrypt(filename, userData.csk);
@@ -393,7 +392,6 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
       const base64File = shards.join('');
       // eslint-disable-next-line promise/always-return
       if (base64File) {
-        // console.log(base64File);
         mainWindow.webContents.send('file:receive', base64File);
       }
     })
@@ -401,51 +399,56 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
 });
 
 ipcMain.on('file:delete', (event, { userData, filename }) => {
-  // console.log(userData.cpk, filename);
-  //  user raft object
-  let updateObj = {};
   axios.get(`${RAFT_URL}/${userData.cpk}`)
-  // eslint-disable-next-line promise/always-return
+    //  user raft object
+    // eslint-disable-next-line promise/always-return
     .then(response => {
-      updateObj = {
-        ...updateObj,
+      let updateObj = {
         ...response.data
       };
       //  aes name
       const encName = cF.aesEncrypt(filename, userData.csk).encryptedHex;
-      // console.log(JSON.stringify(updateObj));
-      const userString = JSON.parse(updateObj[userData.cpk]);
-      // console.log(userString);
-      Object.keys(userString).map(key => {
-        if (userString[key] > 3) {
-          const decryptedKey = cF.aesDecrypt(userString[key], userData.csk).strData;
-          console.log(decryptedKey);
-        }
-      });
-      console.log('======');
-      delete userString[encName];
-      // console.log(JSON.stringify(updateObj));
-      Object.keys(userString).map(key => {
-        if (userString[key] > 3) {
-          const decryptedKey = cF.aesDecrypt(userString[key], userData.csk).strData;
-          console.log(decryptedKey);
-        }
-      });
+      const userObj = JSON.parse(updateObj[userData.cpk]);
+      const decData = JSON.parse(cF.aesDecrypt(userObj[encName], userData.csk).strData);
+      const removeReqs = decData.shardsAddresses.map((req, i) => axios.delete(`${req}/files/${encName}.${i}`));
+      return new Promise(resolve => (
+        setTimeout(() => (
+          axios.all(removeReqs)
+            .then(() => {
+              delete userObj[encName];
+              updateObj = {
+                ...updateObj,
+                [userData.cpk]: JSON.stringify(userObj)
+              };
+              return updateObj;
+            })
+            .then(uObj => resolve(uObj))
+            .catch(error => console.log(error))
+        ), 100)
+      ))
+        .then(uObj => new Promise((resolve, reject) => (
+          setTimeout(() => (
+            axios.post(`${RAFT_URL}/${userData.cpk}`, uObj)
+              .then(() => resolve(mainWindow.webContents.send('file:deleted')))
+              .catch(error => reject(error.response))
+          ), 100)
+        )))
+        .catch(error => console.log(error));
     })
     .catch(error => console.log(error));
 });
 
-ipcMain.on('file:transfer', (event, { userData, filename }) => {
-  console.log(userData.cpk, filename);
-  //  user raft object
-  let updateObj = {};
-  axios.get(`${RAFT_URL}/${userData.cpk}`)
-  // eslint-disable-next-line promise/always-return
-    .then(response => {
-      updateObj = {
-        ...updateObj,
-        ...response.data
-      };
-    })
-    .catch(error => console.log(error));
+ipcMain.on('file:transfer', (event, { userData, filename, to }) => {
+  console.log(filename, to);
+  // //  user raft object
+  // let updateObj = {};
+  // axios.get(`${RAFT_URL}/${userData.cpk}`)
+  // // eslint-disable-next-line promise/always-return
+  //   .then(response => {
+  //     updateObj = {
+  //       ...updateObj,
+  //       ...response.data
+  //     };
+  //   })
+  //   .catch(error => console.log(error));
 });
