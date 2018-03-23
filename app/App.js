@@ -26,7 +26,7 @@ class App extends Component {
     let routes = <Spinner />;
     if (this.state.internetIsOn) {
       routes = (
-        <div style={{padding: '0 30px 30px'}}>
+        <div style={{ padding: '0 30px 30px' }} >
           <Switch>
             <Route exact path="/" component={Root} />
             <Redirect to="/" />
@@ -37,8 +37,8 @@ class App extends Component {
         routes = (
           <Layout>
             <Switch>
-              <Route exact path="/" component={FilesList} />
-              <Route exact path="/upload-files" component={FileUpload} />
+              <Route exact path="/" component={FileUpload} />
+              <Route exact path="/file-list" component={FilesList} />
               <Route exact path="/wallets" component={Wallets} />
               {/* <Route exact path="/wallets-list" component={WalletsList} /> */}
               {/* <Route exact path="/wallet-check" component={WalletCheck} /> */}

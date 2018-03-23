@@ -7,6 +7,7 @@ const initialState = {
     cpk: null,
     address: null
   },
+  blockChain: false,
   error: null,
   loading: false
 };
