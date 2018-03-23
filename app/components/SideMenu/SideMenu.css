@@ -1,10 +1,11 @@
 .SidebarList {
-  /*width: 50vw;*/
-  width: 25vw;
-  /*max-width: 800px;*/
-  min-width: 460px;
+  width: 460px;
   background-color: #474b4e;
   display: flex;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
   /*position: absolute;*/
   /*right: -50vw;*/
   /*top: 0;*/

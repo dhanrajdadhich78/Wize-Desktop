@@ -70,8 +70,8 @@ app.on('ready', async () => {
     show: false,
     width: 1048,
     height: 600,
-    minWidth: 800,
-    minHeight: 458
+    minWidth: 1048,
+    minHeight: 600
   });
   mainWindow.loadURL(`file://${__dirname}/app.html`);
   mainWindow.on('closed', () => app.quit());

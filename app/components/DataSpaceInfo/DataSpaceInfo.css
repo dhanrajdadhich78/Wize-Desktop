@@ -1,0 +1,40 @@
+.DataSpaceInfo {
+  border: 2px solid #e3e3e3;
+  border-radius: 10px;
+  padding: 22px 30px;
+  margin: 30px 0 0;
+  box-sizing: border-box;
+}
+
+.InfoWrapper > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 52px;
+}
+
+.InfoWrapper > div:first-of-type {
+  border-bottom: 2px solid #e3e3e3;
+}
+
+.InfoWrapper > div > p {
+  margin: 0;
+  padding: 0;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+@media (max-width: 1600px) {
+  .DataSpaceInfo {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .InfoWrapper > div {
+    flex-direction: column;
+    justify-content: space-around;
+    height: 160px;
+    align-items: flex-start;
+    width: 100%;
+  }
+}

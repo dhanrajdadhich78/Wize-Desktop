@@ -1,5 +1,5 @@
 .ButtonContainer {
-  position: absolute;
+  position: fixed;
   right: 0;
   bottom: 0;
   outline: none;
@@ -14,7 +14,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #0cf;
+  background-color: #95b43c;
   transition: opacity 0.2s linear;
   border: none;
   outline: none;

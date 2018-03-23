@@ -1,0 +1,52 @@
+.NetworkHealthInfo {
+  border: 2px solid #e3e3e3;
+  border-radius: 10px;
+  padding: 22px 30px;
+  margin: 30px 0 0;
+  box-sizing: border-box;
+}
+
+.InfoCols {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.InfoCols > div:not(:last-of-type) {
+  width: 30%;
+}
+
+.InfoCols > div:last-of-type {
+  width: 40%;
+}
+
+.InfoOne > span {
+  color: #0cf;
+}
+
+.InfoTwo > span {
+  color: #95b43c;
+}
+
+.InfoThree > span {
+  color: black;
+}
+
+.InfoCols > div > span {
+  font-size: 50px;
+}
+
+.InfoCols > div > h3 {
+  font-size: 14px;
+}
+
+@media (max-width: 1600px) {
+  .InfoCols {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .InfoCols > div {
+    width: 100%;
+  }
+}
