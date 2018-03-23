@@ -48,3 +48,13 @@
   align-items: center;
   justify-content: center;
 }
+
+.NetInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.NetInfo > div {
+  width: calc(50% - 15px);
+}

@@ -1,0 +1,39 @@
+.ToggleControllersWrapper {
+  border: 2px solid #e3e3e3;
+  border-radius: 10px;
+  padding: 22px 30px;
+  margin: 0 0 30px;
+  height: 150px;
+  box-sizing: border-box;
+}
+
+.ToggleWrapper {
+  display: flex;
+}
+
+.ToggleWrapper > div {
+  width: calc(100% / 3);
+}
+
+.Disclaimer {
+  color: #474b4d;
+  font-size: 12px;
+  border-top: 2px solid #e3e3e3;
+  padding-top: 22px;
+}
+
+.Disclaimer p {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.Disclaimer p::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #474b4d;
+  margin-right: 12.5px;
+}

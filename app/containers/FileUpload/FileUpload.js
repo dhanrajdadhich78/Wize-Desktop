@@ -3,58 +3,32 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import _ from 'lodash';
-// import axios from 'axios';
 import Dropzone from 'react-dropzone';
 
 import classes from './FileUpload.css';
 
-import Heading from '../../components/UI/Heading/Heading';
-// import Auth from "../../components/Auth/Auth";
-// import { API_URL } from "../../shared/const";
+import ToggleControllers from '../../components/ToggleControllers/ToggleControllers';
+import NetworkHealthInfo from '../../components/NetworkHealthInfo/NetworkHealthInfo';
+import DataSpaceInfo from '../../components/DataSpaceInfo/DataSpaceInfo';
 
 class Files extends Component {
   state = {
     progress: 0,
     loading: false,
-    // error: false
+    encryption: false,
+    sharding: false,
+    filePasswording: false,
+    networkHealth: {
+      suspicious: 3,
+      total: 392
+    },
+    dataSpace: {
+      totalNodes: 483,
+      dataLeft: 100
+    }
   };
 
-  onDropHandler = (accepted, rejected) => {
-    // this.setState({ loading: true });
-    //
-    // const data = new FormData();
-    // data.append('file', file);
-    //
-    // const config = {
-    //   onUploadProgress: progressEvent => {
-    //     const percentCompleted = Math.floor((progressEvent.loaded * 100) / progressEvent.total);
-    //     // do whatever you like with the percentage complete
-    //     // maybe dispatch an action that will update a progress bar or something
-    //     setTimeout(() => this.setState({ progress: percentCompleted }), 400);
-    //   },
-    //   headers: {
-    //     'X-ACCESS-TOKEN': this.props.token,
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // };
-    //
-    // axios.put(`${API_URL}/api/upload-file`, data, config)
-    //   .then(res => {
-    //     console.log(res.data);
-    //     this.setState({
-    //       progress: 0,
-    //       loading: false,
-    //       error: false
-    //     });
-    //   })
-    //   .catch(err => {
-    //     console.log(err.message);
-    //     this.setState({
-    //       progress: 0,
-    //       loading: false,
-    //       error: err.message
-    //     });
-    //   });
+  onDropHandler = accepted => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     const timestamp = Math.round(+new Date() / 1000);
@@ -88,15 +62,30 @@ class Files extends Component {
 
     return (
       <div>
-        <Heading fontSize={50} fontWeight={200}>Upload <span>WIZE</span> files</Heading>
+        <ToggleControllers
+          encryption={this.state.encryption}
+          sharding={this.state.sharding}
+          filePasswording={this.state.filePasswording}
+          toggleEncryption={() => this.setState({ encryption: !this.state.encryption })}
+          toggleSharding={() => this.setState({ sharding: !this.state.sharding })}
+          toggleFilePass={() => this.setState({ filePasswording: !this.state.filePasswording })}
+        />
         <div className={classes.DropzoneWrapper}>
           <Dropzone
             onDrop={(accepted, rejected) => this.onDropHandler(accepted, rejected)}
           >
-            <p>Try dropping some files here, or click to select files to upload.</p>
+            <p>Drop to upload your files</p>
           </Dropzone>
         </div>
         {progress}
+        <div className={classes.NetInfo}>
+          <div>
+            <NetworkHealthInfo networkHealth={this.state.networkHealth} />
+          </div>
+          <div>
+            <DataSpaceInfo dataSpace={this.state.dataSpace} />
+          </div>
+        </div>
       </div>
     );
   }

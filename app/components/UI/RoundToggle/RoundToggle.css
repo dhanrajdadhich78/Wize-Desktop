@@ -1,0 +1,56 @@
+.RoundToggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+  justify-content: center;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: 0 0 22px;
+  box-sizing: border-box;
+}
+
+.RoundToggle input {
+  display: none;
+}
+
+.RoundToggle div {
+  font-size: 12px;
+  font-weight: 400;
+  width: calc(100% - 47.5px);
+}
+
+.RoundToggle span {
+  display: inline-flex;
+  align-items: center;
+  width: 47.5px;
+  height: 30px;
+  background-color: #777;
+  position: relative;
+  transition: all 0.2s linear;
+  margin: 0 12px;
+  border-radius: 30px;
+}
+
+.RoundToggle span::after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  transition: all 0.2s linear;
+  border-radius: 50%;
+}
+
+.RoundToggle input:checked ~ span {
+  background-color: #95b43c;
+}
+
+.RoundToggle input:checked ~ span::after {
+  left: calc(100% - 28px);
+}
