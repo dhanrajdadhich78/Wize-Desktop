@@ -7,10 +7,6 @@
   padding: 20px 0;
 }
 
-/*.BlockChainIdentificator {*/
-
-/*}*/
-
 .BlockChainIdentificator h4,
 .BlockChainIdentificator h5 {
   width: 100%;
@@ -31,6 +27,7 @@
   font-size: 7px;
 }
 
-.BlockChainIdentificator.BlockChainActive {
+.BlockChainIdentificator.BlockChainActive h4,
+.BlockChainIdentificator.BlockChainActive h5 {
   color: #0cd0e2;
 }

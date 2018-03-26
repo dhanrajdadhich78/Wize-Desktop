@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone';
+
 
 import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 import checkValidity from '../../utils/validation';
 import Heading from '../UI/Heading/Heading';
+import ToggleCredFiles from './ToggleCredFiles/ToggleCredFiles';
 
 class Auth extends Component {
   state = {
-    hasData: true,
-    filePath: 1,
     controls: {
       password: {
         elementType: 'input',
@@ -37,9 +36,6 @@ class Auth extends Component {
       }
       return true;
     });
-    if (this.props.authError && this.props.authError === 'There is no credentials file') {
-      this.setState({ filePath: null });
-    }
   }
   componentDidMount() {
     if ((!this.state.hasData && this.state.controls.password.value)
@@ -47,9 +43,6 @@ class Auth extends Component {
       this.props.handleAuth(this.state.controls.password.value);
     }
   }
-  handleDrop = file => {
-    this.setState({ filePath: file.path });
-  };
   handleInputChange = (event, controlName) => {
     // eslint-disable-next-line max-len
     const cV = checkValidity(event.target.value, this.state.controls[controlName].validation, controlName);
@@ -69,7 +62,6 @@ class Auth extends Component {
   };
   handleSubmitForm = e => {
     e.preventDefault();
-
     //  eslint-disable-next-line max-len
     this.props.handleAuth(this.state.controls.password.value, this.state.filePath !== 1 ? this.state.filePath : null);
   };
@@ -94,18 +86,14 @@ class Auth extends Component {
     if (!this.state.hasData || (this.props.authError && this.props.authError.message !== 'There is no credentials file')) {
       content = (
         <div>
-          {
-            !this.state.filePath
-              ? (
-                <Dropzone
-                  onDrop={files => this.handleDrop(files[0])}
-                >
-                  {/* eslint-disable-next-line max-len  */}
-                  <p>Try dropping your file with credentials here, or click to select it to upload</p>
-                </Dropzone>
-              )
-              : null
-          }
+          <ToggleCredFiles
+            altCredFilePath={this.props.altCredFilePath}
+            handleToggleAltCredFile={() => this.props.handleToggleAltCredFile()}
+            credFilePath={this.props.credFilePath}
+            handleDropCredFile={file => this.props.handleDropCredFile(file)}
+            credFilesArr={this.props.credFilesArr}
+            onCredFilesSelectChange={val => this.props.onCredFilesSelectChange(val)}
+          />
           <form onSubmit={e => this.handleSubmitForm(e)}>
             <div>
               <Input
@@ -150,7 +138,13 @@ Auth.propTypes = {
   }),
   cachePassword: PropTypes.string,
   handleAuth: PropTypes.func.isRequired,
-  authError: PropTypes.string
+  authError: PropTypes.string,
+  altCredFilePath: PropTypes.bool.isRequired,
+  handleToggleAltCredFile: PropTypes.func.isRequired,
+  credFilePath: PropTypes.string.isRequired,
+  handleDropCredFile: PropTypes.func.isRequired,
+  credFilesArr: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  onCredFilesSelectChange: PropTypes.func.isRequired
 };
 
 Auth.defaultProps = {

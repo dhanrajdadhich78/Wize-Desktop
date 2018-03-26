@@ -14,21 +14,21 @@ const infoColumn = ({ blockChain }) => (
         : [classes.BlockChainIdentificator, classes.BlockChainActive].join(' ')
       }
     >
-    {
-      !blockChain
-        ? (
-          <div>
-            <h4>wize  blockchain disconnected</h4>
-            <h5>decrypted</h5>
-          </div>
-        )
-        : (
-          <div>
-            <h4>wize  blockchain connected</h4>
-            <h5>encrypted</h5>
-          </div>
-        )
-    }
+      {
+        !blockChain
+          ? (
+            <div>
+              <h4>wize  blockchain disconnected</h4>
+              <h5>decrypted</h5>
+            </div>
+          )
+          : (
+            <div>
+              <h4>wize  blockchain connected</h4>
+              <h5>encrypted</h5>
+            </div>
+          )
+      }
     </div>
   </div>
 );

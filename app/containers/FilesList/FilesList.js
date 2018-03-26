@@ -40,8 +40,8 @@ class FilesList extends Component {
   hadleDelete = filename => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
-    ipcRenderer.send('file:delete', { userData, filename });
-    ipcRenderer.on('file:deleted', () => {
+    ipcRenderer.send('file:remove', { userData, filename });
+    ipcRenderer.on('file:removed', () => {
       this.handleGetFiles();
     });
   };

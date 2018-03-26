@@ -16,6 +16,7 @@ const bigi = require('bigi');
 const bs58check = require('bs58check');
 const _ = require('lodash');
 const axios = require('axios');
+const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
 const { RAFT_URL, FS_URL } = require('./utils/const');
@@ -86,6 +87,12 @@ app.on('ready', async () => {
   menuBuilder.buildMenu();
 });
 
+ipcMain.on('internet-connection:check', () => {
+  // eslint-disable-next-line promise/catch-or-return
+  isOnline()
+    .then(online => mainWindow.webContents.send('internet-connection:status', online));
+});
+
 ipcMain.on('registration:start', (event, password) => {
   //  random sha256 hash
   const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
@@ -111,18 +118,29 @@ ipcMain.on('registration:start', (event, password) => {
   //  save to file
   if (cF.ensureDirectoryExistence('./.wizeconfig')) {
     const aes = cF.aesEncrypt(strData, password, 'hex');
-    fs.writeFile('./.wizeconfig/credentials.bak', aes.encryptedHex, err => {
-      if (err) {
-        mainWindow.webContents.send('registration:error', err);
+    fs.readdir('./.wizeconfig', (error, files) => {
+      if (error) {
+        mainWindow.webContents.send('registration:error', error);
       }
-      mainWindow.webContents.send('registration:complete', strData);
+      const credFiles = files.map(file => (
+        !file.indexOf('credentials')
+          ? file
+          : null
+      ));
+      const credArr = cF.cleanArray(credFiles);
+      fs.writeFile(`./.wizeconfig/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
+        if (err) {
+          mainWindow.webContents.send('registration:error', err);
+        }
+        mainWindow.webContents.send('registration:complete', strData);
+      });
     });
   }
 });
 
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
-  fs.readFile('./.wizeconfig/credentials.bak', (err, data) => {
+  fs.readFile('./.wizeconfig/credentials-0.bak', (err, data) => {
     if (!err) {
       encryptedHex = data;
     } else {
@@ -398,7 +416,7 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
     .catch(error => console.log(error));
 });
 
-ipcMain.on('file:delete', (event, { userData, filename }) => {
+ipcMain.on('file:remove', (event, { userData, filename }) => {
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     //  user raft object
     // eslint-disable-next-line promise/always-return
@@ -429,7 +447,7 @@ ipcMain.on('file:delete', (event, { userData, filename }) => {
         .then(uObj => new Promise((resolve, reject) => (
           setTimeout(() => (
             axios.post(`${RAFT_URL}/${userData.cpk}`, uObj)
-              .then(() => resolve(mainWindow.webContents.send('file:deleted')))
+              .then(() => resolve(mainWindow.webContents.send('file:removed')))
               .catch(error => reject(error.response))
           ), 100)
         )))
@@ -439,7 +457,7 @@ ipcMain.on('file:delete', (event, { userData, filename }) => {
 });
 
 ipcMain.on('file:transfer', (event, { userData, filename, to }) => {
-  console.log(filename, to);
+  console.log(userData, filename, to);
   // //  user raft object
   // let updateObj = {};
   // axios.get(`${RAFT_URL}/${userData.cpk}`)

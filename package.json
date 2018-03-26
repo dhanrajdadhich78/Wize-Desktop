@@ -190,6 +190,7 @@
     "html2canvas": "^1.0.0-alpha.10",
     "http": "0.0.0",
     "https": "^1.0.0",
+    "is-online": "^7.0.0",
     "pbkdf2": "^3.0.14",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
