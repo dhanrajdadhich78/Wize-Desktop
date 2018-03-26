@@ -57,7 +57,11 @@ class Input extends Component {
               id={this.props.id}
             >
               {this.props.elementConfig.options.map(option => (
-                <option key={option.value} value={option.value}>
+                <option
+                  key={option.value}
+                  value={option.value}
+                  selected={option.value === this.props.value}
+                >
                   {option.displayValue}
                 </option>
               ))}

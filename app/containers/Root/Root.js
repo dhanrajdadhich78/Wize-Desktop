@@ -12,8 +12,23 @@ import Registration from '../../components/Auth/Registration/Registration';
 class Root extends Component {
   state = {
     auth: true,
-    password: null
+    password: null,
+    altCredFilePath: false,
+    credFilePath: './.wizeconfig/credentials-0.bak',
+    credFilesArr: [
+      {
+        value: './.wizeconfig/credentials-0.bak',
+        displayValue: 0
+      },
+      {
+        value: './.wizeconfig/credentials-1.bak',
+        displayValue: 1
+      }
+    ]
   };
+  handleToggleAltCredFile = () => this.setState({ altCredFilePath: !this.state.altCredFilePath });
+  onCredFilesSelectChange = val => this.setState({ credFilePath: val });
+  handleDropCredFile = file => this.setState({ credFilePath: file.path });
   render() {
     let view = (
       <Auth
@@ -21,6 +36,12 @@ class Root extends Component {
         cachePassword={this.state.password}
         userData={this.props.userData}
         handleAuth={(password, filePath) => this.props.handleAuth(password, filePath)}
+        altCredFilePath={this.state.altCredFilePath}
+        handleToggleAltCredFile={() => this.handleToggleAltCredFile()}
+        credFilePath={this.state.credFilePath}
+        handleDropCredFile={file => this.handleDropCredFile(file)}
+        credFilesArr={this.state.credFilesArr}
+        onCredFilesSelectChange={val => this.onCredFilesSelectChange(val)}
       />
     );
     if (!this.state.auth) {

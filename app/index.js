@@ -7,6 +7,7 @@ import { createHashHistory } from 'history';
 import thunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
+import commonInfoReducer from './store/reducers/commonInfo';
 
 import './app.global.css';
 import App from './App';
@@ -14,9 +15,11 @@ import App from './App';
 const history = createHashHistory();
 
 const rootReducer = combineReducers({
-  auth: authReducer
+  auth: authReducer,
+  common: commonInfoReducer
 });
 
+// eslint-disable-next-line no-underscore-dangle
 const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));

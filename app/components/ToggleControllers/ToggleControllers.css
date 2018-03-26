@@ -13,6 +13,8 @@
 
 .ToggleWrapper > div {
   width: calc(100% / 3);
+  display: inline-flex;
+  align-items: center;
 }
 
 .Disclaimer {
