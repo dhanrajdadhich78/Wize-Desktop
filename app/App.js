@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
-import { checkInternet } from './store/actions/index';
+import { checkInternet, getCredFilesList } from './store/actions/index';
 
 import Spinner from './components/UI/Spinner/Spinner';
 import Layout from './hoc/Layout/Layout';
@@ -17,6 +17,7 @@ import Wallets from './containers/Wallets/Wallets';
 class App extends Component {
   componentWillMount() {
     this.props.checkInternet();
+    this.props.getCredFilesList();
   }
   render() {
     let routes;
@@ -64,17 +65,19 @@ App.propTypes = {
   isAuth: PropTypes.bool.isRequired,
   checkInternet: PropTypes.func.isRequired,
   internet: PropTypes.bool.isRequired,
-  internetChecking: PropTypes.bool.isRequired
+  internetChecking: PropTypes.bool.isRequired,
+  getCredFilesList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   isAuth: state.auth.userData.cpk !== null,
-  internetChecking: state.common.internetChecking,
-  internet: state.common.internet
+  internetChecking: state.commonInfo.internetChecking,
+  internet: state.commonInfo.internet
 });
 
 const mapDispatchToProps = dispatch => ({
-  checkInternet: () => dispatch(checkInternet())
+  checkInternet: () => dispatch(checkInternet()),
+  getCredFilesList: () => dispatch(getCredFilesList())
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

@@ -39,7 +39,7 @@ Layout.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  blockchain: state.common.blockchain,
+  blockchain: state.commonInfo.blockchain,
 });
 
 export default connect(mapStateToProps)(Layout);

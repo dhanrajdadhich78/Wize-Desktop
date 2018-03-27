@@ -60,7 +60,7 @@ class Input extends Component {
                 <option
                   key={option.value}
                   value={option.value}
-                  selected={option.value === this.props.value}
+                  // selected={option.value === this.props.value}
                 >
                   {option.displayValue}
                 </option>

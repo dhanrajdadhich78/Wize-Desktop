@@ -14,21 +14,22 @@ class Root extends Component {
     auth: true,
     password: null,
     altCredFilePath: false,
-    credFilePath: './.wizeconfig/credentials-0.bak',
-    credFilesArr: [
-      {
-        value: './.wizeconfig/credentials-0.bak',
-        displayValue: 0
-      },
-      {
-        value: './.wizeconfig/credentials-1.bak',
-        displayValue: 1
-      }
-    ]
+    credFilePath: this.props.credentials.length ? `./.wizeconfig/${this.props.credentials[0]}` : '',
+    credFilesArr: this.props.credentials,
+    dropzoneInput: true
   };
-  handleToggleAltCredFile = () => this.setState({ altCredFilePath: !this.state.altCredFilePath });
+  handleToggleAltCredFile = () => {
+    if (!this.state.altCredFilePath === true) {
+      this.setState({ credFilePath: `./.wizeconfig/${this.props.credentials[0]}` });
+    }
+    this.setState({ altCredFilePath: !this.state.altCredFilePath });
+  };
   onCredFilesSelectChange = val => this.setState({ credFilePath: val });
-  handleDropCredFile = file => this.setState({ credFilePath: file.path });
+  handleDropCredFile = file => this.setState({ credFilePath: file.path, dropzoneInput: false });
+  handleReturnDropzoneInput = () => this.setState({
+    credFilePath: `./.wizeconfig/${this.props.credentials[0]}`,
+    dropzoneInput: true
+  });
   render() {
     let view = (
       <Auth
@@ -42,6 +43,8 @@ class Root extends Component {
         handleDropCredFile={file => this.handleDropCredFile(file)}
         credFilesArr={this.state.credFilesArr}
         onCredFilesSelectChange={val => this.onCredFilesSelectChange(val)}
+        dropzoneInput={this.state.dropzoneInput}
+        handleReturnDropzoneInput={() => this.handleReturnDropzoneInput()}
       />
     );
     if (!this.state.auth) {
@@ -80,7 +83,8 @@ Root.propTypes = {
   }),
   handleRegister: PropTypes.func.isRequired,
   handleAuth: PropTypes.func.isRequired,
-  authError: PropTypes.string
+  authError: PropTypes.string,
+  credentials: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 Root.defaultProps = {
@@ -94,7 +98,8 @@ Root.defaultProps = {
 
 const mapStateToProps = state => ({
   userData: state.auth.userData,
-  authError: state.auth.error
+  authError: state.auth.error,
+  credentials: state.commonInfo.credentials
 });
 
 const mapDispatchToProps = dispatch => ({

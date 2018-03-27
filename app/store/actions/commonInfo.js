@@ -4,21 +4,22 @@ import * as actionTypes from '../actions/actionTypes';
 
 const getCredFilesListStart = () => {
   ipcRenderer.send('credentials-files-list:scan');
-  return { type: actionTypes.NET_CHECK_START };
+  return { type: actionTypes.GET_CRED_FILES_LIST_START };
 };
 
-const getCredFilesListSuccess = () => ({ type: actionTypes.NET_CHECK_SUCCESS });
+const getCredFilesListSuccess = credentials => ({
+  type: actionTypes.GET_CRED_FILES_LIST_SUCCESS,
+  credentials
+});
 
-const getCredFilesListFail = () => ({ type: actionTypes.NET_CHECK_FAIL });
+// const getCredFilesListFail = () => ({ type: actionTypes.NET_CHECK_FAIL });
 
 // eslint-disable-next-line import/prefer-default-export
 export const getCredFilesList = () => dispatch => {
   dispatch(getCredFilesListStart());
-  ipcRenderer.on('credentials-files-list:get', (event, online) => (
-    // online
-    //   ? dispatch(getCredFilesListSuccess())
-    //   : dispatch(getCredFilesListFail())
-  ));
+  ipcRenderer.on('credentials-files-list:get', (event, credentials) => {
+    return dispatch(getCredFilesListSuccess(credentials))
+  });
 };
 
 const ckeckInternetStart = () => {
