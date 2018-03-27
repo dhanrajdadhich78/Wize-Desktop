@@ -17,9 +17,9 @@ const getCredFilesListSuccess = credentials => ({
 // eslint-disable-next-line import/prefer-default-export
 export const getCredFilesList = () => dispatch => {
   dispatch(getCredFilesListStart());
-  ipcRenderer.on('credentials-files-list:get', (event, credentials) => {
-    return dispatch(getCredFilesListSuccess(credentials))
-  });
+  ipcRenderer.on('credentials-files-list:get', (event, credentials) => (
+    dispatch(getCredFilesListSuccess(credentials))
+  ));
 };
 
 const ckeckInternetStart = () => {
@@ -40,13 +40,3 @@ export const checkInternet = () => dispatch => {
       : dispatch(checkInternetFail())
   ));
 };
-
-// const ckeckBlockchainStart = () => ();
-//
-// const checkBlockchainSuccess = () => ();
-//
-// const checkBlockchainFail = () => ();
-//
-// const checkBlockchain = () => {
-//
-// };

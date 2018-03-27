@@ -3,7 +3,6 @@ import { updateObject } from '../../utils/utility';
 
 const initialState = {
   internet: false,
-  blockchain: false,
   credentials: [],
   error: null,
   internetChecking: false,

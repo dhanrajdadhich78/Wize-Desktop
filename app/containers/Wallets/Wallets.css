@@ -3,30 +3,23 @@
 }
 
 .WaleltsInfo {
-  width: 30%;
-  display: block;
+  width: 50%;
   box-sizing: border-box;
-}
-
-.WalletsList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.WalletsList li {
   border: 1px solid #333;
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.WalletsList li p span {
+.WaleltsInfo p span {
   display: block;
   font-size: 14px;
   word-wrap: break-word;
 }
 
 .WalletOperations {
-  width: 70%;
+  width: 50%;
   display: block;
   padding: 0 15px;
   box-sizing: border-box;

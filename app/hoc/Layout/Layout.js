@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import * as actions from '../../store/actions';
+
 import classes from './Layout.css';
 
 import Aux from '../Aux/Aux';
@@ -35,11 +37,25 @@ class Layout extends Component {
 
 Layout.propTypes = {
   children: PropTypes.element.isRequired,
-  blockchain: PropTypes.bool.isRequired
+  blockchain: PropTypes.bool.isRequired,
+  // userData: PropTypes.shape({
+  //   csk: PropTypes.string,
+  //   cpk: PropTypes.string,
+  //   address: PropTypes.string
+  // })
 };
 
+// Layout.defaultProps = {
+//   userData: {
+//     csk: null,
+//     cpk: null,
+//     address: null
+//   }
+// };
+
 const mapStateToProps = state => ({
-  blockchain: state.commonInfo.blockchain,
+  // userData: state.auth.userData,
+  blockchain: state.blockchain.ballance !== null,
 });
 
 export default connect(mapStateToProps)(Layout);

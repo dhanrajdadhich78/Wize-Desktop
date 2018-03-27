@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import axios from 'axios';
 
 import classes from './CreateTransaction.css';
 import checkValidity from '../../utils/validation';
-// import {API_URL} from "../../utils/const";
 
 import Spinner from '../../components/UI/Spinner/Spinner';
 import Input from '../../components/UI/Input/Input';
@@ -18,21 +16,21 @@ class CreateTransaction extends Component {
     loading: null,
     // error : null,
     controls: {
-      from: {
-        elementType: 'select',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'From wallet',
-          options: []
-        },
-        // value: '',
-        validation: {
-          required: true
-        },
-        valid: false,
-        touched: false,
-        errorMessage: null
-      },
+      // from: {
+      //   elementType: 'select',
+      //   elementConfig: {
+      //     type: 'text',
+      //     placeholder: 'From wallet',
+      //     options: []
+      //   },
+      //   // value: '',
+      //   validation: {
+      //     required: true
+      //   },
+      //   valid: false,
+      //   touched: false,
+      //   errorMessage: null
+      // },
       to: {
         elementType: 'input',
         elementConfig: {
@@ -53,7 +51,8 @@ class CreateTransaction extends Component {
           type: 'number',
           placeholder: 'Amount',
           min: '0',
-          pattern: '[0-9]*'
+          pattern: '[0-9]*',
+          step: '0.0001'
         },
         value: '0',
         validation: {
@@ -66,34 +65,42 @@ class CreateTransaction extends Component {
       }
     }
   };
-  componentWillMount() {
-    const options = [];
-    // eslint-disable-next-line no-return-assign
-    this.props.walletsList.map(wallet => options[options.length] = {
-      value: wallet.address,
-      displayValue: wallet.address
-    });
-    this.setState({
-      controls: {
-        ...this.state.controls,
-        from: {
-          ...this.state.controls.from,
-          elementConfig: {
-            ...this.state.controls.from.elementConfig,
-            options
-          }
-        }
-      }
-    });
-  }
+  // componentWillMount() {
+  //   const options = [];
+  //   // eslint-disable-next-line no-return-assign
+  //   this.props.walletsList.map(wallet => options[options.length] = {
+  //     value: wallet.address,
+  //     displayValue: wallet.address
+  //   });
+  //   this.setState({
+  //     controls: {
+  //       ...this.state.controls,
+  //       from: {
+  //         ...this.state.controls.from,
+  //         elementConfig: {
+  //           ...this.state.controls.from.elementConfig,
+  //           options
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
   inputChangedHandler = (event, controlName) => {
     const updatedControls = {
       ...this.state.controls,
       [controlName]: {
         ...this.state.controls[controlName],
         value: event.target.value,
-        valid: checkValidity(event.target.value, this.state.controls[controlName].validation, controlName).isValid,
-        errorMessage: checkValidity(event.target.value, this.state.controls[controlName].validation, controlName).errorMessage,
+        valid: checkValidity(
+          event.target.value,
+          this.state.controls[controlName].validation,
+          controlName
+        ).isValid,
+        errorMessage: checkValidity(
+          event.target.value,
+          this.state.controls[controlName].validation,
+          controlName
+        ).errorMessage,
         touched: true
       }
     };
@@ -101,26 +108,10 @@ class CreateTransaction extends Component {
   };
 
   onSubmitForm = () => {
-    // this.setState({loading: true});
-    //
-    // const config = {
-    //   headers: {
-    //     'X-ACCESS-TOKEN': this.props.token
-    //   }
-    // };
-    //
-    // const data = {
-    //   from: this.state.controls.from.value,
-    //   to: this.state.controls.to.value,
-    //   amount: this.state.controls.amount.value
-    // };
-    //
-    // axios.post(`${API_URL}/api/transaction/create`, data, config)
-    //   .then(response => {
-    //     this.setState({ loading: false });
-    //   })
-    //   .catch(error => this.setState({ error: error.response.data.message, loading: false }));
-    console.log('submit');
+    this.props.handleSubmitTransaction(
+      this.state.controls.to.value,
+      this.state.controls.amount.value
+    );
   };
 
   render() {
@@ -134,7 +125,7 @@ class CreateTransaction extends Component {
     }
 
     let form = (
-      <form onSubmit={this.onSubmitForm}>
+      <form onSubmit={e => { e.preventDefault(); this.onSubmitForm(); }}>
         {
           formElementsArray.map(formElement => (
             <Input
@@ -152,7 +143,7 @@ class CreateTransaction extends Component {
         }
         <Button
           disabled={
-            !this.state.controls.from.valid ||
+            // !this.state.controls.from.valid ||
             !this.state.controls.to.valid ||
             !this.state.controls.amount.value >= 1
           }
@@ -196,7 +187,8 @@ class CreateTransaction extends Component {
 }
 
 CreateTransaction.propTypes = {
-  walletsList: PropTypes.arrayOf.isRequired
+  // walletsList: PropTypes.arrayOf.isRequired
+  handleSubmitTransaction: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
