@@ -16,7 +16,7 @@ const history = createHashHistory();
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  common: commonInfoReducer
+  commonInfo: commonInfoReducer
 });
 
 // eslint-disable-next-line no-underscore-dangle

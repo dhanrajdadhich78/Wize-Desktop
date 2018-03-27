@@ -93,6 +93,21 @@ ipcMain.on('internet-connection:check', () => {
     .then(online => mainWindow.webContents.send('internet-connection:status', online));
 });
 
+ipcMain.on('credentials-files-list:scan', () => {
+  fs.readdir('./.wizeconfig', (error, files) => {
+    if (error) {
+      throw new Error(error);
+    }
+    const credFiles = files.map(file => (
+      !file.indexOf('credentials')
+        ? file
+        : null
+    ));
+    const credentials = cF.cleanArray(credFiles);
+    mainWindow.webContents.send('credentials-files-list:get', credentials);
+  });
+});
+
 ipcMain.on('registration:start', (event, password) => {
   //  random sha256 hash
   const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
@@ -120,7 +135,8 @@ ipcMain.on('registration:start', (event, password) => {
     const aes = cF.aesEncrypt(strData, password, 'hex');
     fs.readdir('./.wizeconfig', (error, files) => {
       if (error) {
-        mainWindow.webContents.send('registration:error', error);
+        throw new Error(error);
+        // mainWindow.webContents.send('registration:error', error);
       }
       const credFiles = files.map(file => (
         !file.indexOf('credentials')
@@ -130,7 +146,8 @@ ipcMain.on('registration:start', (event, password) => {
       const credArr = cF.cleanArray(credFiles);
       fs.writeFile(`./.wizeconfig/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
         if (err) {
-          mainWindow.webContents.send('registration:error', err);
+          // mainWindow.webContents.send('registration:error', err);
+          throw new Error(err);
         }
         mainWindow.webContents.send('registration:complete', strData);
       });
@@ -140,17 +157,16 @@ ipcMain.on('registration:start', (event, password) => {
 
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
-  fs.readFile('./.wizeconfig/credentials-0.bak', (err, data) => {
-    if (!err) {
-      encryptedHex = data;
-    } else {
-      fs.readFile(filePath, (error, altData) => {
-        encryptedHex = altData;
-      });
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      throw new Error(err);
     }
 
+    encryptedHex = data;
+
     if (!encryptedHex) {
-      mainWindow.webContents.send('auth:error', 'There is no credentials file');
+      // mainWindow.webContents.send('auth:error', 'There is no credentials file');
+      throw new Error('There is no credentials file');
     } else {
       const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
       // create and mount bucket

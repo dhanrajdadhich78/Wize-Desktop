@@ -63,7 +63,7 @@ class Auth extends Component {
   handleSubmitForm = e => {
     e.preventDefault();
     //  eslint-disable-next-line max-len
-    this.props.handleAuth(this.state.controls.password.value, this.state.filePath !== 1 ? this.state.filePath : null);
+    this.props.handleAuth(this.state.controls.password.value, this.props.credFilePath);
   };
   render() {
     let content = (
@@ -93,6 +93,8 @@ class Auth extends Component {
             handleDropCredFile={file => this.props.handleDropCredFile(file)}
             credFilesArr={this.props.credFilesArr}
             onCredFilesSelectChange={val => this.props.onCredFilesSelectChange(val)}
+            dropzoneInput={this.props.dropzoneInput}
+            handleReturnDropzoneInput={() => this.props.handleReturnDropzoneInput()}
           />
           <form onSubmit={e => this.handleSubmitForm(e)}>
             <div>
@@ -110,7 +112,11 @@ class Auth extends Component {
               />
             </div>
             <div>
-              <Button disabled={!this.state.controls.password.valid}>Login</Button>
+              <Button
+                disabled={!this.state.controls.password.valid || !this.props.credFilePath}
+              >
+                Login
+              </Button>
             </div>
           </form>
         </div>
@@ -143,8 +149,10 @@ Auth.propTypes = {
   handleToggleAltCredFile: PropTypes.func.isRequired,
   credFilePath: PropTypes.string.isRequired,
   handleDropCredFile: PropTypes.func.isRequired,
-  credFilesArr: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  onCredFilesSelectChange: PropTypes.func.isRequired
+  credFilesArr: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onCredFilesSelectChange: PropTypes.func.isRequired,
+  dropzoneInput: PropTypes.bool.isRequired,
+  handleReturnDropzoneInput: PropTypes.func.isRequired
 };
 
 Auth.defaultProps = {

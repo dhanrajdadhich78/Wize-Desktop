@@ -1,0 +1,23 @@
+.DropzoneWrapper > div,
+.AltDropzoneWrapper,
+.AltSelectSectionWrapper > div {
+  width: 100% !important;
+  height: 55px !important;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.DropzoneWrapper > div {
+  cursor: pointer;
+}
+
+.DropzoneWrapper > div,
+.AltSelectSectionWrapper > div {
+  justify-content: center;
+}
+
+.AltDropzoneWrapper {
+  justify-content: space-between;
+}
