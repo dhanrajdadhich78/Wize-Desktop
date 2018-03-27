@@ -94,18 +94,20 @@ ipcMain.on('internet-connection:check', () => {
 });
 
 ipcMain.on('credentials-files-list:scan', () => {
-  fs.readdir('./.wizeconfig', (error, files) => {
-    if (error) {
-      throw new Error(error);
-    }
-    const credFiles = files.map(file => (
-      !file.indexOf('credentials')
-        ? file
-        : null
-    ));
-    const credentials = cF.cleanArray(credFiles);
-    mainWindow.webContents.send('credentials-files-list:get', credentials);
-  });
+  if (cF.ensureDirectoryExistence('./.wizeconfig')) {
+    fs.readdir('./.wizeconfig', (error, files) => {
+      if (error) {
+        throw new Error(error);
+      }
+      const credFiles = files.map(file => (
+        !file.indexOf('credentials')
+          ? file
+          : null
+      ));
+      const credentials = cF.cleanArray(credFiles);
+      mainWindow.webContents.send('credentials-files-list:get', credentials);
+    });
+  }
 });
 
 ipcMain.on('registration:start', (event, password) => {
