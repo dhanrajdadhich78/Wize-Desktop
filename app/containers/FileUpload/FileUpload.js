@@ -29,7 +29,7 @@ class Files extends Component {
     rejected: null
   };
 
-  onDropHandler = (accepted, rejected) => {
+  handleOnDrop = (accepted, rejected) => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     const timestamp = Math.round(+new Date() / 1000);
@@ -46,10 +46,12 @@ class Files extends Component {
     Promise.all(promises)
       .then(files => ipcRenderer.send('file:send', { userData, files }))
       .catch(error => console.log(error));
-    this.hanfleFlashReject(rejected[0]);
+    if (rejected.length) {
+      this.hanfleFlashReject(rejected[0]);
+    }
   };
   hanfleFlashReject = file => {
-    this.setState({ rejected: file.path.substring(file.path.lastIndexOf('/')) });
+    this.setState({ rejected: file.path.substring(file.path.lastIndexOf('/') + 1) });
     setTimeout(() => this.setState({ rejected: null }), 5000);
   };
   render() {
@@ -77,8 +79,8 @@ class Files extends Component {
         />
         <div className={classes.DropzoneWrapper}>
           <Dropzone
-            onDrop={(accepted, rejected) => this.onDropHandler(accepted, rejected)}
-            maxSize={100}
+            onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
+            maxSize={102400000}
           >
             <p>Drop to upload your files</p>
             {

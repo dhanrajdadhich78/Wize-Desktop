@@ -39,7 +39,7 @@ const checkValidity = (value, rules, fieldName = null) => {
     }
 
     if (rules.isNumeric) {
-      const pattern = /^\d+$/;
+      const pattern = /^([0-9]*[.])?[0-9]+$/;
       validationObj.isValid = pattern.test(value) && validationObj.isValid;
       validationObj.errorMessage = fieldName ? `${name} is incorrect` : 'This field is incorrect';
     }

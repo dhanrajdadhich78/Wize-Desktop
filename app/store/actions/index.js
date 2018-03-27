@@ -4,6 +4,6 @@ export {
 } from './auth';
 export {
   getCredFilesList,
-  checkInternet,
-  checkBlockchain
+  checkInternet
 } from './commonInfo';
+export { getBallance } from './blockchain';

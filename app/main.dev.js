@@ -19,7 +19,7 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
-const { RAFT_URL, FS_URL } = require('./utils/const');
+const { RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
@@ -487,4 +487,33 @@ ipcMain.on('file:transfer', (event, { userData, filename, to }) => {
   //     };
   //   })
   //   .catch(error => console.log(error));
+});
+
+ipcMain.on('blockchain:wallet-check', (event, address) => {
+  // console.log(`wallet-check ${address}`);
+  axios.get(`${BLOCKCHAIN_URL}/wallet/${address}`)
+    .then(({ data }) => (
+      // console.log(`wallet-checked ${JSON.stringify(data)}`);
+      mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
+    ))
+    .catch(error => {
+      throw new Error(error.respose.data);
+    });
+});
+
+ipcMain.on('transaction:create', (event, { from, to, amount }) => {
+  const data = {
+    data: {
+      from,
+      to,
+      amount,
+      mineNow: true
+    }
+  };
+  return axios.post(`${BLOCKCHAIN_URL}/send`, data)
+    .then(() => mainWindow.webContents.send('transaction:done'))
+    .catch(error => {
+      console.log(error.response.data);
+      throw new Error(error.respose.data);
+    });
 });
