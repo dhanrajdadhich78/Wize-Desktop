@@ -18,9 +18,12 @@ const regSuccess = userData => () => ({
 //   error
 // });
 
-export const registration = password => dispatch => {
+export const registration = (password, filePath) => dispatch => {
   dispatch(regStart(password));
-  ipcRenderer.on('registration:complete', (event, userData) => dispatch(regSuccess(JSON.parse(userData))));
+  ipcRenderer.on('registration:complete', (event, userData) => {
+    dispatch(regSuccess(JSON.parse(userData)));
+    dispatch(auth(password, filePath));
+  });
   // ipcRenderer.on('registration:error', (event, error) => dispatch(regFail(error)));
 };
 
@@ -39,7 +42,7 @@ const authSuccess = userData => ({
 //   error
 // });
 
-export const auth = (password, filePath = null) => dispatch => {
+export const auth = (password, filePath) => dispatch => {
   dispatch(authStart(password, filePath));
   ipcRenderer.on('auth:complete', (event, userData) => {
     dispatch(authSuccess(JSON.parse(userData)));

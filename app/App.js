@@ -13,7 +13,6 @@ import FilesList from './containers/FilesList/FilesList';
 import FileUpload from './containers/FileUpload/FileUpload';
 import Wallets from './containers/Wallets/Wallets';
 
-
 class App extends Component {
   componentWillMount() {
     this.props.checkInternet();

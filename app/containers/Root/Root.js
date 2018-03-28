@@ -14,20 +14,23 @@ class Root extends Component {
     auth: true,
     password: null,
     altCredFilePath: false,
-    credFilePath: this.props.credentials.length ? `./.wizeconfig/${this.props.credentials[0]}` : '',
+    credFilePath: this.props.credentials.length ? this.props.credentials[0] : '',
+    // credFilePath: this.props.credentials.length ? `./.wizeconfig/${this.props.credentials[0]}` : '',
     credFilesArr: this.props.credentials,
     dropzoneInput: true
   };
   handleToggleAltCredFile = () => {
     if (!this.state.altCredFilePath === true) {
-      this.setState({ credFilePath: `./.wizeconfig/${this.props.credentials[0]}` });
+      // this.setState({ credFilePath: `./.wizeconfig/${this.props.credentials[0]}` });
+      this.setState({ credFilePath: this.props.credentials[0] });
     }
     this.setState({ altCredFilePath: !this.state.altCredFilePath });
   };
   onCredFilesSelectChange = val => this.setState({ credFilePath: val });
   handleDropCredFile = file => this.setState({ credFilePath: file.path, dropzoneInput: false });
   handleReturnDropzoneInput = () => this.setState({
-    credFilePath: `./.wizeconfig/${this.props.credentials[0]}`,
+    // credFilePath: `./.wizeconfig/${this.props.credentials[0]}`,
+    credFilePath: this.props.credentials[0],
     dropzoneInput: true
   });
   render() {
@@ -51,8 +54,9 @@ class Root extends Component {
       view = (
         <Registration
           userData={this.props.userData}
-          handleRegister={password => this.props.handleRegister(password)}
+          handleRegister={(password, filePath) => this.props.handleRegister(password, filePath)}
           cachePassword={password => this.setState({ password })}
+          lastCredFile={`credentials-${this.props.credentials.length}.bak`}
         />
       );
     }
@@ -103,7 +107,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleRegister: password => dispatch(actions.registration(password)),
+  handleRegister: (password, filePath) => dispatch(actions.registration(password, filePath)),
   handleAuth: (password, filePath) => dispatch(actions.auth(password, filePath))
 });
 

@@ -86,7 +86,7 @@ class Registration extends Component {
       });
       //  and register
       this.props.cachePassword(this.state.controls.password.value);
-      this.props.handleRegister(this.state.controls.password.value);
+      this.props.handleRegister(this.state.controls.password.value, this.props.lastCredFile);
     } else {
       //  if password doesnt match
       let notMatch;
@@ -160,7 +160,8 @@ Registration.propTypes = {
   //   address: PropTypes.string
   // }),
   handleRegister: PropTypes.func.isRequired,
-  cachePassword: PropTypes.func.isRequired
+  cachePassword: PropTypes.func.isRequired,
+  lastCredFile: PropTypes.string.isRequired
 };
 
 Registration.defaultProps = {
