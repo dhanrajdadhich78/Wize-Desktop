@@ -6,6 +6,7 @@ import _ from 'lodash';
 import Dropzone from 'react-dropzone';
 
 import classes from './FileUpload.css';
+import { dropToUpload } from '../../assets/img/img';
 
 import ToggleControllers from '../../components/ToggleControllers/ToggleControllers';
 import NetworkHealthInfo from '../../components/NetworkHealthInfo/NetworkHealthInfo';
@@ -82,17 +83,16 @@ class Files extends Component {
             onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
             maxSize={102400000}
           >
-            <p>Drop to upload your files</p>
             {
-              this.state.rejected
-                ? (
+              !this.state.rejected
+                ? <img src={dropToUpload} alt="Drop to upload your files" />
+                : (
                   <p style={{ color: 'red', width: '100%', textAlign: 'center' }}>
                     File <br />
                     {this.state.rejected} <br />
                     is rejeted.
                   </p>
                 )
-                : null
             }
           </Dropzone>
         </div>

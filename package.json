@@ -2,7 +2,7 @@
   "name": "wizebit-electron",
   "productName": "WizebitElectron",
   "version": "0.0.1",
-  "description": "Wizebit application on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "description": "Wizebit desktop application",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development node --trace-warnings -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.renderer.dev.dll.js --colors",
@@ -32,8 +32,8 @@
   },
   "browserslist": "electron 1.6",
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "Wizebit",
+    "appId": "org.develar.Wizebit",
     "files": [
       "dist/",
       "node_modules/",
@@ -74,9 +74,9 @@
     }
   },
   "author": {
-    "name": "A. Synenko",
+    "name": "UDTech",
     "email": "synenko.a@udtech.co",
-    "url": ""
+    "url": "https://udtech.co"
   },
   "license": "MIT",
   "keywords": [
@@ -180,6 +180,7 @@
   },
   "dependencies": {
     "aes-js": "^3.1.0",
+    "axios": "^0.18.0",
     "bitcoinjs-lib": "^3.3.2",
     "devtron": "^1.4.0",
     "electron-debug": "^1.5.0",
@@ -203,6 +204,7 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "request": "^2.85.0",
+    "slash": "^2.0.0",
     "source-map-support": "^0.5.3"
   },
   "devEngines": {

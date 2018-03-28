@@ -31,3 +31,47 @@
 .BlockChainIdentificator.BlockChainActive h5 {
   color: #0cd0e2;
 }
+
+div.Logo {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+div.Logo img {
+  height: 88px;
+  margin-bottom: 15px;
+}
+
+div.Logo h3,
+div.Logo h4 {
+  width: 100%;
+  text-align: center;
+  color: white;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+div.Logo h3 {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+div.Logo h4 {
+  font-size: 10px;
+  font-weight: 300;
+}
+
+div.Logo h3 > span {
+  color: white;
+  font-weight: 700;
+}
+
+.BlockChainActive > div {
+  text-align: center;
+}
+
+.BlockChainActive > div > img {
+  height: 38.5px;
+  margin-bottom: 10px;
+}
