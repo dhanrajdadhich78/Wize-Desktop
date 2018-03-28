@@ -24,6 +24,8 @@ const { RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
+const configFolder = process.platform !== 'win32' ? './.wizeconfig' : './wizeconfig';
+
 let mainWindow;
 
 if (process.env.NODE_ENV === 'production') {
@@ -94,8 +96,8 @@ ipcMain.on('internet-connection:check', () => {
 });
 
 ipcMain.on('credentials-files-list:scan', () => {
-  if (cF.ensureDirectoryExistence('./.wizeconfig')) {
-    fs.readdir('./.wizeconfig', (error, files) => {
+  if (cF.ensureDirectoryExistence(configFolder)) {
+    fs.readdir(configFolder, (error, files) => {
       if (error) {
         throw new Error(error);
       }
@@ -132,10 +134,13 @@ ipcMain.on('registration:start', (event, password) => {
     address
   };
   const strData = JSON.stringify(userData);
+  console.log('reg start');
   //  save to file
-  if (cF.ensureDirectoryExistence('./.wizeconfig')) {
+  if (cF.ensureDirectoryExistence(configFolder)) {
     const aes = cF.aesEncrypt(strData, password, 'hex');
-    fs.readdir('./.wizeconfig', (error, files) => {
+    console.log('dir exist');
+    fs.readdir(configFolder, (error, files) => {
+      console.log('read dir');
       if (error) {
         throw new Error(error);
         // mainWindow.webContents.send('registration:error', error);
@@ -146,7 +151,8 @@ ipcMain.on('registration:start', (event, password) => {
           : null
       ));
       const credArr = cF.cleanArray(credFiles);
-      fs.writeFile(`./.wizeconfig/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
+      fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
+        console.log('write file');
         if (err) {
           // mainWindow.webContents.send('registration:error', err);
           throw new Error(err);
@@ -159,7 +165,8 @@ ipcMain.on('registration:start', (event, password) => {
 
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
-  fs.readFile(filePath, (err, data) => {
+  const credFilePath = !filePath || filePath.indexOf('/') < 0 ? `${configFolder}/${filePath}` : filePath;
+  fs.readFile(credFilePath, (err, data) => {
     if (err) {
       throw new Error(err);
     }

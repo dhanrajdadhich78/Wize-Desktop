@@ -40,7 +40,7 @@ class Auth extends Component {
   componentDidMount() {
     if ((!this.state.hasData && this.state.controls.password.value)
       && (!this.props.authError || this.props.authError !== 'There is no credentials file')) {
-      this.props.handleAuth(this.state.controls.password.value);
+      this.props.handleAuth(this.state.controls.password.value, this.props.lastCredFile);
     }
   }
   handleInputChange = (event, controlName) => {
@@ -152,7 +152,8 @@ Auth.propTypes = {
   credFilesArr: PropTypes.arrayOf(PropTypes.string).isRequired,
   onCredFilesSelectChange: PropTypes.func.isRequired,
   dropzoneInput: PropTypes.bool.isRequired,
-  handleReturnDropzoneInput: PropTypes.func.isRequired
+  handleReturnDropzoneInput: PropTypes.func.isRequired,
+  lastCredFile: PropTypes.string.isRequired
 };
 
 Auth.defaultProps = {
