@@ -134,13 +134,10 @@ ipcMain.on('registration:start', (event, password) => {
     address
   };
   const strData = JSON.stringify(userData);
-  console.log('reg start');
   //  save to file
   if (cF.ensureDirectoryExistence(configFolder)) {
     const aes = cF.aesEncrypt(strData, password, 'hex');
-    console.log('dir exist');
     fs.readdir(configFolder, (error, files) => {
-      console.log('read dir');
       if (error) {
         throw new Error(error);
         // mainWindow.webContents.send('registration:error', error);
@@ -152,7 +149,6 @@ ipcMain.on('registration:start', (event, password) => {
       ));
       const credArr = cF.cleanArray(credFiles);
       fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
-        console.log('write file');
         if (err) {
           // mainWindow.webContents.send('registration:error', err);
           throw new Error(err);
@@ -165,7 +161,10 @@ ipcMain.on('registration:start', (event, password) => {
 
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
-  const credFilePath = !filePath || filePath.indexOf('/') < 0 ? `${configFolder}/${filePath}` : filePath;
+  let credFilePath = process.platform !== 'win32' ? filePath : filePath.replace(/\\/gi,'/');
+  if (credFilePath.indexOf('/') < 0 || !credFilePath) {
+    credFilePath = `${configFolder}/${filePath}`;
+  }
   fs.readFile(credFilePath, (err, data) => {
     if (err) {
       throw new Error(err);

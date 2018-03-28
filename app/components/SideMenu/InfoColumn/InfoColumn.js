@@ -2,11 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import classes from './InfoColumn.css';
+import { logo, lock } from '../../../assets/img/img';
 
 const infoColumn = ({ blockChain }) => (
   <div className={classes.InfoColumn}>
     <div className={classes.Logo}>
-      Logo
+      <img src={logo} alt="logo" />
+      <h3>Wize<span>bit</span></h3>
+      <h4>Shield</h4>
     </div>
     <div
       className={!blockChain
@@ -24,6 +27,7 @@ const infoColumn = ({ blockChain }) => (
           )
           : (
             <div>
+              <img src={lock} alt="locked" />
               <h4>wize  blockchain connected</h4>
               <h5>encrypted</h5>
             </div>

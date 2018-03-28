@@ -48,6 +48,7 @@ class Root extends Component {
         onCredFilesSelectChange={val => this.onCredFilesSelectChange(val)}
         dropzoneInput={this.state.dropzoneInput}
         handleReturnDropzoneInput={() => this.handleReturnDropzoneInput()}
+        lastCredFile={`credentials-${this.props.credentials.length}.bak`}
       />
     );
     if (!this.state.auth) {
