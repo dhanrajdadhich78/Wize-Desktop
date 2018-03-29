@@ -24,7 +24,7 @@ const { RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
-const configFolder = process.platform !== 'win32' ? './.wizeconfig' : './wizeconfig';
+const configFolder = process.platform !== 'win32' ? './.wizeconfig' : '.\\wizeconfig';
 
 let mainWindow;
 
@@ -97,18 +97,27 @@ ipcMain.on('internet-connection:check', () => {
 
 ipcMain.on('credentials-files-list:scan', () => {
   if (cF.ensureDirectoryExistence(configFolder)) {
-    fs.readdir(configFolder, (error, files) => {
-      if (error) {
-        throw new Error(error);
-      }
-      const credFiles = files.map(file => (
-        !file.indexOf('credentials')
-          ? file
-          : null
-      ));
-      const credentials = cF.cleanArray(credFiles);
-      mainWindow.webContents.send('credentials-files-list:get', credentials);
-    });
+    // fs.readdir(configFolder, (error, files) => {
+    //   // throw new Error(configFolder);
+    //   if (error) {
+    //     throw new Error(error);
+    //   }
+    //   const credFiles = files.map(file => (
+    //     !file.indexOf('credentials')
+    //       ? file
+    //       : null
+    //   ));
+    //   const credentials = cF.cleanArray(credFiles);
+    //   mainWindow.webContents.send('credentials-files-list:get', credentials);
+    // });
+    const files = fs.readdirSync(`${process.cwd()}/${configFolder}`);
+    const credFiles = files.map(file => (
+      !file.indexOf('credentials')
+        ? file
+        : null
+    ));
+    const credentials = cF.cleanArray(credFiles);
+    mainWindow.webContents.send('credentials-files-list:get', credentials);
   }
 });
 
@@ -161,6 +170,7 @@ ipcMain.on('registration:start', (event, password) => {
 
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
+  // eslint-disable-next-line comma-spacing
   let credFilePath = process.platform !== 'win32' ? filePath : filePath.replace(/\\/gi,'/');
   if (credFilePath.indexOf('/') < 0 || !credFilePath) {
     credFilePath = `${configFolder}/${filePath}`;
