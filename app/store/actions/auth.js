@@ -1,7 +1,7 @@
 import { ipcRenderer } from 'electron';
 
 import * as actionTypes from './actionTypes';
-import { getBallance } from './index';
+import { getBallance, getDigest } from './index';
 
 const regStart = password => {
   ipcRenderer.send('registration:start', password);
@@ -46,6 +46,7 @@ export const auth = (password, filePath) => dispatch => {
   dispatch(authStart(password, filePath));
   ipcRenderer.on('auth:complete', (event, userData) => {
     dispatch(authSuccess(JSON.parse(userData)));
+    dispatch(getDigest(userData, password));
     dispatch(getBallance(JSON.parse(userData).address));
   });
   // ipcRenderer.on('auth:error', (event, error) => dispatch(authFail(error)));

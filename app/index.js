@@ -9,6 +9,7 @@ import thunk from 'redux-thunk';
 import authReducer from './store/reducers/auth';
 import commonInfoReducer from './store/reducers/commonInfo';
 import blockchainReducer from './store/reducers/blockchain';
+import digestReducer from './store/reducers/digest';
 
 import './app.global.css';
 import App from './App';
@@ -18,7 +19,8 @@ const history = createHashHistory();
 const rootReducer = combineReducers({
   auth: authReducer,
   commonInfo: commonInfoReducer,
-  blockchain: blockchainReducer
+  blockchain: blockchainReducer,
+  digest: digestReducer
 });
 
 // eslint-disable-next-line no-underscore-dangle

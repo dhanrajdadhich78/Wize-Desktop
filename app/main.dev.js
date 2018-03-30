@@ -19,12 +19,12 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
-const { RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
+const { DIGEST_URL, RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
-const configFolder = process.platform !== 'win32' ? './.wizeconfig' : '.\\wizeconfig';
+const configFolder = process.platform !== 'win32' ? `${process.cwd()}/.wizeconfig` : `${process.cwd()}\\wizeconfig`;
 
 let mainWindow;
 
@@ -110,7 +110,7 @@ ipcMain.on('credentials-files-list:scan', () => {
     //   const credentials = cF.cleanArray(credFiles);
     //   mainWindow.webContents.send('credentials-files-list:get', credentials);
     // });
-    const files = fs.readdirSync(`${process.cwd()}/${configFolder}`);
+    const files = fs.readdirSync(configFolder);
     const credFiles = files.map(file => (
       !file.indexOf('credentials')
         ? file
@@ -192,21 +192,34 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       axios.post(`${FS_URL}`, { data: { origin } })
         .then(() => (
           axios.post(`${FS_URL}/${origin}/mount`)
-            .then(response => console.log(response.data))
-            .catch(error => console.log(error.response))
+            // .then(response => console.log(response.data))
+            // .catch(() => console.log(error.response))
         ))
         .catch(error => {
           if (error.response.status === 500) {
-            return axios.post(`${FS_URL}/${origin}/mount`)
-              .then(response => console.log(response.data))
-              .catch(e => console.log(e.response));
+            return axios.post(`${FS_URL}/${origin}/mount`);
+              // .then(response => console.log(response.data))
+              // .catch(er => console.log(er.response));
           }
-          console.log(error.response);
+          // console.log(error.response);
         });
       // --
       mainWindow.webContents.send('auth:complete', decrypt.strData);
     }
   });
+});
+
+ipcMain.on('digest:get', (event, { userData, password }) => {
+  const reqData = {
+    data: {
+      address: userData.address,
+      pubKey: userData.cpk,
+      AES: password
+    }
+  };
+  return axios.post(`${DIGEST_URL}/hello/application`, reqData)
+    .then(({ data }) => mainWindow.webContents.send('digest:success', data))
+    .catch(err => { throw new Error(err); });
 });
 
 ipcMain.on('file:list', (event, userData) => {

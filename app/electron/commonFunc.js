@@ -4,10 +4,6 @@ const bitcoin = require('bitcoinjs-lib');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
 
-const scanDirForFiles = () => {
-
-}
-
 /**
  * clean array from null values
  * @param actual
