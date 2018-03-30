@@ -56,6 +56,7 @@ class Files extends Component {
     setTimeout(() => this.setState({ rejected: null }), 5000);
   };
   render() {
+    console.log(this.props.digestInfo);
     let progress = null;
     if (this.state.loading) {
       progress = (
@@ -116,13 +117,15 @@ Files.propTypes = {
     csk: PropTypes.string.isRequired,
     cpk: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired
-  }).isRequired
+  }).isRequired,
+  digestInfo: PropTypes.shape().isRequired
 };
 
 const mapStateToProps = state => ({
   // token: state.auth.authKey,
   isAuth: state.auth.authKey !== null,
-  userData: state.auth.userData
+  userData: state.auth.userData,
+  digestInfo: state.digest.digestInfo
 });
 
 export default connect(mapStateToProps)(Files);

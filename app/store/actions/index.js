@@ -7,3 +7,4 @@ export {
   checkInternet
 } from './commonInfo';
 export { getBallance } from './blockchain';
+export { getDigest } from './digest';
