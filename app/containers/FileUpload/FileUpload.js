@@ -56,7 +56,6 @@ class Files extends Component {
     setTimeout(() => this.setState({ rejected: null }), 5000);
   };
   render() {
-    console.log(this.props.digestInfo);
     let progress = null;
     if (this.state.loading) {
       progress = (
