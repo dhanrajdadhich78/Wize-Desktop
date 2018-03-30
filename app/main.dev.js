@@ -214,7 +214,7 @@ ipcMain.on('digest:get', (event, { userData, password }) => {
     data: {
       address: userData.address,
       pubKey: userData.cpk,
-      AES: password
+      AES: cF.getHash(password)
     }
   };
   return axios.post(`${DIGEST_URL}/hello/application`, reqData)
