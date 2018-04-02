@@ -5,6 +5,7 @@ const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
 const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
+const ecdsa = require('ecdsa');
 
 /**
  * clean array from null values
@@ -124,12 +125,25 @@ const fileCrushing = (file, shardsNumber = 3) => {
 /**
  * get hash from string
  * @param string
- * @returns {*}
+ * @returns {string}
  */
 const getHash = string => {
   // const publicSHA256 = bitcoin.crypto.sha256(string);
   const publicSHA256 = SHA256(string);
   return ripemd160(publicSHA256).toString();
+};
+
+/**
+ * ecdsa sign of data string with key
+ * @param data
+ * @param key
+ * @returns {string}
+ */
+const ecdsaSign = (data, key) => {
+  const msg = Buffer.from(data, 'hex');
+  const shaMsg = SHA256(msg);
+  // signature
+  return ecdsa.sign(shaMsg, key);
 };
 
 module.exports = {
@@ -138,5 +152,6 @@ module.exports = {
   aesEncrypt,
   aesDecrypt,
   fileCrushing,
-  getHash
+  getHash,
+  ecdsaSign
 };
