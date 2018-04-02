@@ -524,19 +524,25 @@ ipcMain.on('blockchain:wallet-check', (event, address) => {
     });
 });
 
-ipcMain.on('transaction:create', (event, { from, to, amount }) => {
-  const data = {
+ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
+  const prepData = {
     data: {
-      from,
+      from: userData.address,
       to,
       amount,
-      mineNow: true
+      pubKey: userData.cpk
     }
   };
-  return axios.post(`${BLOCKCHAIN_URL}/send`, data)
-    .then(() => mainWindow.webContents.send('transaction:done'))
+  return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
+    .then(res => {
+      // mainWindow.webContents.send('transaction:done');
+      console.log(res);
+      // const signedTransactions = res.data.data.map(transaction => (
+      //   cF.ecdsaSign(transaction, userData.csk)
+      // ));
+      // return console.log(signedTransactions);
+    })
     .catch(error => {
-      console.log(error.response.data);
       throw new Error(error.respose.data);
     });
 });

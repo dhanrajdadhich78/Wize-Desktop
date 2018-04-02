@@ -21,7 +21,9 @@ class Wallet extends Component {
   //   ]
   // };
   handleSubmitTransaction = (to, amount) => {
-    ipcRenderer.send('transaction:create', { from: this.props.userData.address, to, amount });
+    // eslint-disable-next-line prefer-destructuring
+    const userData = this.props.userData;
+    ipcRenderer.send('transaction:create', { userData, to, amount });
     ipcRenderer.on('transaction:done', () => {
       this.props.getBallance(this.props.userData.address);
     });
