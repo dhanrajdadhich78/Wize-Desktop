@@ -17,17 +17,18 @@
 }
 
 .RoundToggle div {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 400;
   width: calc(100% - 47.5px);
+  color: #32b3d3;
 }
 
 .RoundToggle span {
   display: inline-flex;
   align-items: center;
-  width: 47.5px;
+  width: 57.5px;
   height: 30px;
-  background-color: #777;
+  background-color: #0b0b0c;
   position: relative;
   transition: all 0.2s linear;
   margin: 0 12px;
@@ -42,13 +43,13 @@
   top: 2px;
   width: 26px;
   height: 26px;
-  background-color: white;
+  background-color: #101112;
   transition: all 0.2s linear;
   border-radius: 50%;
 }
 
 .RoundToggle input:checked ~ span {
-  background-color: #95b43c;
+  background-color: #32b3d3;
 }
 
 .RoundToggle input:checked ~ span::after {

@@ -15,25 +15,37 @@ class NavColumn extends Component {
       },
       {
         link: '/wallets',
-        label: 'Wallets'
+        label: 'Wallet'
       },
+      // {
+      //   link: '/',
+      //   label: 'Ghost [data] storage',
+      //   childItems: [
+      //     {
+      //       link: '/',
+      //       label: 'Upload files'
+      //     },
+      //     {
+      //       link: '/file-list',
+      //       label: 'Ghost files'
+      //     },
+      //     {
+      //       link: '/ghost-pad',
+      //       label: 'Ghost pad'
+      //     }
+      //   ]
+      // },
       {
         link: '/',
-        label: 'Ghost [data] storage',
-        childItems: [
-          {
-            link: '/',
-            label: 'Upload files'
-          },
-          {
-            link: '/file-list',
-            label: 'Ghost files'
-          },
-          {
-            link: '/ghost-pad',
-            label: 'Ghost pad'
-          }
-        ]
+        label: 'Upload files'
+      },
+      {
+        link: '/file-list',
+        label: 'Merge files'
+      },
+      {
+        link: '/ghost-pad',
+        label: 'Ghost pad'
       },
       {
         link: '/miners',

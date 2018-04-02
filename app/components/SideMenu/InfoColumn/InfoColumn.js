@@ -8,8 +8,8 @@ const infoColumn = ({ blockChain }) => (
   <div className={classes.InfoColumn}>
     <div className={classes.Logo}>
       <img src={logo} alt="logo" />
-      <h3>Wize<span>bit</span></h3>
-      <h4>Shield</h4>
+      <h3>GHOST_FILE</h3>
+      <h4>Decentralized data storage</h4>
     </div>
     <div
       className={!blockChain

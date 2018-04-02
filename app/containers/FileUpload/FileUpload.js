@@ -10,20 +10,17 @@ import classes from './FileUpload.css';
 import { dropToUpload } from '../../assets/img/img';
 
 import ToggleControllers from '../../components/ToggleControllers/ToggleControllers';
-import NetworkHealthInfo from '../../components/NetworkHealthInfo/NetworkHealthInfo';
-import DataSpaceInfo from '../../components/DataSpaceInfo/DataSpaceInfo';
+// import NetworkHealthInfo from '../../components/NetworkHealthInfo/NetworkHealthInfo';
+// import DataSpaceInfo from '../../components/DataSpaceInfo/DataSpaceInfo';
 
 class Files extends Component {
   state = {
     progress: 0,
     loading: false,
     encryption: false,
-    sharding: false,
-    filePasswording: false,
-    dataSpace: {
-      totalNodes: 483,
-      dataLeft: 100
-    },
+    twoFA: false,
+    keyLogin: false,
+    accessRole: false,
     rejected: null
   };
 
@@ -75,11 +72,14 @@ class Files extends Component {
       <div>
         <ToggleControllers
           encryption={this.state.encryption}
-          sharding={this.state.sharding}
-          filePasswording={this.state.filePasswording}
+          twoFA={this.state.twoFA}
+          keyLogin={this.state.keyLogin}
+          accessRole={this.state.accessRole}
           toggleEncryption={() => this.setState({ encryption: !this.state.encryption })}
-          toggleSharding={() => this.setState({ sharding: !this.state.sharding })}
-          toggleFilePass={() => this.setState({ filePasswording: !this.state.filePasswording })}
+          toggle2fa={() => this.setState({ twoFA: !this.state.twoFA })}
+          toggleKeyLogin={() => this.setState({ keyLogin: !this.state.keyLogin })}
+          toggleAccessRole={() => this.setState({ accessRole: !this.state.accessRole })}
+          bcNodes={this.props.digestInfo.bcNodes}
         />
         <div className={classes.DropzoneWrapper}>
           <Dropzone
@@ -100,14 +100,14 @@ class Files extends Component {
           </Dropzone>
         </div>
         {progress}
-        <div className={classes.NetInfo}>
-          <div>
-            <NetworkHealthInfo networkHealth={this.props.digestInfo} />
-          </div>
-          <div>
-            <DataSpaceInfo dataSpace={this.state.dataSpace} />
-          </div>
-        </div>
+        {/* <div className={classes.NetInfo}> */}
+        {/* <div> */}
+        {/* <NetworkHealthInfo networkHealth={this.props.digestInfo} /> */}
+        {/* </div> */}
+        {/* <div> */}
+        {/* <DataSpaceInfo dataSpace={this.state.dataSpace} /> */}
+        {/* </div> */}
+        {/* </div> */}
       </div>
     );
   }
