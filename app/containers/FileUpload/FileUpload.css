@@ -1,10 +1,10 @@
 .DropzoneWrapper > div {
   width: 100% !important;
-  height: 50vh !important;
+  height: calc(100vh - 30px - 40px - 220px) !important;
   padding: 30px !important;
   border-width: 2px !important;
-  border-color: rgb(102, 102, 102) !important;
-  border-style: dashed !important;
+  border-color: #2c2d2f !important;
+  border-style: solid !important;
   border-radius: 5px !important;
   box-sizing: border-box !important;
   cursor: pointer !important;

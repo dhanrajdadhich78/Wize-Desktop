@@ -4,7 +4,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 0;
+  padding: calc(30px + 40px + 220px) 0 20px;
+  background-color: #0f1011;
 }
 
 .BlockChainIdentificator h4,
@@ -29,7 +30,7 @@
 
 .BlockChainIdentificator.BlockChainActive h4,
 .BlockChainIdentificator.BlockChainActive h5 {
-  color: #0cd0e2;
+  color: #32b3d3;
 }
 
 div.Logo {
@@ -39,8 +40,9 @@ div.Logo {
 }
 
 div.Logo img {
-  height: 88px;
-  margin-bottom: 15px;
+  /*height: 147px;*/
+  width: calc(100% - 30px);
+  margin: 0 auto 15px;
 }
 
 div.Logo h3,
@@ -53,12 +55,12 @@ div.Logo h4 {
 }
 
 div.Logo h3 {
-  font-size: 13px;
+  font-size: 24px;
   font-weight: 400;
 }
 
 div.Logo h4 {
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 300;
 }
 

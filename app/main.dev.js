@@ -526,12 +526,10 @@ ipcMain.on('blockchain:wallet-check', (event, address) => {
 
 ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
   const prepData = {
-    data: {
-      from: userData.address,
-      to,
-      amount,
-      pubKey: userData.cpk
-    }
+    from: userData.address,
+    to,
+    amount: parseInt(amount, 10),
+    pubkey: userData.cpk
   };
   return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
     .then(res => {
@@ -543,6 +541,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
       // return console.log(signedTransactions);
     })
     .catch(error => {
-      throw new Error(error.respose.data);
+      console.log(error);
+      // throw new Error(error.respose.data);
     });
 });

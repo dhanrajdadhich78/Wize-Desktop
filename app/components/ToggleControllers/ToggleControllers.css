@@ -1,10 +1,13 @@
 .ToggleControllersWrapper {
-  border: 2px solid #e3e3e3;
+  border: 2px solid #2c2d2f;
   border-radius: 10px;
-  padding: 22px 30px;
-  margin: 0 0 30px;
-  height: 150px;
+  padding: 40px;
+  margin: 0 0 40px;
+  height: 220px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .ToggleWrapper {
@@ -18,10 +21,8 @@
 }
 
 .Disclaimer {
-  color: #474b4d;
-  font-size: 12px;
-  border-top: 2px solid #e3e3e3;
-  padding-top: 22px;
+  color: #515050;
+  font-size: 16px;
 }
 
 .Disclaimer p {
@@ -30,12 +31,8 @@
   width: 100%;
 }
 
-.Disclaimer p::before {
-  content: '';
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #474b4d;
-  margin-right: 12.5px;
+.Disclaimer p > span {
+  white-space: nowrap;
+  color: inherit;
 }
+
