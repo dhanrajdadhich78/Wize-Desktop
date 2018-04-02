@@ -12,7 +12,10 @@ const getDigestStart = state => (updateObject(state, {
 }));
 
 const getDigestSuccess = (state, action) => (updateObject(state, {
-  digestInfo: action.digestInfo,
+  digestInfo: {
+    ...action.digestInfo,
+    timestamp: new Date()
+  },
   loading: false
 }));
 

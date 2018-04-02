@@ -251,13 +251,7 @@ ipcMain.on('file:list', (event, userData) => {
     .catch(error => console.log(error.response));
 });
 
-ipcMain.on('file:send', (event, { userData, files }) => {
-  //  get Store Nodes from digest
-  const digestServers = [
-    `${FS_URL}`,
-    `${FS_URL}`,
-    `${FS_URL}`
-  ];
+ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
   // //  update user raft object
   // const updRaft = (defaultObj, signature, shardsAddresses, { name, size, timestamp }) => {
   //   // console.log(`raft: ${defaultObj}`);

@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -19,10 +20,6 @@ class Files extends Component {
     encryption: false,
     sharding: false,
     filePasswording: false,
-    networkHealth: {
-      suspicious: 3,
-      total: 392
-    },
     dataSpace: {
       totalNodes: 483,
       dataLeft: 100
@@ -31,25 +28,32 @@ class Files extends Component {
   };
 
   handleOnDrop = (accepted, rejected) => {
-    // eslint-disable-next-line prefer-destructuring
-    const userData = this.props.userData;
-    const timestamp = Math.round(+new Date() / 1000);
-    const promises = _.map(accepted, file => (new Promise(resolve => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = event => resolve({
-        name: file.name,
-        size: file.size,
-        data: event.target.result,
-        timestamp
-      });
-    })));
-    Promise.all(promises)
-      .then(files => ipcRenderer.send('file:send', { userData, files }))
-      .catch(error => console.log(error));
-    if (rejected.length) {
-      this.hanfleFlashReject(rejected[0]);
-    }
+    if (this.props.digestInfo.storageNodes.length >= 3) {
+      // eslint-disable-next-line prefer-destructuring
+      const userData = this.props.userData;
+      const digestServers = [];
+      for (let i = 0; i < 3; i++) {
+        digestServers.push(`${this.props.digestInfo.storageNodes[i]}:13000/buckets`);
+      }
+
+      const timestamp = Math.round(+new Date() / 1000);
+      const promises = _.map(accepted, file => (new Promise(resolve => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = event => resolve({
+          name: file.name,
+          size: file.size,
+          data: event.target.result,
+          timestamp
+        });
+      })));
+      Promise.all(promises)
+        .then(files => ipcRenderer.send('file:send', { userData, files, digestServers }))
+        .catch(error => console.log(error));
+      if (rejected.length) {
+        this.hanfleFlashReject(rejected[0]);
+      }
+    } else { alert('You don\'t have enough storage nodes'); }
   };
   hanfleFlashReject = file => {
     this.setState({ rejected: file.path.substring(file.path.lastIndexOf('/') + 1) });
@@ -67,7 +71,6 @@ class Files extends Component {
         </div>
       );
     }
-
     return (
       <div>
         <ToggleControllers
@@ -99,7 +102,7 @@ class Files extends Component {
         {progress}
         <div className={classes.NetInfo}>
           <div>
-            <NetworkHealthInfo networkHealth={this.state.networkHealth} />
+            <NetworkHealthInfo networkHealth={this.props.digestInfo} />
           </div>
           <div>
             <DataSpaceInfo dataSpace={this.state.dataSpace} />

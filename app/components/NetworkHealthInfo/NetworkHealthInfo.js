@@ -12,12 +12,15 @@ const networkHealthInfo = ({ networkHealth }) => (
         <h3>Suspicious</h3>
       </div>
       <div className={classes.InfoTwo}>
-        <span>{networkHealth.total}</span>
+        <span>{networkHealth.totalNodes}</span>
         <h3>Total</h3>
       </div>
       <div className={classes.InfoThree}>
         <span>
-          {parseFloat(100 - ((networkHealth.suspicious / networkHealth.total) * 100)).toFixed(2)}%
+          {
+            parseFloat(100 - ((networkHealth.suspicious / networkHealth.totalNodes) * 100))
+              .toFixed(2)
+          }%
         </span>
         <h3>Healthiness</h3>
       </div>
@@ -27,8 +30,8 @@ const networkHealthInfo = ({ networkHealth }) => (
 
 networkHealthInfo.propTypes = {
   networkHealth: PropTypes.shape({
-    suspicious: PropTypes.number.isRequired,
-    total: PropTypes.number.isRequired
+    suspicious: PropTypes.number,
+    total: PropTypes.number
   }).isRequired
 };
 
