@@ -21,3 +21,7 @@
 .AltDropzoneWrapper {
   justify-content: space-between;
 }
+
+.ToggleCredFiles label > div {
+  width: auto;
+}

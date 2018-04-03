@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-
 import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 import checkValidity from '../../utils/validation';

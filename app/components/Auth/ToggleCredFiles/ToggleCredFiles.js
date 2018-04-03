@@ -16,7 +16,10 @@ const toggleCredFiles = props => {
         multiple={false}
         accept=".bak"
       >
-        <p>If you store your credentails not in a standard folder - drop it here</p>
+        <p>
+          If you store your credentails not in a standard folder - drop it here.
+          Or just click me.
+        </p>
       </Dropzone>
     </div>
   );
@@ -61,6 +64,7 @@ const toggleCredFiles = props => {
       <RoundToggle
         id="cred-file"
         value={props.altCredFilePath}
+        label="Drop credential files"
         onClick={() => props.handleToggleAltCredFile()}
       />
       {

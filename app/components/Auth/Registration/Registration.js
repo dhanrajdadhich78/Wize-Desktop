@@ -154,22 +154,9 @@ class Registration extends Component {
 }
 
 Registration.propTypes = {
-  // userData: PropTypes.shape({
-  //   csk: PropTypes.string,
-  //   cpk: PropTypes.string,
-  //   address: PropTypes.string
-  // }),
   handleRegister: PropTypes.func.isRequired,
   cachePassword: PropTypes.func.isRequired,
   lastCredFile: PropTypes.string.isRequired
-};
-
-Registration.defaultProps = {
-  // userData: {
-  //   csk: null,
-  //   cpk: null,
-  //   address: null
-  // }
 };
 
 export default Registration;

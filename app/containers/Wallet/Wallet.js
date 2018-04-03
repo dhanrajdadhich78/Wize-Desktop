@@ -5,21 +5,12 @@ import { ipcRenderer } from 'electron';
 
 import * as actions from '../../store/actions';
 
-import classes from './Wallets.css';
+import classes from './Wallet.css';
 
 import Heading from '../../components/UI/Heading/Heading';
 import CreateTransaction from '../../components/CreateTransaction/CreateTransaction';
 
 class Wallet extends Component {
-  // state = {
-  //   walletsList: [
-  //     {
-  //       cpk: this.props.userData.cpk,
-  //       address: this.props.userData.address,
-  //       ballance: 10
-  //     }
-  //   ]
-  // };
   handleSubmitTransaction = (to, amount) => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
@@ -43,7 +34,6 @@ class Wallet extends Component {
               Trans<span>action</span>
             </Heading>
             <CreateTransaction
-              // walletsList={this.state.walletsList}
               handleSubmitTransaction={(to, amount) => this.handleSubmitTransaction(to, amount)}
             />
           </div>
@@ -54,7 +44,6 @@ class Wallet extends Component {
 }
 
 Wallet.propTypes = {
-  // isAuth: PropTypes.bool.isRequired,
   userData: PropTypes.shape({
     csk: PropTypes.string,
     cpk: PropTypes.string,
@@ -73,8 +62,6 @@ Wallet.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  // token: state.auth.authKey,
-  // isAuth: state.auth.userData.cpk !== null,
   userData: state.auth.userData,
   ballance: state.blockchain.ballance
 });

@@ -1,5 +1,4 @@
-.NavigationItem a,
-.NavigationItem > button {
+.NavigationItem a {
   text-decoration: none;
   display: block;
   width: 100%;
@@ -19,13 +18,11 @@
   cursor: pointer;
 }
 
-.NavigationItem > button,
 .NavigationItem > a {
   color: #abb1b6;
   position: relative;
 }
 
-.NavigationItem > button::before,
 .NavigationItem > a::before {
   content: '';
   display: inline-block;
@@ -38,67 +35,15 @@
   top: calc(50% - 3.75px);
 }
 
-.NavigationItem > button:hover,
-.NavigationItem > button:active,
-button.ActiveLink,
 .NavigationItem > a:hover,
 .NavigationItem > a:active,
 a.ActiveLink {
   color: #32b3d3;
 }
 
-.NavigationItem > button:hover::before,
-.NavigationItem > button:active::before,
-button.ActiveLink::before,
 .NavigationItem > a:hover::before,
 .NavigationItem > a:active::before,
 a.ActiveLink::before {
   width: 7.5px;
   left: 0;
-}
-
-.ChildList {
-  display: none;
-  list-style: none;
-}
-
-.ActiveLink ~ .ChildList {
-  display: block;
-}
-
-.ChildList > li {
-  padding: 0 19px !important;
-  min-height: 28px !important;
-  line-height: 28px !important;
-}
-
-.ChildList a {
-  color: white;
-  position: relative;
-  padding: 0 0 5px 0;
-  height: 100%;
-}
-
-.ChildList a::before {
-  content: '';
-  display: block;
-  position: absolute;
-  height: 2.5px;
-  width: 0;
-  left: 0;
-  bottom: 0;
-  transition: all 0.2s linear;
-  background-color: #32b3d3;
-}
-
-.ChildList a:hover,
-.ChildList a:active,
-a.ActiveChildLink {
-  color: #32b3d3;
-}
-
-.ChildList a:hover::before,
-.ChildList a:active::before,
-a.ActiveChildLink::before {
-  width: 20px;
 }

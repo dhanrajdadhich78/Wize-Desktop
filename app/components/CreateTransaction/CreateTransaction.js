@@ -187,7 +187,6 @@ class CreateTransaction extends Component {
 }
 
 CreateTransaction.propTypes = {
-  // walletsList: PropTypes.arrayOf.isRequired
   handleSubmitTransaction: PropTypes.func.isRequired
 };
 

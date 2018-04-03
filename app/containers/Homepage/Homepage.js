@@ -4,24 +4,22 @@ import { connect } from 'react-redux';
 
 import * as actions from '../../store/actions/index';
 
-import classes from './Root.css';
+import classes from './Homepage.css';
 
 import Auth from '../../components/Auth/Auth';
 import Registration from '../../components/Auth/Registration/Registration';
 
-class Root extends Component {
+class Homepage extends Component {
   state = {
     auth: true,
     password: null,
     altCredFilePath: false,
     credFilePath: this.props.credentials.length ? this.props.credentials[0] : '',
-    // credFilePath: this.props.credentials.length ? `./.wizeconfig/${this.props.credentials[0]}` : '',
     credFilesArr: this.props.credentials,
     dropzoneInput: true
   };
   handleToggleAltCredFile = () => {
     if (!this.state.altCredFilePath === true) {
-      // this.setState({ credFilePath: `./.wizeconfig/${this.props.credentials[0]}` });
       this.setState({ credFilePath: this.props.credentials[0] });
     }
     this.setState({ altCredFilePath: !this.state.altCredFilePath });
@@ -29,7 +27,6 @@ class Root extends Component {
   onCredFilesSelectChange = val => this.setState({ credFilePath: val });
   handleDropCredFile = file => this.setState({ credFilePath: file.path, dropzoneInput: false });
   handleReturnDropzoneInput = () => this.setState({
-    // credFilePath: `./.wizeconfig/${this.props.credentials[0]}`,
     credFilePath: this.props.credentials[0],
     dropzoneInput: true
   });
@@ -80,7 +77,7 @@ class Root extends Component {
   }
 }
 
-Root.propTypes = {
+Homepage.propTypes = {
   userData: PropTypes.shape({
     csk: PropTypes.string,
     cpk: PropTypes.string,
@@ -92,7 +89,7 @@ Root.propTypes = {
   credentials: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
-Root.defaultProps = {
+Homepage.defaultProps = {
   userData: {
     csk: null,
     cpk: null,
@@ -112,4 +109,4 @@ const mapDispatchToProps = dispatch => ({
   handleAuth: (password, filePath) => dispatch(actions.auth(password, filePath))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Root);
+export default connect(mapStateToProps, mapDispatchToProps)(Homepage);

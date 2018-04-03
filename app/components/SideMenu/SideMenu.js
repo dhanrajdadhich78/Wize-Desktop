@@ -7,7 +7,7 @@ import InfoColumn from './InfoColumn/InfoColumn';
 import NavColumn from './NavColumn/NavColumn';
 
 const sidebarList = ({ blockChain }) => (
-  <aside className={classes.SidebarList} /* style={props.menuClosed ? null : { right: 0 }} */>
+  <aside className={classes.SidebarList}>
     <InfoColumn blockChain={blockChain} />
     <NavColumn />
   </aside>

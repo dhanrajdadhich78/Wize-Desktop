@@ -126,7 +126,7 @@ ipcMain.on('registration:start', (event, password) => {
   const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
   const d = bigi.fromBuffer(hash);
   //  generate key pair
-  const keyPair = new bitcoin.ECPair(d);
+  const keyPair = new bitcoin.ECPair(d, null, { compressed: false });
   //  extract public key buffer(compressed)
   const cpkBuffer = keyPair.getPublicKeyBuffer();
   //  get readable public key
