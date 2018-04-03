@@ -9,18 +9,13 @@ import Dropzone from 'react-dropzone';
 import classes from './FileUpload.css';
 import { dropToUpload } from '../../assets/img/img';
 
-import ToggleControllers from '../../components/ToggleControllers/ToggleControllers';
 // import NetworkHealthInfo from '../../components/NetworkHealthInfo/NetworkHealthInfo';
 // import DataSpaceInfo from '../../components/DataSpaceInfo/DataSpaceInfo';
 
 class Files extends Component {
   state = {
-    progress: 0,
     loading: false,
-    encryption: false,
-    twoFA: false,
-    keyLogin: false,
-    accessRole: false,
+    progress: 0,
     rejected: null
   };
 
@@ -30,7 +25,7 @@ class Files extends Component {
       const userData = this.props.userData;
       const digestServers = [];
       for (let i = 0; i < 3; i++) {
-        digestServers.push(`${this.props.digestInfo.storageNodes[i]}:13000/buckets`);
+        digestServers.push(`http://${this.props.digestInfo.storageNodes[i]}:13000/buckets`);
       }
 
       const timestamp = Math.round(+new Date() / 1000);
@@ -69,18 +64,7 @@ class Files extends Component {
       );
     }
     return (
-      <div>
-        <ToggleControllers
-          encryption={this.state.encryption}
-          twoFA={this.state.twoFA}
-          keyLogin={this.state.keyLogin}
-          accessRole={this.state.accessRole}
-          toggleEncryption={() => this.setState({ encryption: !this.state.encryption })}
-          toggle2fa={() => this.setState({ twoFA: !this.state.twoFA })}
-          toggleKeyLogin={() => this.setState({ keyLogin: !this.state.keyLogin })}
-          toggleAccessRole={() => this.setState({ accessRole: !this.state.accessRole })}
-          bcNodes={this.props.digestInfo.bcNodes}
-        />
+      <div className={classes.FilesUpload}>
         <div className={classes.DropzoneWrapper}>
           <Dropzone
             onDrop={(accepted, rejected) => this.handleOnDrop(accepted, rejected)}
@@ -124,7 +108,6 @@ Files.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  // token: state.auth.authKey,
   isAuth: state.auth.authKey !== null,
   userData: state.auth.userData,
   digestInfo: state.digest.digestInfo

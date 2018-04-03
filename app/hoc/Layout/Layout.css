@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+.Layout main article .MainContent {
+  height: calc(100vh - 30px - 40px - 220px);
+}
+
 .SpinnerToMiddle {
   display: flex;
   position: absolute;

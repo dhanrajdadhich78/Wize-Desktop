@@ -6,11 +6,15 @@ import classes from './Layout.css';
 
 import Aux from '../Aux/Aux';
 import SideMenu from '../../components/SideMenu/SideMenu';
-import BugReport from '../../containers/BugReport/BugReport';
+// import BugReport from '../../containers/BugReport/BugReport';
+import ToggleControllers from '../../components/ToggleControllers/ToggleControllers';
 
 class Layout extends Component {
   state = {
-    menuClosed: true
+    encryption: false,
+    twoFA: false,
+    keyLogin: false,
+    accessRole: false,
   };
   render() {
     return (
@@ -18,15 +22,27 @@ class Layout extends Component {
         <div className={classes.Layout}>
           <main>
             <SideMenu
-              blockChain={this.props.blockchain}
-              menuClosed={this.state.menuClosed}
+              blockChain={this.props.bcNodes.length >= 3}
               toggleMenu={() => this.setState({ menuClosed: !this.state.menuClosed })}
             />
             <article>
-              { this.props.children }
+              <ToggleControllers
+                encryption={this.state.encryption}
+                twoFA={this.state.twoFA}
+                keyLogin={this.state.keyLogin}
+                accessRole={this.state.accessRole}
+                toggleEncryption={() => this.setState({ encryption: !this.state.encryption })}
+                toggle2fa={() => this.setState({ twoFA: !this.state.twoFA })}
+                toggleKeyLogin={() => this.setState({ keyLogin: !this.state.keyLogin })}
+                toggleAccessRole={() => this.setState({ accessRole: !this.state.accessRole })}
+                bcNodes={this.props.bcNodes}
+              />
+              <div className={classes.MainContent}>
+                { this.props.children }
+              </div>
             </article>
           </main>
-          <BugReport />
+          {/* <BugReport /> */}
         </div>
       </Aux>
     );
@@ -35,25 +51,15 @@ class Layout extends Component {
 
 Layout.propTypes = {
   children: PropTypes.element.isRequired,
-  blockchain: PropTypes.bool.isRequired,
-  // userData: PropTypes.shape({
-  //   csk: PropTypes.string,
-  //   cpk: PropTypes.string,
-  //   address: PropTypes.string
-  // })
+  bcNodes: PropTypes.arrayOf(PropTypes.string),
 };
 
-// Layout.defaultProps = {
-//   userData: {
-//     csk: null,
-//     cpk: null,
-//     address: null
-//   }
-// };
+Layout.defaultProps = {
+  bcNodes: []
+};
 
 const mapStateToProps = state => ({
-  // userData: state.auth.userData,
-  blockchain: state.blockchain.ballance !== null,
+  bcNodes: state.digest.digestInfo.bcNodes
 });
 
 export default connect(mapStateToProps)(Layout);

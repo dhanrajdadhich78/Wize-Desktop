@@ -60,7 +60,7 @@ toggleControllers.propTypes = {
   toggle2fa: PropTypes.func.isRequired,
   toggleKeyLogin: PropTypes.func.isRequired,
   toggleAccessRole: PropTypes.func.isRequired,
-  bcNodes: PropTypes.arrayOf([PropTypes.string])
+  bcNodes: PropTypes.arrayOf(PropTypes.string)
 };
 
 toggleControllers.defaultProps = {
