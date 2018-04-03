@@ -19,7 +19,12 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
-const { DIGEST_URL, RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
+const {
+  DIGEST_URL,
+  RAFT_URL,
+  FS_URL,
+  BLOCKCHAIN_URL
+} = require('./utils/const');
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
@@ -27,6 +32,7 @@ const MenuBuilder = require('./menu');
 const configFolder = process.platform !== 'win32' ? `${process.cwd()}/.wizeconfig` : `${process.cwd()}\\wizeconfig`;
 
 let mainWindow;
+let cpkGlob;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -76,8 +82,13 @@ app.on('ready', async () => {
     minWidth: 1048,
     minHeight: 600
   });
+  mainWindow.on('closed', () => {
+    if (cpkGlob) {
+      axios.post(`${FS_URL}/${cpkGlob}/unmount`);
+    }
+    app.quit();
+  });
   mainWindow.loadURL(`file://${__dirname}/app.html`);
-  mainWindow.on('closed', () => app.quit());
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -189,19 +200,21 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
       // create and mount bucket
       const origin = JSON.parse(decrypt.strData).cpk;
+      //  remember cpk of user
+      cpkGlob = origin;
       axios.post(`${FS_URL}`, { data: { origin } })
         .then(() => (
           axios.post(`${FS_URL}/${origin}/mount`)
-            // .then(response => console.log(response.data))
-            // .catch(() => console.log(error.response))
+            .then(response => console.log(response.data))
+            .catch(error => console.log(error.response))
         ))
         .catch(error => {
           if (error.response.status === 500) {
-            return axios.post(`${FS_URL}/${origin}/mount`);
-              // .then(response => console.log(response.data))
-              // .catch(er => console.log(er.response));
+            return axios.post(`${FS_URL}/${origin}/mount`)
+              .then(response => console.log(response.data))
+              .catch(er => console.log(er.response));
           }
-          // console.log(error.response);
+          console.log(error.response);
         });
       // --
       mainWindow.webContents.send('auth:complete', decrypt.strData);
@@ -225,9 +238,10 @@ ipcMain.on('digest:get', (event, { userData, password }) => {
 ipcMain.on('file:list', (event, userData) => {
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     .then((response) => {
+      // console.log(`response ${JSON.stringify(response.data)}`);
       let filesList = [];
       // eslint-disable-next-line promise/always-return
-      if (response.data && Object.keys(response.data)) {
+      if (response.data[userData.cpk].length && Object.keys(response.data)) {
         const encryptedData = JSON.parse(response.data[userData.cpk]);
         // console.log(`encryptedData: ${encryptedData}`);
         const rawFileNames = Object.keys(encryptedData).map(key => {
@@ -245,6 +259,7 @@ ipcMain.on('file:list', (event, userData) => {
           return null;
         });
         filesList = cF.cleanArray(rawFileNames);
+        // console.log(`filesList ${filesList}`);
       }
       mainWindow.webContents.send('file:your-list', filesList);
     })
