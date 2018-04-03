@@ -17,6 +17,7 @@
   justify-content: center !important;
   align-items: center !important;
   flex-direction: column;
+  background-color: #171718; /* #101112 */
 }
 
 .DropzoneWrapper > div p {

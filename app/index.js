@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ConnectedRouter } from 'react-router-redux';
@@ -23,8 +24,10 @@ const rootReducer = combineReducers({
   digest: digestReducer
 });
 
-// eslint-disable-next-line no-underscore-dangle
-const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
+let composeEnhancers = null || compose;
+if (process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
+  composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
+}
 
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 

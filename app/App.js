@@ -8,10 +8,13 @@ import { checkInternet, getCredFilesList } from './store/actions/index';
 import Spinner from './components/UI/Spinner/Spinner';
 import Layout from './hoc/Layout/Layout';
 import NoInternetConnection from './components/NoInternetConnection/NoInternetConnection';
-import Root from './containers/Root/Root';
+import Homepage from './containers/Homepage/Homepage';
 import FilesList from './containers/FilesList/FilesList';
 import FileUpload from './containers/FileUpload/FileUpload';
-import Wallets from './containers/Wallets/Wallets';
+import Wallet from './containers/Wallet/Wallet';
+import Account from './containers/Account/Account';
+import GhostPad from './containers/GhostPad/GhostPad';
+import Miners from './containers/Miners/Miners';
 
 class App extends Component {
   componentWillMount() {
@@ -28,7 +31,7 @@ class App extends Component {
         routes = (
           <div style={{ padding: '0 30px 30px' }}>
             <Switch>
-              <Route exact path="/" component={Root} />
+              <Route exact path="/" component={Homepage} />
               <Redirect to="/" />
             </Switch>
           </div>
@@ -37,12 +40,12 @@ class App extends Component {
           routes = (
             <Layout>
               <Switch>
-                <Route exact path="/" component={FileUpload} />
-                <Route exact path="/file-list" component={FilesList} />
-                <Route exact path="/wallets" component={Wallets} />
-                {/* <Route exact path="/wallets-list" component={WalletsList} /> */}
-                {/* <Route exact path="/wallet-check" component={WalletCheck} /> */}
-                {/* <Route exact path="/transaction-create" component={CreateTransaction} /> */}
+                <Route exact path="/" component={Account} />
+                <Route exact path="/wallet" component={Wallet} />
+                <Route exact path="/file-upload" component={FileUpload} />
+                <Route exact path="/files-list" component={FilesList} />
+                <Route exact path="/ghost-pad" component={GhostPad} />
+                <Route exact path="/miners" component={Miners} />
                 <Redirect to="/" />
               </Switch>
             </Layout>

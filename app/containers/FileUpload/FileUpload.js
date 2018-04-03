@@ -9,9 +9,6 @@ import Dropzone from 'react-dropzone';
 import classes from './FileUpload.css';
 import { dropToUpload } from '../../assets/img/img';
 
-// import NetworkHealthInfo from '../../components/NetworkHealthInfo/NetworkHealthInfo';
-// import DataSpaceInfo from '../../components/DataSpaceInfo/DataSpaceInfo';
-
 class Files extends Component {
   state = {
     loading: false,
@@ -84,21 +81,12 @@ class Files extends Component {
           </Dropzone>
         </div>
         {progress}
-        {/* <div className={classes.NetInfo}> */}
-        {/* <div> */}
-        {/* <NetworkHealthInfo networkHealth={this.props.digestInfo} /> */}
-        {/* </div> */}
-        {/* <div> */}
-        {/* <DataSpaceInfo dataSpace={this.state.dataSpace} /> */}
-        {/* </div> */}
-        {/* </div> */}
       </div>
     );
   }
 }
 
 Files.propTypes = {
-  // isAuth: PropTypes.bool.isRequired,
   userData: PropTypes.shape({
     csk: PropTypes.string.isRequired,
     cpk: PropTypes.string.isRequired,

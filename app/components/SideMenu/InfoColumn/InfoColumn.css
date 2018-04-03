@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   padding: calc(30px + 40px + 220px) 0 20px;
-  background-color: #0f1011;
+  background-color: #171718;
 }
 
 .BlockChainIdentificator h4,
@@ -40,7 +40,6 @@ div.Logo {
 }
 
 div.Logo img {
-  /*height: 147px;*/
   width: calc(100% - 30px);
   margin: 0 auto 15px;
 }

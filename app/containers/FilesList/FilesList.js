@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,7 +14,7 @@ import Modal from '../../components/UI/Modal/Modal';
 
 class FilesList extends Component {
   state = {
-    files: [],
+    files: null,
     modalContent: null,
     transferTo: null
   };
@@ -21,13 +22,11 @@ class FilesList extends Component {
     this.handleGetFiles();
   }
   handleGetFiles = () => {
-    // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     ipcRenderer.send('file:list', userData);
     ipcRenderer.on('file:your-list', (event, filesList) => this.setState({ files: filesList }));
   };
   handleDownload = filename => {
-    // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     ipcRenderer.send('file:compile', { userData, filename });
     ipcRenderer.on('file:receive', (event, base64File) => {
@@ -36,38 +35,17 @@ class FilesList extends Component {
     });
   };
   hadleDelete = filename => {
-    // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     ipcRenderer.send('file:remove', { userData, filename });
     ipcRenderer.on('file:removed', () => {
       this.handleGetFiles();
     });
   };
-  // handleTransferModal = filename => (
-  //   this.setState({
-  //     modalContent: (
-  //       <div>
-  //         {/*<form*/}
-  //           {/*onSubmit={(e) => {*/}
-  //             {/*e.preventDefault();*/}
-  //             {/*this.handleTransfer(filename);*/}
-  //             {/*this.handleCloseModal();*/}
-  //           {/*}}*/}
-  //         {/*>*/}
-  //           {/*<input type="text" onChange={e => this.setState({ transferTo: e.target.value })} />*/}
-  //           {/*<Button type="submit">Transfer</Button>*/}
-  //         {/*</form>*/}
-  //         <Heading fontWeight={200} fontSize={24} size={2}>Coming soon...</Heading>
-  //       </div>
-  //     )
-  //   })
-  // );
   handleCloseModal = () => {
     this.setState({ modalContent: null, transferTo: null });
     this.handleGetFiles();
   };
   handleTransfer = filename => {
-    // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     const to = this.state.transferTo;
     ipcRenderer.send('file:transfer', { userData, filename, to });
@@ -145,17 +123,8 @@ FilesList.propTypes = {
   }).isRequired
 };
 
-// FilesList.defaultProps = {
-//   userData: {
-//     csk: null,
-//     cpk: null,
-//     address: null
-//   }
-// };
-
 const mapStateToProps = state => ({
-  userData: state.auth.userData,
-  // authError: state.auth.error
+  userData: state.auth.userData
 });
 
 export default connect(mapStateToProps)(FilesList);
