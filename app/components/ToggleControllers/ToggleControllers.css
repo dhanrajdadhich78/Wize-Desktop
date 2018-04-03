@@ -1,6 +1,6 @@
 .ToggleControllersWrapper {
   border: 2px solid #2c2d2f;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 40px;
   margin: 0 0 40px;
   height: 220px;
@@ -36,3 +36,13 @@
   color: inherit;
 }
 
+@media (max-width: 1200px) {
+  .ToggleWrapper > div label > div,
+  .Disclaimer {
+    font-size: 12px;
+  }
+
+  .Disclaimer {
+    text-align: center;
+  }
+}

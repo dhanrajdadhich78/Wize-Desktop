@@ -8,10 +8,8 @@ import classes from './FilesList.css';
 
 import b64toBlob from '../../utils/b64toBlob';
 import Spinner from '../../components/UI/Spinner/Spinner';
-import Button from '../../components/UI/Button/Button';
 import Aux from '../../hoc/Aux/Aux';
 import Modal from '../../components/UI/Modal/Modal';
-import Heading from '../../components/UI/Heading/Heading';
 
 class FilesList extends Component {
   state = {
@@ -45,25 +43,25 @@ class FilesList extends Component {
       this.handleGetFiles();
     });
   };
-  handleTransferModal = filename => (
-    this.setState({
-      modalContent: (
-        <div>
-          {/*<form*/}
-            {/*onSubmit={(e) => {*/}
-              {/*e.preventDefault();*/}
-              {/*this.handleTransfer(filename);*/}
-              {/*this.handleCloseModal();*/}
-            {/*}}*/}
-          {/*>*/}
-            {/*<input type="text" onChange={e => this.setState({ transferTo: e.target.value })} />*/}
-            {/*<Button type="submit">Transfer</Button>*/}
-          {/*</form>*/}
-          <Heading fontWeight={200} fontSize={24} size={2}>Coming soon...</Heading>
-        </div>
-      )
-    })
-  );
+  // handleTransferModal = filename => (
+  //   this.setState({
+  //     modalContent: (
+  //       <div>
+  //         {/*<form*/}
+  //           {/*onSubmit={(e) => {*/}
+  //             {/*e.preventDefault();*/}
+  //             {/*this.handleTransfer(filename);*/}
+  //             {/*this.handleCloseModal();*/}
+  //           {/*}}*/}
+  //         {/*>*/}
+  //           {/*<input type="text" onChange={e => this.setState({ transferTo: e.target.value })} />*/}
+  //           {/*<Button type="submit">Transfer</Button>*/}
+  //         {/*</form>*/}
+  //         <Heading fontWeight={200} fontSize={24} size={2}>Coming soon...</Heading>
+  //       </div>
+  //     )
+  //   })
+  // );
   handleCloseModal = () => {
     this.setState({ modalContent: null, transferTo: null });
     this.handleGetFiles();
@@ -78,44 +76,36 @@ class FilesList extends Component {
     let list = <Spinner />;
 
     if (Array.isArray(this.state.files)) {
-      if (this.state.files.length !== 0) {
+      if (this.state.files.length > 0) {
         list = (
           <ul className={classes.FilesList}>
             <li>
-              <span>Name</span>
-              <span>Upload Date</span>
-              <span>Size (bytes)</span>
-              <span>&nbsp;</span>
-              <span>Actions</span>
-              <span>&nbsp;</span>
+              <span>Ghost files</span>
+              <span>Decryption</span>
+              <span>Access</span>
+              <span>Merge data</span>
+              <span>Delete</span>
             </li>
             {
-              this.state.files.map(({ name, timestamp, size }, index) => (
+              this.state.files.map(({ name }, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <li key={index}>
                   <span>{name}</span>
-                  <span>{new Date(timestamp * 1000).toString()}</span>
-                  <span>{size}</span>
+                  <span>0 %</span>
+                  <span>ok</span>
                   <span>
-                    <Button
+                    <button
                       onClick={() => this.handleDownload(name)}
                     >
-                      Download
-                    </Button>
+                      download
+                    </button>
                   </span>
                   <span>
-                    <Button
+                    <button
                       onClick={() => this.hadleDelete(name)}
                     >
-                      Delete
-                    </Button>
-                  </span>
-                  <span>
-                    <Button
-                      onClick={() => this.handleTransferModal(name)}
-                    >
-                      Transfer file
-                    </Button>
+                      delete
+                    </button>
                   </span>
                 </li>
               ))
@@ -139,8 +129,7 @@ class FilesList extends Component {
         >
           { this.state.modalContent }
         </Modal>
-        <div>
-          <Heading fontWeight={200} fontSize={50}>Your <span>files</span> list</Heading>
+        <div className={classes.FilesListWrapper}>
           {list}
         </div>
       </Aux>

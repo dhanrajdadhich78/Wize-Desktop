@@ -2,7 +2,14 @@ import * as actionTypes from '../actions/actionTypes';
 import { updateObject } from '../../utils/utility';
 
 const initialState = {
-  digestInfo: {},
+  digestInfo: {
+    bcNodes: [],
+    raftNodes: [],
+    storageNodes: [],
+    spacelfet: 0,
+    totalNodes: 0,
+    suspicious: 0
+  },
   error: null,
   loading: false
 };

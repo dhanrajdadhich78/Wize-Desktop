@@ -77,3 +77,18 @@ div.Logo h3 > span {
   height: 38.5px;
   margin-bottom: 10px;
 }
+
+@media (max-height: 810px) {
+  .InfoColumn {
+    padding: 20px 0;
+    justify-content: center;
+    position: relative;
+  }
+
+  .BlockChainIdentificator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 20px;
+  }
+}

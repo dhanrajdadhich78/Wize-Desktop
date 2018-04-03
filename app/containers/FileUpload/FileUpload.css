@@ -1,6 +1,11 @@
+.FilesUpload,
+.DropzoneWrapper {
+  height: 100%;
+}
+
 .DropzoneWrapper > div {
   width: 100% !important;
-  height: calc(100vh - 30px - 40px - 220px) !important;
+  height: 100% !important;
   padding: 30px !important;
   border-width: 2px !important;
   border-color: #2c2d2f !important;
