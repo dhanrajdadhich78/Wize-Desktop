@@ -1,3 +1,4 @@
+/* eslint-disable promise/catch-or-return */
 /* eslint global-require: 0, flowtype-errors/show-errors: 0 */
 /**
  * This module executes inside of electron's main process. You can start
@@ -25,14 +26,12 @@ const {
   FS_URL,
   BLOCKCHAIN_URL
 } = require('./utils/const');
-
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
-
 const configFolder = process.platform !== 'win32' ? `${process.cwd()}/.wizeconfig` : `${process.cwd()}\\wizeconfig`;
 
 let mainWindow;
-let cpkGlob;
+// let cpkGlob;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -69,8 +68,7 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
-
+//  main listener - on app start
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
@@ -83,9 +81,9 @@ app.on('ready', async () => {
     minHeight: 600
   });
   mainWindow.on('closed', () => {
-    if (cpkGlob) {
-      axios.post(`${FS_URL}/${cpkGlob}/unmount`);
-    }
+    // if (cpkGlob) {
+    //   axios.post(`${FS_URL}/${cpkGlob}/unmount`);
+    // }
     app.quit();
   });
   mainWindow.loadURL(`file://${__dirname}/app.html`);
@@ -99,28 +97,14 @@ app.on('ready', async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 });
-
+//  listener, that check if user internet connection is available
 ipcMain.on('internet-connection:check', () => {
-  // eslint-disable-next-line promise/catch-or-return
   isOnline()
     .then(online => mainWindow.webContents.send('internet-connection:status', online));
 });
-
+//  listener, that scan default credential folder on users machine
 ipcMain.on('credentials-files-list:scan', () => {
   if (cF.ensureDirectoryExistence(configFolder)) {
-    // fs.readdir(configFolder, (error, files) => {
-    //   // throw new Error(configFolder);
-    //   if (error) {
-    //     throw new Error(error);
-    //   }
-    //   const credFiles = files.map(file => (
-    //     !file.indexOf('credentials')
-    //       ? file
-    //       : null
-    //   ));
-    //   const credentials = cF.cleanArray(credFiles);
-    //   mainWindow.webContents.send('credentials-files-list:get', credentials);
-    // });
     const files = fs.readdirSync(configFolder);
     const credFiles = files.map(file => (
       !file.indexOf('credentials')
@@ -131,7 +115,7 @@ ipcMain.on('credentials-files-list:scan', () => {
     mainWindow.webContents.send('credentials-files-list:get', credentials);
   }
 });
-
+//  on credentials generate listener
 ipcMain.on('registration:start', (event, password) => {
   //  random sha256 hash
   const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
@@ -160,7 +144,6 @@ ipcMain.on('registration:start', (event, password) => {
     fs.readdir(configFolder, (error, files) => {
       if (error) {
         throw new Error(error);
-        // mainWindow.webContents.send('registration:error', error);
       }
       const credFiles = files.map(file => (
         !file.indexOf('credentials')
@@ -170,7 +153,6 @@ ipcMain.on('registration:start', (event, password) => {
       const credArr = cF.cleanArray(credFiles);
       fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
         if (err) {
-          // mainWindow.webContents.send('registration:error', err);
           throw new Error(err);
         }
         mainWindow.webContents.send('registration:complete', strData);
@@ -178,7 +160,7 @@ ipcMain.on('registration:start', (event, password) => {
     });
   }
 });
-
+//  on auth listener
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
   // eslint-disable-next-line comma-spacing
@@ -190,18 +172,16 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
     if (err) {
       throw new Error(err);
     }
-
     encryptedHex = data;
-
     if (!encryptedHex) {
-      // mainWindow.webContents.send('auth:error', 'There is no credentials file');
       throw new Error('There is no credentials file');
     } else {
       const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
       // create and mount bucket
       const origin = JSON.parse(decrypt.strData).cpk;
-      //  remember cpk of user
-      cpkGlob = origin;
+      // //  remember cpk of user for unmount
+      // cpkGlob = origin;
+      //  user origin create and mount requests
       axios.post(`${FS_URL}`, { data: { origin } })
         .then(() => (
           axios.post(`${FS_URL}/${origin}/mount`)
@@ -216,12 +196,12 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
           }
           console.log(error.response);
         });
-      // --
+      // on user data decryption and mounting fs - give userData to react part
       mainWindow.webContents.send('auth:complete', decrypt.strData);
     }
   });
 });
-
+//  get network digest listener
 ipcMain.on('digest:get', (event, { userData, password }) => {
   const reqData = {
     data: {
@@ -234,19 +214,16 @@ ipcMain.on('digest:get', (event, { userData, password }) => {
     .then(({ data }) => mainWindow.webContents.send('digest:success', data))
     .catch(err => { throw new Error(err); });
 });
-
+//  get my files list listener
 ipcMain.on('file:list', (event, userData) => {
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     .then((response) => {
-      // console.log(`response ${JSON.stringify(response.data)}`);
       let filesList = [];
       // eslint-disable-next-line promise/always-return
       if (response.data[userData.cpk].length && Object.keys(response.data)) {
         const encryptedData = JSON.parse(response.data[userData.cpk]);
-        // console.log(`encryptedData: ${encryptedData}`);
         const rawFileNames = Object.keys(encryptedData).map(key => {
           if (key.length > 3) {
-            // console.log(`key: ${cF.aesDecrypt(key, userData.csk).strData}`);
             const name = cF.aesDecrypt(key, userData.csk).strData;
             // eslint-disable-next-line max-len
             const { size, timestamp } = JSON.parse(cF.aesDecrypt(encryptedData[key], userData.csk).strData);
@@ -259,14 +236,14 @@ ipcMain.on('file:list', (event, userData) => {
           return null;
         });
         filesList = cF.cleanArray(rawFileNames);
-        // console.log(`filesList ${filesList}`);
       }
       mainWindow.webContents.send('file:your-list', filesList);
     })
     .catch(error => console.log(error.response));
 });
-
+//  send files listener
 ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
+  //  sync way
   // //  update user raft object
   // const updRaft = (defaultObj, signature, shardsAddresses, { name, size, timestamp }) => {
   //   // console.log(`raft: ${defaultObj}`);
@@ -339,7 +316,6 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
   //     .then(() => console.log('send is end'))
   //     .catch(reason => console.log(reason));
   // });
-  // eslint-disable-next-line no-trailing-spaces
 
   //  async way
   const updRaft = (defaultObj, filename, fileInfo) => {
@@ -357,10 +333,6 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
           [filename]: fileInfo
         })
       };
-    //  update user raft object request
-    // return axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
-    //   .then(resp => console.log(resp.data))
-    //   .catch(error => console.log(error.response));
     return new Promise((resolve, reject) => {
       setTimeout(() => (
         axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
@@ -438,7 +410,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
     ))
     .catch(error => console.log(error));
 });
-
+//  on file download listener
 ipcMain.on('file:compile', (event, { userData, filename }) => {
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     .then(response => {
@@ -471,7 +443,7 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
     })
     .catch(error => console.log(error));
 });
-
+//  on file remove listener
 ipcMain.on('file:remove', (event, { userData, filename }) => {
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     //  user raft object
@@ -511,7 +483,7 @@ ipcMain.on('file:remove', (event, { userData, filename }) => {
     })
     .catch(error => console.log(error));
 });
-
+//  on file transfer listener
 ipcMain.on('file:transfer', (event, { userData, filename, to }) => {
   console.log(userData, filename, to);
   // //  user raft object
@@ -526,19 +498,17 @@ ipcMain.on('file:transfer', (event, { userData, filename, to }) => {
   //   })
   //   .catch(error => console.log(error));
 });
-
+//  on blockchain wallet check listener
 ipcMain.on('blockchain:wallet-check', (event, address) => {
-  // console.log(`wallet-check ${address}`);
   axios.get(`${BLOCKCHAIN_URL}/wallet/${address}`)
     .then(({ data }) => (
-      // console.log(`wallet-checked ${JSON.stringify(data)}`);
       mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
     ))
     .catch(error => {
       throw new Error(error.respose.data);
     });
 });
-
+//  on create prepare and create transaction listener
 ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
   const prepData = {
     from: userData.address,
