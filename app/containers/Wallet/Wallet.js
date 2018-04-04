@@ -8,7 +8,7 @@ import * as actions from '../../store/actions';
 import classes from './Wallet.css';
 
 import Heading from '../../components/UI/Heading/Heading';
-import CreateTransaction from '../../components/CreateTransaction/CreateTransaction';
+import CreateTransaction from '../../components/PagesSections/Wallet/CreateTransaction/CreateTransaction';
 
 class Wallet extends Component {
   handleSubmitTransaction = (to, amount) => {

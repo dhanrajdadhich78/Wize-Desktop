@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import classes from './CreateTransaction.css';
-import checkValidity from '../../utils/validation';
+import checkValidity from '../../../../utils/validation';
 
-import Spinner from '../../components/UI/Spinner/Spinner';
-import Input from '../../components/UI/Input/Input';
-import Button from '../../components/UI/Button/Button';
-import Aux from '../../hoc/Aux/Aux';
-import Modal from '../../components/UI/Modal/Modal';
+import Spinner from '../../../UI/Spinner/Spinner';
+import Input from '../../../UI/Input/Input';
+import Button from '../../../UI/Button/Button';
+import Aux from '../../../../hoc/Aux/Aux';
+import Modal from '../../../UI/Modal/Modal';
 
 class CreateTransaction extends Component {
   state = {

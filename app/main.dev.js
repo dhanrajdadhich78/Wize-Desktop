@@ -28,6 +28,7 @@ const {
 } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
+
 const configFolder = process.platform !== 'win32' ? `${process.cwd()}/.wizeconfig` : `${process.cwd()}\\wizeconfig`;
 
 let mainWindow;
@@ -517,16 +518,31 @@ ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
     pubkey: userData.cpk
   };
   return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
-    .then(res => {
-      // mainWindow.webContents.send('transaction:done');
-      console.log(res);
-      // const signedTransactions = res.data.data.map(transaction => (
-      //   cF.ecdsaSign(transaction, userData.csk)
-      // ));
-      // return console.log(signedTransactions);
+    .then(({ data }) => {
+      const signatures = data.data.map(transaction => (
+        cF.ecdsaSign(transaction, userData.csk)
+      ));
+      console.log(signatures);
+      return {
+        from: userData.address,
+        txid: data.txid,
+        minenow: false,
+        signatures
+      };
     })
+    .then(sendData => {
+      const prom = new Promise((resolve, reject) => {
+        setTimeout(() => (
+          axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
+            .then(resp => resolve(resp.data))
+            .catch(error => reject(error.response))
+        ), 100);
+      });
+      return prom.then(d => console.log(d)).catch(error => console.log(error));
+    })
+    .then(() => mainWindow.webContents.send('transaction:done'))
     .catch(error => {
-      console.log(error);
-      // throw new Error(error.respose.data);
+      // console.log(error);
+      throw new Error(error.respose.data);
     });
 });
