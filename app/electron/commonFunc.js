@@ -141,8 +141,7 @@ const getHash = string => {
  * @returns {string}
  */
 const ecdsaSign = (data, key) => {
-  const msg = Buffer.from(data, 'hex');
-  const shaMsg = bitcoin.crypto.sha256(msg).toString('hex');
+  const shaMsg = bitcoin.crypto.sha256(data).toString('hex');
   // signature
   const signObj = ec.sign(shaMsg, key, { canonical: true });
   return `${signObj.r.toString('hex')}${signObj.s.toString('hex')}`;
