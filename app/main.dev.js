@@ -58,7 +58,7 @@ const installExtensions = async () => {
 };
 
 /**
- * Add event listeners...
+ * Event listeners...
  */
 
 app.on('window-all-closed', () => {
