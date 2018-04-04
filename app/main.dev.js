@@ -522,11 +522,10 @@ ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
       const signatures = data.data.map(transaction => (
         cF.ecdsaSign(transaction, userData.csk)
       ));
-      console.log(signatures);
       return {
         from: userData.address,
         txid: data.txid,
-        minenow: false,
+        minenow: true,
         signatures
       };
     })
@@ -542,7 +541,6 @@ ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
     })
     .then(() => mainWindow.webContents.send('transaction:done'))
     .catch(error => {
-      // console.log(error);
       throw new Error(error.respose.data);
     });
 });
