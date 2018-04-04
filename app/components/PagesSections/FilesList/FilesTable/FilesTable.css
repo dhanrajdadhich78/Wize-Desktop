@@ -1,0 +1,98 @@
+.FilesList {
+  list-style: none;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+.FilesList li {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 300;
+  color: #989898;
+  min-width: calc(5 * 228px);
+}
+
+.FilesList li:first-of-type {
+  background-color: #2c2d2f;
+  text-transform: uppercase;
+}
+
+.FilesList li > span {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  min-width: 228px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  padding: 27px 24px 21px;
+}
+
+.FilesList li > span:first-of-type {
+  width: 60%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.FilesList li > span:not(:first-of-type) {
+  width: 10%;
+}
+
+.FilesList li:not(:first-of-type):not(:nth-of-type(2)):not(:last-of-type) > span:not(:last-of-type) {
+  border-right: 2px solid #28292b;
+}
+
+.FilesList li > span button {
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 24px;
+  font-weight: 300;
+  color: #989898;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s linear;
+  outline: none;
+}
+
+.FilesList li > span button:hover,
+.FilesList li > span button:active {
+  color: #32b3d3;
+}
+
+.FilesList li > span:nth-of-type(4),
+.FilesList li > span:nth-of-type(5) {
+  padding-right: 15px;
+}
+
+@media (max-width: 1600px) {
+  .FilesList li {
+    font-size: 14px;
+    min-width: 0;
+  }
+
+  .FilesList li > span {
+    min-width: 100px;
+    padding-left: 15px;
+    padding-right: 15px !important;
+  }
+
+  .FilesList li > span button {
+    font-size: 14px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

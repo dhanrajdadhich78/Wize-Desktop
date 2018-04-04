@@ -5,7 +5,8 @@ const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
 const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
-const ecdsa = require('ecdsa');
+const EC = require('elliptic').ec;
+const ec = new EC('secp256k1');
 
 /**
  * clean array from null values
@@ -141,9 +142,10 @@ const getHash = string => {
  */
 const ecdsaSign = (data, key) => {
   const msg = Buffer.from(data, 'hex');
-  const shaMsg = SHA256(msg);
+  const shaMsg = bitcoin.crypto.sha256(msg).toString('hex');
   // signature
-  return ecdsa.sign(shaMsg, key);
+  const signObj = ec.sign(shaMsg, key, { canonical: true });
+  return `${signObj.r.toString('hex')}${signObj.s.toString('hex')}`;
 };
 
 module.exports = {
