@@ -179,7 +179,7 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       const origin = JSON.parse(decrypt.strData).cpk;
       // //  remember cpk of user for unmount
       // cpkGlob = origin;
-      //  user origin create and mount requests
+      // user origin create and mount requests
       axios.post(`${FS_URL}`, { data: { origin } })
         .then(() => (
           axios.post(`${FS_URL}/${origin}/mount`)
@@ -517,17 +517,17 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
   };
   return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
     .then(({ data }) => {
-      // console.log(data);
-      const signatures = data.data.map(transaction => (
-        wallet.ecdsaSign(transaction, userData.csk)
-      ));
-      console.log(`signatures: ${signatures}`);
+      // console.log(`data ${JSON.stringify(data)}`);
+      // const signatures = data.data.map(transaction => (
+      //   wallet.ecdsaSign(transaction, userData.csk)
+      // ));
+      // console.log(`signatures: ${signatures}`);
       return {
         from: userData.address,
         txid: data.txid,
         minenow,
         signatures: data.signatures
-        // signatures
+        // signatures,
         // signaturesGO: data.signatures
       };
     })
