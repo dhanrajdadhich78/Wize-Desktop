@@ -6,11 +6,12 @@ const pbkdf2 = require('pbkdf2');
 const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
 const EC = require('elliptic').ec;
+
 const ec = new EC('secp256k1');
 
 /**
  * clean array from null values
- * @param actual
+ * @param actual {Array}
  * @returns {Array}
  */
 const cleanArray = actual => {
@@ -26,7 +27,7 @@ const cleanArray = actual => {
 
 /**
  * check does folder exist
- * @param filePath
+ * @param filePath {string}
  * @returns {bool}
  */
 const ensureDirectoryExistence = filePath => {
@@ -39,10 +40,10 @@ const ensureDirectoryExistence = filePath => {
 
 /**
  * AES encryption of data
- * @param data
- * @param password
- * @param stringStandard
- * @param aesJsCounter
+ * @param data {string}
+ * @param password {string}
+ * @param stringStandard {string}
+ * @param aesJsCounter {number}
  * @returns {{salt: string, aesKey, dataBytes: *, aesCtr: ModeOfOperationCTR, encryptedBytes: *|PromiseLike<ArrayBuffer>, encryptedHex: *}}
  */
 const aesEncrypt = (data, password, stringStandard = 'base64', aesJsCounter = 5) => {
@@ -69,10 +70,10 @@ const aesEncrypt = (data, password, stringStandard = 'base64', aesJsCounter = 5)
 
 /**
  * AES decryption of data
- * @param encryptedHex
- * @param password
- * @param stringStandard
- * @param aesJsCounter
+ * @param encryptedHex {string}
+ * @param password {string}
+ * @param stringStandard {string}
+ * @param aesJsCounter {number}
  * @returns {{salt: string, aesKey, encryptedBytes: *, aesCtr: ModeOfOperationCTR, decryptedBytes: *|PromiseLike<ArrayBuffer>, strData: *}}
  */
 const aesDecrypt = (encryptedHex, password, stringStandard = 'base64', aesJsCounter = 5) => {
@@ -100,8 +101,8 @@ const aesDecrypt = (encryptedHex, password, stringStandard = 'base64', aesJsCoun
 
 /**
  * file crushing for n parts
- * @param file
- * @param shardsNumber
+ * @param file {object}
+ * @param shardsNumber {number}
  * @returns {Array}
  */
 const fileCrushing = (file, shardsNumber = 3) => {
@@ -125,7 +126,7 @@ const fileCrushing = (file, shardsNumber = 3) => {
 
 /**
  * get hash from string
- * @param string
+ * @param string {string}
  * @returns {string}
  */
 const getHash = string => {
@@ -136,8 +137,8 @@ const getHash = string => {
 
 /**
  * ecdsa sign of data string with key
- * @param data
- * @param key
+ * @param data {string}
+ * @param key {string}
  * @returns {string}
  */
 const ecdsaSign = (data, key) => {
