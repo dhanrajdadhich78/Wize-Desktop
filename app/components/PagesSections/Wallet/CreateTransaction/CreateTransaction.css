@@ -1,0 +1,9 @@
+.FormGroup {
+  display: block;
+  width: 100%;
+  margin: 15px 0;
+}
+
+.FormGroup label {
+  cursor: pointer;
+}

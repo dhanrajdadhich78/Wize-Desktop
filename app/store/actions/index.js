@@ -1,6 +1,7 @@
 export {
   registration,
-  auth
+  auth,
+  logout
 } from './auth';
 export {
   getCredFilesList,

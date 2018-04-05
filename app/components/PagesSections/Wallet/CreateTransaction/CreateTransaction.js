@@ -141,6 +141,15 @@ class CreateTransaction extends Component {
             />
           ))
         }
+        <div className={classes.FormGroup}>
+          <input
+            id="wallet-minenow"
+            type="checkbox"
+            checked={this.props.minenow}
+            onChange={() => this.props.handleOnMineNowCheck()}
+          />
+          <label htmlFor="wallet-minenow">Minenow</label>
+        </div>
         <Button
           disabled={
             // !this.state.controls.from.valid ||
@@ -187,6 +196,8 @@ class CreateTransaction extends Component {
 }
 
 CreateTransaction.propTypes = {
+  minenow: PropTypes.bool.isRequired,
+  handleOnMineNowCheck: PropTypes.func.isRequired,
   handleSubmitTransaction: PropTypes.func.isRequired
 };
 
