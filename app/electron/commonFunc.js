@@ -7,7 +7,16 @@ const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
 const EC = require('elliptic').ec;
 
-const ec = new EC('secp256k1');
+const ec = new EC('p256');
+
+const newKeyPair = () => {
+  const keyPair = ec.genKeyPair();
+  return {
+    private: keyPair.getPrivate(),
+    publicX: keyPair.getPublic().x,
+    publicY: keyPair.getPublic().y
+  };
+};
 
 /**
  * clean array from null values
@@ -149,6 +158,7 @@ const ecdsaSign = (data, key) => {
 };
 
 module.exports = {
+  newKeyPair,
   cleanArray,
   ensureDirectoryExistence,
   aesEncrypt,

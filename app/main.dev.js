@@ -97,6 +97,7 @@ app.on('ready', async () => {
   });
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
+  console.log(cF.newKeyPair());
 });
 //  listener, that check if user internet connection is available
 ipcMain.on('internet-connection:check', () => {
