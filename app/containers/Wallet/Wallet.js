@@ -11,10 +11,15 @@ import Heading from '../../components/UI/Heading/Heading';
 import CreateTransaction from '../../components/PagesSections/Wallet/CreateTransaction/CreateTransaction';
 
 class Wallet extends Component {
+  state = {
+    minenow: false
+  };
+  handleOnMineNowCheck = () => this.setState({ minenow: !this.state.minenow });
   handleSubmitTransaction = (to, amount) => {
     // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
-    ipcRenderer.send('transaction:create', { userData, to, amount });
+    const minenow = this.state.minenow;
+    ipcRenderer.send('transaction:create', { userData, to, amount, minenow });
     ipcRenderer.on('transaction:done', () => {
       this.props.getBallance(this.props.userData.address);
     });
@@ -34,6 +39,8 @@ class Wallet extends Component {
               Trans<span>action</span>
             </Heading>
             <CreateTransaction
+              minenow={this.state.minenow}
+              handleOnMineNowCheck={() => this.handleOnMineNowCheck()}
               handleSubmitTransaction={(to, amount) => this.handleSubmitTransaction(to, amount)}
             />
           </div>

@@ -510,7 +510,7 @@ ipcMain.on('blockchain:wallet-check', (event, address) => {
     });
 });
 //  on create prepare and create transaction listener
-ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
+ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
   const prepData = {
     from: userData.address,
     to,
@@ -525,7 +525,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount }) => {
       return {
         from: userData.address,
         txid: data.txid,
-        minenow: true,
+        minenow,
         signatures
       };
     })

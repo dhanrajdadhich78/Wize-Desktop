@@ -51,3 +51,7 @@ export const auth = (password, filePath) => dispatch => {
   });
   // ipcRenderer.on('auth:error', (event, error) => dispatch(authFail(error)));
 };
+
+export const logout = () => ({
+  type: actionTypes.AUTH_LOGOUT
+});
