@@ -1,21 +1,24 @@
-/* eslint-disable max-len */
+/* eslint-disable max-len,no-plusplus */
 const fs = require('fs');
 const bitcoin = require('bitcoinjs-lib');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
+const CryptoJS = require('crypto-js');
 const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
-const EC = require('elliptic').ec;
 
-const ec = new EC('p256');
 
-const newKeyPair = () => {
-  const keyPair = ec.genKeyPair();
-  return {
-    private: keyPair.getPrivate(),
-    publicX: keyPair.getPublic().x,
-    publicY: keyPair.getPublic().y
-  };
+/**
+ * convert string to bytes array
+ * @param string {string}
+ * @returns {Array}
+ */
+const stringToBytes = string => {
+  const result = [];
+  for (let i = 0; i < string.length; i++) {
+    result.push(string.charCodeAt(i));
+  }
+  return result;
 };
 
 /**
@@ -141,29 +144,15 @@ const fileCrushing = (file, shardsNumber = 3) => {
 const getHash = string => {
   // const publicSHA256 = bitcoin.crypto.sha256(string);
   const publicSHA256 = SHA256(string);
-  return ripemd160(publicSHA256).toString();
-};
-
-/**
- * ecdsa sign of data string with key
- * @param data {string}
- * @param key {string}
- * @returns {string}
- */
-const ecdsaSign = (data, key) => {
-  const shaMsg = bitcoin.crypto.sha256(data).toString('hex');
-  // signature
-  const signObj = ec.sign(shaMsg, key, { canonical: true });
-  return `${signObj.r.toString('hex')}${signObj.s.toString('hex')}`;
+  return ripemd160(publicSHA256).toString(CryptoJS.enc.Hex);
 };
 
 module.exports = {
-  newKeyPair,
+  stringToBytes,
   cleanArray,
   ensureDirectoryExistence,
   aesEncrypt,
   aesDecrypt,
   fileCrushing,
-  getHash,
-  ecdsaSign
+  getHash
 };
