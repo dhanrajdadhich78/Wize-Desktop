@@ -1,4 +1,4 @@
-/* eslint-disable promise/catch-or-return */
+/* eslint-disable promise/catch-or-return,object-curly-newline */
 /* eslint global-require: 0, flowtype-errors/show-errors: 0 */
 /**
  * This module executes inside of electron's main process. You can start
@@ -20,12 +20,8 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
-const {
-  DIGEST_URL,
-  RAFT_URL,
-  FS_URL,
-  BLOCKCHAIN_URL
-} = require('./utils/const');
+const wallet = require('./electron/wallet');
+const { DIGEST_URL, RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
@@ -97,7 +93,7 @@ app.on('ready', async () => {
   });
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
-  console.log(cF.newKeyPair());
+  // console.log(wallet.newCredentials());
 });
 //  listener, that check if user internet connection is available
 ipcMain.on('internet-connection:check', () => {
@@ -516,21 +512,27 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
-    pubkey: userData.cpk
+    pubkey: userData.cpk,
+    privkey: userData.csk
   };
   return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
     .then(({ data }) => {
+      // console.log(data);
       const signatures = data.data.map(transaction => (
-        cF.ecdsaSign(transaction, userData.csk)
+        wallet.ecdsaSign(transaction, userData.csk)
       ));
+      console.log(`signatures: ${signatures}`);
       return {
         from: userData.address,
         txid: data.txid,
         minenow,
-        signatures
+        signatures: data.signatures
+        // signatures
+        // signaturesGO: data.signatures
       };
     })
     .then(sendData => {
+      // console.log(sendData.signatures, sendData.signaturesGO);
       const prom = new Promise((resolve, reject) => {
         setTimeout(() => (
           axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
