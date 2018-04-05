@@ -2,6 +2,7 @@ const CryptoJS = require('crypto-js');
 const EC = require('elliptic').ec;
 const bs58check = require('bs58check');
 const bitcoin = require('bitcoinjs-lib');
+const crypto = require('crypto');
 
 const cF = require('./commonFunc');
 
@@ -46,11 +47,14 @@ const checkSum = payload => {
  * @returns {string}
  */
 const ecdsaSign = (data, key) => {
-  const shaMsg = CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
-  // signature
-  const signObj = ec.sign(shaMsg, key, { canonical: true });
-  console.log(signObj.encode('hex'));
+  // const shaMsg = CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
+  // // signature
+  // const signObj = ec.sign(shaMsg, key, { canonical: true });
+  // console.log(signObj.encode('hex'));
   // return `${signObj.r.toString('hex')}${signObj.s.toString('hex')}`;
+  const sign = crypto.createSign('ecdsa-with-P256');
+  sign.update(data);
+  return sign.sign(key);
 };
 
 module.exports = {
