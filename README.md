@@ -1,23 +1,16 @@
-# wizebit-electron-react
+# Wizebit desktop app
 
 ## Install
 
 * **Note: requires a node version >= 7 and an npm version >= 4.**
-* **If you have installation or compilation issues with this project, please see [our debugging guide](https://github.com/chentsulin/electron-react-boilerplate/issues/400)**
+* **Project is based on [electron-react-bolerlate](https://github.com/chentsulin/electron-react-boilerplate). So if you have installation or compilation issues with this project, please see [debugging guide](https://github.com/chentsulin/electron-react-boilerplate/issues/400).**
 
-First, clone the repo via git:
-
-```bash
-git clone --depth=1 https://github.com/chentsulin/electron-react-boilerplate.git your-project-name
-```
-
-And then install dependencies with yarn.
+First, clone the repo via git and then install dependencies with npm.
 
 ```bash
-$ cd your-project-name
-$ yarn
+$ cd wize-desktop
+$ npm install
 ```
-**Note**: If you can't use [yarn](https://github.com/yarnpkg/yarn), run `npm install`.
 
 ## Run
 
