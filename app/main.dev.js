@@ -115,48 +115,81 @@ ipcMain.on('credentials-files-list:scan', () => {
 });
 //  on credentials generate listener
 ipcMain.on('registration:start', (event, password) => {
-  //  random sha256 hash
-  const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
-  const d = bigi.fromBuffer(hash);
-  //  generate key pair
-  const keyPair = new bitcoin.ECPair(d, null, { compressed: false });
-  //  extract public key buffer(compressed)
-  const cpkBuffer = keyPair.getPublicKeyBuffer();
-  //  get readable public key
-  //  to revert -> Buffer.from(publicKey, 'hex')
-  const cpk = cpkBuffer.toString('hex');
-  //  get private key
-  const csk = bs58check.decode(keyPair.toWIF()).toString('hex');
-  //  get address
-  const address = keyPair.getAddress();
-  //  json with credentials
-  const userData = {
-    csk,
-    cpk,
-    address
-  };
-  const strData = JSON.stringify(userData);
-  //  save to file
-  if (cF.ensureDirectoryExistence(configFolder)) {
-    const aes = cF.aesEncrypt(strData, password, 'hex');
-    fs.readdir(configFolder, (error, files) => {
-      if (error) {
-        throw new Error(error);
+  //  on desktop
+  // //  random sha256 hash
+  // const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
+  // const d = bigi.fromBuffer(hash);
+  // //  generate key pair
+  // const keyPair = new bitcoin.ECPair(d, null, { compressed: false });
+  // //  extract public key buffer(compressed)
+  // const cpkBuffer = keyPair.getPublicKeyBuffer();
+  // //  get readable public key
+  // //  to revert -> Buffer.from(publicKey, 'hex')
+  // const cpk = cpkBuffer.toString('hex');
+  // //  get private key
+  // const csk = bs58check.decode(keyPair.toWIF()).toString('hex');
+  // //  get address
+  // const address = keyPair.getAddress();
+  // //  json with credentials
+  // const userData = {
+  //   csk,
+  //   cpk,
+  //   address
+  // };
+  // const strData = JSON.stringify(userData);
+  // //  save to file
+  // if (cF.ensureDirectoryExistence(configFolder)) {
+  //   const aes = cF.aesEncrypt(strData, password, 'hex');
+  //   fs.readdir(configFolder, (error, files) => {
+  //     if (error) {
+  //       throw new Error(error);
+  //     }
+  //     const credFiles = files.map(file => (
+  //       !file.indexOf('credentials')
+  //         ? file
+  //         : null
+  //     ));
+  //     const credArr = cF.cleanArray(credFiles);
+  //     fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
+  //       if (err) {
+  //         throw new Error(err);
+  //       }
+  //       mainWindow.webContents.send('registration:complete', strData);
+  //     });
+  //   });
+  // }
+
+  //  on server
+  console.log(`${BLOCKCHAIN_URL}/wallet/new`);
+  axios.post(`${BLOCKCHAIN_URL}/wallet/new`)
+    .then(({ data }) => {
+      const userData = {
+        address: data.address,
+        cpk: data.pubkey,
+        csk: data.privkey
+      };
+      const strData = JSON.stringify(userData);
+      console.log(`userData ${strData}`);
+      //  save to file
+      // eslint-disable-next-line promise/always-return
+      if (cF.ensureDirectoryExistence(configFolder)) {
+        const aes = cF.aesEncrypt(strData, password, 'hex');
+        const files = fs.readdirSync(configFolder);
+        const credFiles = files.map(file => (
+          !file.indexOf('credentials')
+            ? file
+            : null
+        ));
+        const credArr = cF.cleanArray(credFiles);
+        fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
+          if (err) {
+            throw new Error(err);
+          }
+          mainWindow.webContents.send('registration:complete', strData);
+        });
       }
-      const credFiles = files.map(file => (
-        !file.indexOf('credentials')
-          ? file
-          : null
-      ));
-      const credArr = cF.cleanArray(credFiles);
-      fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
-        if (err) {
-          throw new Error(err);
-        }
-        mainWindow.webContents.send('registration:complete', strData);
-      });
-    });
-  }
+    })
+    .catch(error => { throw new Error(error); });
 });
 //  on auth listener
 ipcMain.on('auth:start', (event, { password, filePath }) => {
@@ -508,42 +541,55 @@ ipcMain.on('blockchain:wallet-check', (event, address) => {
 });
 //  on create prepare and create transaction listener
 ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
+  //  more difficult
+  // const prepData = {
+  //   from: userData.address,
+  //   to,
+  //   amount: parseInt(amount, 10),
+  //   pubkey: userData.cpk,
+  //   privkey: userData.csk
+  // };
+  // return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
+  //   .then(({ data }) => {
+  //     // console.log(`data ${JSON.stringify(data)}`);
+  //     // const signatures = data.data.map(transaction => (
+  //     //   wallet.ecdsaSign(transaction, userData.csk)
+  //     // ));
+  //     // console.log(`signatures: ${signatures}`);
+  //     return {
+  //       from: userData.address,
+  //       txid: data.txid,
+  //       minenow,
+  //       signatures: data.signatures
+  //       // signatures,
+  //       // signaturesGO: data.signatures
+  //     };
+  //   })
+  //   .then(sendData => {
+  //     // console.log(sendData.signatures, sendData.signaturesGO);
+  //     const prom = new Promise((resolve, reject) => {
+  //       setTimeout(() => (
+  //         axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
+  //           .then(resp => resolve(resp.data))
+  //           .catch(error => reject(error.response))
+  //       ), 100);
+  //     });
+  //     return prom.then(d => console.log(d)).catch(error => console.log(error));
+  //   })
+  //   .then(() => mainWindow.webContents.send('transaction:done'))
+  //   .catch(error => {
+  //     throw new Error(error.respose.data);
+  //   });
+
+  //easy
   const prepData = {
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
-    pubkey: userData.cpk,
-    privkey: userData.csk
+    minenow
   };
+
   return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
-    .then(({ data }) => {
-      // console.log(`data ${JSON.stringify(data)}`);
-      // const signatures = data.data.map(transaction => (
-      //   wallet.ecdsaSign(transaction, userData.csk)
-      // ));
-      // console.log(`signatures: ${signatures}`);
-      return {
-        from: userData.address,
-        txid: data.txid,
-        minenow,
-        signatures: data.signatures
-        // signatures,
-        // signaturesGO: data.signatures
-      };
-    })
-    .then(sendData => {
-      // console.log(sendData.signatures, sendData.signaturesGO);
-      const prom = new Promise((resolve, reject) => {
-        setTimeout(() => (
-          axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
-            .then(resp => resolve(resp.data))
-            .catch(error => reject(error.response))
-        ), 100);
-      });
-      return prom.then(d => console.log(d)).catch(error => console.log(error));
-    })
-    .then(() => mainWindow.webContents.send('transaction:done'))
-    .catch(error => {
-      throw new Error(error.respose.data);
-    });
+    .then(({ data }) => console.log(data))
+    .catch(error => { throw new Error(error); });
 });
