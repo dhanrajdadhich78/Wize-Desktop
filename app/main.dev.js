@@ -28,7 +28,7 @@ const MenuBuilder = require('./menu');
 const configFolder = process.platform !== 'win32' ? `${process.cwd()}/.wizeconfig` : `${process.cwd()}\\wizeconfig`;
 
 let mainWindow;
-// let cpkGlob;
+let cpkGlob;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -78,9 +78,10 @@ app.on('ready', async () => {
     minHeight: 600
   });
   mainWindow.on('closed', () => {
-    // if (cpkGlob) {
-    //   axios.post(`${FS_URL}/${cpkGlob}/unmount`);
-    // }
+    if (cpkGlob) {
+      // console.log(`${FS_URL}/${cpkGlob}/unmount`);
+      axios.post(`${FS_URL}/${cpkGlob}/unmount`);
+    }
     app.quit();
   });
   mainWindow.loadURL(`file://${__dirname}/app.html`);
@@ -214,7 +215,7 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       // create and mount bucket
       const origin = JSON.parse(decrypt.strData).cpk;
       // //  remember cpk of user for unmount
-      // cpkGlob = origin;
+      cpkGlob = origin;
       // user origin create and mount requests
       axios.post(`${FS_URL}`, { data: { origin } })
         .then(() => (
