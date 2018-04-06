@@ -6,7 +6,24 @@ const pbkdf2 = require('pbkdf2');
 const CryptoJS = require('crypto-js');
 const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
+const axios = require('axios');
 
+const { FS_URL } = require('../utils/const');
+
+/**
+ * unmount fs buket
+ * @param cpk {string}
+ * @param funcAfter {function}
+ */
+const unmountFs = (cpk, funcAfter = null) => (
+  axios.post(`${FS_URL}/${cpk}/unmount`)
+    .catch(error => {
+      console.log(error);
+      if (funcAfter) {
+        funcAfter();
+      }
+    })
+);
 
 /**
  * convert string to bytes array
@@ -148,6 +165,7 @@ const getHash = string => {
 };
 
 module.exports = {
+  unmountFs,
   stringToBytes,
   cleanArray,
   ensureDirectoryExistence,

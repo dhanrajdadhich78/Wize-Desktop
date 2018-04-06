@@ -79,10 +79,10 @@ app.on('ready', async () => {
   });
   mainWindow.on('closed', () => {
     if (cpkGlob) {
-      // console.log(`${FS_URL}/${cpkGlob}/unmount`);
-      axios.post(`${FS_URL}/${cpkGlob}/unmount`);
+      cF.unmountFs(cpkGlob, app.quit);
+    } else {
+      app.quit();
     }
-    app.quit();
   });
   mainWindow.loadURL(`file://${__dirname}/app.html`);
   mainWindow.webContents.on('did-finish-load', () => {
@@ -99,6 +99,8 @@ app.on('ready', async () => {
   //   .then(({ data }) => console.log(data))
   //   .catch(error => { throw new Error(error); });
 });
+// listener, that unmounts fs
+ipcMain.on('fs:unmount', () => (cpkGlob ? cF.unmountFs(cpkGlob) : null));
 //  listener, that check if user internet connection is available
 ipcMain.on('internet-connection:check', () => {
   isOnline()
