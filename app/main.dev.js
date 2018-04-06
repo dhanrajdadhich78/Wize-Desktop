@@ -94,6 +94,9 @@ app.on('ready', async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
   // console.log(wallet.newCredentials());
+  // axios.post(`${BLOCKCHAIN_URL}/wallet/new`, {})
+  //   .then(({ data }) => console.log(data))
+  //   .catch(error => { throw new Error(error); });
 });
 //  listener, that check if user internet connection is available
 ipcMain.on('internet-connection:check', () => {
@@ -160,14 +163,13 @@ ipcMain.on('registration:start', (event, password) => {
   // }
 
   //  on server
-  console.log(`${BLOCKCHAIN_URL}/wallet/new`);
-  axios.post(`${BLOCKCHAIN_URL}/wallet/new`)
-    .then(({ data }) => {
-      const userData = {
-        address: data.address,
-        cpk: data.pubkey,
-        csk: data.privkey
-      };
+  return setTimeout(() => axios.post(`${BLOCKCHAIN_URL}/wallet/new`, {})
+    .then(({ data }) => ({
+      address: data.address,
+      cpk: data.pubkey,
+      csk: data.privkey
+    }))
+    .then(userData => {
       const strData = JSON.stringify(userData);
       console.log(`userData ${strData}`);
       //  save to file
@@ -181,6 +183,7 @@ ipcMain.on('registration:start', (event, password) => {
             : null
         ));
         const credArr = cF.cleanArray(credFiles);
+        console.log(`credArr ${credArr}`);
         fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
           if (err) {
             throw new Error(err);
@@ -189,7 +192,7 @@ ipcMain.on('registration:start', (event, password) => {
         });
       }
     })
-    .catch(error => { throw new Error(error); });
+    .catch(error => { throw new Error(error); }), 100);
 });
 //  on auth listener
 ipcMain.on('auth:start', (event, { password, filePath }) => {
@@ -586,10 +589,13 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
-    minenow
+    minenow,
+    pubkey: userData.cpk,
+    privKey: userData.csk
   };
 
-  return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
+  return axios.post(`${BLOCKCHAIN_URL}/send`, prepData)
     .then(({ data }) => console.log(data))
+    .then(() => mainWindow.webContents.send('transaction:done'))
     .catch(error => { throw new Error(error); });
 });
