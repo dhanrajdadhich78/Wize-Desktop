@@ -12,7 +12,7 @@ import CreateTransaction from '../../components/PagesSections/Wallet/CreateTrans
 
 class Wallet extends Component {
   state = {
-    minenow: false
+    minenow: true
   };
   handleOnMineNowCheck = () => this.setState({ minenow: !this.state.minenow });
   handleSubmitTransaction = (to, amount) => {

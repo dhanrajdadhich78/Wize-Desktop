@@ -141,7 +141,7 @@ class CreateTransaction extends Component {
             />
           ))
         }
-        <div className={classes.FormGroup}>
+        <div className={classes.FormGroup} style={{ display: 'none' }}>
           <input
             id="wallet-minenow"
             type="checkbox"
