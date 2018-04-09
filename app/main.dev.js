@@ -409,9 +409,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
-    minenow,
-    pubkey: userData.cpk,
-    privKey: userData.csk
+    minenow
   };
 
   return axios.post(`${BLOCKCHAIN_URL}/send`, prepData)
