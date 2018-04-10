@@ -95,10 +95,10 @@ app.on('ready', async () => {
 // listener, that unmounts fs
 ipcMain.on('fs:unmount', () => (cpkGlob ? cF.unmountFs(cpkGlob) : null));
 //  listener, that check if user internet connection is available
-ipcMain.on('internet-connection:check', () => {
+ipcMain.on('internet-connection:check', () => (
   isOnline()
-    .then(online => mainWindow.webContents.send('internet-connection:status', online));
-});
+    .then(online => mainWindow.webContents.send('internet-connection:status', online))
+));
 //  listener, that scan default credential folder on users machine
 ipcMain.on('credentials-files-list:scan', () => {
   if (cF.ensureDirectoryExistence(configFolder)) {
@@ -109,8 +109,10 @@ ipcMain.on('credentials-files-list:scan', () => {
         : null
     ));
     const credentials = cF.cleanArray(credFiles);
-    mainWindow.webContents.send('credentials-files-list:get', credentials);
+    return mainWindow.webContents.send('credentials-files-list:get', credentials);
   }
+
+  return false;
 });
 //  on credentials generate listener
 ipcMain.on('registration:start', (event, password) => (
@@ -153,7 +155,7 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
   if (credFilePath.indexOf('/') < 0 || !credFilePath) {
     credFilePath = `${configFolder}/${filePath}`;
   }
-  fs.readFile(credFilePath, (err, data) => {
+  return fs.readFile(credFilePath, (err, data) => {
     if (err) {
       throw new Error(err);
     }
@@ -200,7 +202,7 @@ ipcMain.on('digest:get', (event, { userData, password }) => {
     .catch(err => { throw new Error(err); });
 });
 //  get my files list listener
-ipcMain.on('file:list', (event, userData) => {
+ipcMain.on('file:list', (event, userData) => (
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     .then((response) => {
       let filesList = [];
@@ -224,8 +226,8 @@ ipcMain.on('file:list', (event, userData) => {
       }
       mainWindow.webContents.send('file:your-list', filesList);
     })
-    .catch(error => console.log(error.response));
-});
+    .catch(error => console.log(error.response))
+));
 //  send files listener
 ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
   const updRaft = (defaultObj, filename, fileInfo) => {
@@ -256,7 +258,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
     const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
     resolve({ file, shards });
   }));
-  Promise.all(filesPromise)
+  return Promise.all(filesPromise)
     .then(results => (
       results.map(({ file, shards }) => {
         //  create sha256 signature
@@ -321,7 +323,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
     .catch(error => console.log(error));
 });
 //  on file download listener
-ipcMain.on('file:compile', (event, { userData, filename }) => {
+ipcMain.on('file:compile', (event, { userData, filename }) => (
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     .then(response => {
       const fileList = {
@@ -351,10 +353,10 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
         mainWindow.webContents.send('file:receive', base64File);
       }
     })
-    .catch(error => console.log(error));
-});
+    .catch(error => console.log(error))
+));
 //  on file remove listener
-ipcMain.on('file:remove', (event, { userData, filename }) => {
+ipcMain.on('file:remove', (event, { userData, filename }) => (
   axios.get(`${RAFT_URL}/${userData.cpk}`)
     //  user raft object
     // eslint-disable-next-line promise/always-return
@@ -391,12 +393,13 @@ ipcMain.on('file:remove', (event, { userData, filename }) => {
         )))
         .catch(error => console.log(error));
     })
-    .catch(error => console.log(error));
-});
+    .catch(error => console.log(error))
+));
 //  on blockchain wallet check listener
 ipcMain.on('blockchain:wallet-check', (event, address) => {
-  axios.get(`${BLOCKCHAIN_URL}/wallet/${address}`)
-    .then(({ data }) => (
+  console.log('get balance');
+  return axios.get(`${BLOCKCHAIN_URL}/wallet/${address}`)
+    .then(({data}) => (
       mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
     ))
     .catch(error => {
@@ -409,13 +412,10 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
-    minenow,
-    pubkey: userData.cpk,
-    privKey: userData.csk
+    minenow
   };
 
   return axios.post(`${BLOCKCHAIN_URL}/send`, prepData)
-    .then(({ data }) => console.log(data))
-    .then(() => mainWindow.webContents.send('transaction:done'))
+    .then(({ data }) => { mainWindow.webContents.send('transaction:done'); return console.log(data); })
     .catch(error => { throw new Error(error); });
 });
