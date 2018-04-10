@@ -25,9 +25,8 @@ class Wallet extends Component {
       amount,
       minenow
     });
-    console.log(this.props.userData);
     ipcRenderer.on('transaction:done', () => {
-      this.props.getBallance(this.props.userData.address);
+      this.props.getBalance(this.props.userData.address);
     });
   };
   render() {
@@ -38,7 +37,7 @@ class Wallet extends Component {
           <div className={classes.WaleltsInfo}>
             <p>Wallet: <span>{this.props.userData.address}</span></p>
             <p>Public key: <span>{this.props.userData.cpk}</span></p>
-            <p>Ballance: <span>{ this.props.ballance } WB</span></p>
+            <p>Balance: <span>{ this.props.balance } WB</span></p>
           </div>
           <div className={classes.WalletOperations}>
             <Heading size={2} fontSize={24} fontWeight={200} divider={false}>
@@ -62,8 +61,8 @@ Wallet.propTypes = {
     cpk: PropTypes.string,
     address: PropTypes.string
   }),
-  ballance: PropTypes.number.isRequired,
-  getBallance: PropTypes.func.isRequired
+  balance: PropTypes.number.isRequired,
+  getBalance: PropTypes.func.isRequired
 };
 
 Wallet.defaultProps = {
@@ -76,11 +75,11 @@ Wallet.defaultProps = {
 
 const mapStateToProps = state => ({
   userData: state.auth.userData,
-  ballance: state.blockchain.ballance
+  balance: state.blockchain.balance
 });
 
 const mapDispatchToProps = dispatch => ({
-  getBallance: address => dispatch(actions.getBallance(address))
+  getBalance: address => dispatch(actions.getBalance(address))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
