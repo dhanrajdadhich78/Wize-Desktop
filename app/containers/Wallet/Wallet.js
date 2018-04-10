@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -16,10 +17,15 @@ class Wallet extends Component {
   };
   handleOnMineNowCheck = () => this.setState({ minenow: !this.state.minenow });
   handleSubmitTransaction = (to, amount) => {
-    // eslint-disable-next-line prefer-destructuring
     const userData = this.props.userData;
     const minenow = this.state.minenow;
-    ipcRenderer.send('transaction:create', { userData, to, amount, minenow });
+    ipcRenderer.send('transaction:create', {
+      userData,
+      to,
+      amount,
+      minenow
+    });
+    console.log(this.props.userData);
     ipcRenderer.on('transaction:done', () => {
       this.props.getBallance(this.props.userData.address);
     });
