@@ -3,9 +3,13 @@ import { ipcRenderer } from 'electron';
 import * as actionTypes from './actionTypes';
 
 
-const getBalanceStart = (address, bcNode) => {
-  // console.log(address, bcNode);
-  ipcRenderer.send('blockchain:wallet-check', { address, bcUrl: bcNode });
+const getBalanceStart = (address, bcNode) => dispatch => {
+  ipcRenderer.send('blockchain:wallet-check', { address, bcNode });
+  ipcRenderer.once('blockchain:wallet-checked', (event, data) => {
+    console.log(data);
+    dispatch(getBalanceSuccess(JSON.parse(data)));
+    ipcRenderer.removeAllListeners('blockchain:wallet-check');
+  });
   return {
     type: actionTypes.GET_BALANCE_START
   };
@@ -22,9 +26,6 @@ const getBalanceSuccess = data => ({
 // eslint-disable-next-line import/prefer-default-export
 export const getBalance = (address, bcNode) => dispatch => {
   dispatch(getBalanceStart(address, bcNode));
-  ipcRenderer.on('blockchain:wallet-checked', (event, data) => {
-    dispatch(getBalanceSuccess(JSON.parse(data)));
-  });
 };
 
 // const ckeckBlockchainStart = () => ();

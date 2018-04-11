@@ -413,10 +413,11 @@ ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
     .catch(error => { throw new Error(error); })
 ));
 //  on blockchain wallet check listener
-ipcMain.on('blockchain:wallet-check', (event, { address, bcUrl }) => (
-  setTimeout(() => axios.get(`${bcUrl}/wallet/${address}`)
+ipcMain.on('blockchain:wallet-check', (event, { address, bcNode }) => (
+  setTimeout(() => axios.get(`${bcNode}/wallet/${address}`)
     .then(({ data }) => (
-      mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
+      // mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
+      event.sender.send('blockchain:wallet-checked', JSON.stringify(data))
     ))
     .catch(error => {
       throw new Error(error.respose.data);

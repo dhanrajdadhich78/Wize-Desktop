@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in,no-restricted-syntax */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -13,24 +14,7 @@ import Modal from '../../../UI/Modal/Modal';
 
 class CreateTransaction extends Component {
   state = {
-    loading: null,
-    // error : null,
     controls: {
-      // from: {
-      //   elementType: 'select',
-      //   elementConfig: {
-      //     type: 'text',
-      //     placeholder: 'From wallet',
-      //     options: []
-      //   },
-      //   // value: '',
-      //   validation: {
-      //     required: true
-      //   },
-      //   valid: false,
-      //   touched: false,
-      //   errorMessage: null
-      // },
       to: {
         elementType: 'input',
         elementConfig: {
@@ -65,26 +49,6 @@ class CreateTransaction extends Component {
       }
     }
   };
-  // componentWillMount() {
-  //   const options = [];
-  //   // eslint-disable-next-line no-return-assign
-  //   this.props.walletsList.map(wallet => options[options.length] = {
-  //     value: wallet.address,
-  //     displayValue: wallet.address
-  //   });
-  //   this.setState({
-  //     controls: {
-  //       ...this.state.controls,
-  //       from: {
-  //         ...this.state.controls.from,
-  //         elementConfig: {
-  //           ...this.state.controls.from.elementConfig,
-  //           options
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
   inputChangedHandler = (event, controlName) => {
     const updatedControls = {
       ...this.state.controls,
@@ -148,13 +112,15 @@ class CreateTransaction extends Component {
             checked={this.props.minenow}
             onChange={() => this.props.handleOnMineNowCheck()}
           />
+          {/* eslint-disable-next-line jsx-a11y/label-has-for */}
           <label htmlFor="wallet-minenow">Minenow</label>
         </div>
         <Button
           disabled={
             // !this.state.controls.from.valid ||
             !this.state.controls.to.valid ||
-            !this.state.controls.amount.value >= 1
+            !this.state.controls.amount.value >= 1 ||
+            this.props.transactionLoading
           }
         >
           Send
@@ -162,7 +128,7 @@ class CreateTransaction extends Component {
       </form>
     );
 
-    if (this.state.loading) {
+    if (this.state.transactionLoading) {
       form = <Spinner />;
     }
 
@@ -177,7 +143,11 @@ class CreateTransaction extends Component {
               ? (
                 <div className={classes.ModalContent}>
                   <h1>{this.state.error}</h1>
-                  <Button onClick={() => this.setState({ error: null })}>Ok</Button>
+                  <Button
+                    onClick={() => this.setState({ error: null })}
+                  >
+                    Ok
+                  </Button>
                 </div>
               )
               : null
@@ -191,14 +161,14 @@ class CreateTransaction extends Component {
         </div>
       </Aux>
     );
-
   }
 }
 
 CreateTransaction.propTypes = {
   minenow: PropTypes.bool.isRequired,
   handleOnMineNowCheck: PropTypes.func.isRequired,
-  handleSubmitTransaction: PropTypes.func.isRequired
+  handleSubmitTransaction: PropTypes.func.isRequired,
+  transactionLoading: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = state => ({

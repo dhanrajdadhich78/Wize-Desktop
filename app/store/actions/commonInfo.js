@@ -34,7 +34,7 @@ const checkInternetFail = () => ({ type: actionTypes.NET_CHECK_FAIL });
 // eslint-disable-next-line import/prefer-default-export
 export const checkInternet = () => dispatch => {
   dispatch(ckeckInternetStart());
-  ipcRenderer.on('internet-connection:status', (event, online) => (
+  ipcRenderer.once('internet-connection:status', (event, online) => (
     online
       ? dispatch(checkInternetSuccess())
       : dispatch(checkInternetFail())
