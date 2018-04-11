@@ -31,12 +31,16 @@ class Homepage extends Component {
     dropzoneInput: true
   });
   render() {
+    // const fsNode = `http://${this.props.fsNodes[0]}/buckets`;
+    // const bcNode = `http://${this.props.bcNodes[0]}:4000`;
     let view = (
       <Auth
         authError={this.props.authError}
         cachePassword={this.state.password}
         userData={this.props.userData}
-        handleAuth={(password, filePath) => this.props.handleAuth(password, filePath)}
+        handleAuth={(password, filePath) => (
+          this.props.handleAuth(password, filePath)
+        )}
         altCredFilePath={this.state.altCredFilePath}
         handleToggleAltCredFile={() => this.handleToggleAltCredFile()}
         credFilePath={this.state.credFilePath}
@@ -52,7 +56,9 @@ class Homepage extends Component {
       view = (
         <Registration
           userData={this.props.userData}
-          handleRegister={(password, filePath) => this.props.handleRegister(password, filePath)}
+          handleRegister={(password, filePath) => (
+            this.props.handleRegister(password, filePath)
+          )}
           cachePassword={password => this.setState({ password })}
           lastCredFile={`credentials-${this.props.credentials.length}.bak`}
         />
@@ -87,6 +93,8 @@ Homepage.propTypes = {
   handleAuth: PropTypes.func.isRequired,
   authError: PropTypes.string,
   credentials: PropTypes.arrayOf(PropTypes.string).isRequired
+  // fsNodes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  // bcNodes: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 Homepage.defaultProps = {
@@ -102,11 +110,17 @@ const mapStateToProps = state => ({
   userData: state.auth.userData,
   authError: state.auth.error,
   credentials: state.commonInfo.credentials
+  // fsNodes: state.digest.fsNodes,
+  // bcNodes: state.digest.bcNodes
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleRegister: (password, filePath) => dispatch(actions.registration(password, filePath)),
-  handleAuth: (password, filePath) => dispatch(actions.auth(password, filePath))
+  handleRegister: (password, filePath) => (
+    dispatch(actions.registration(password, filePath))
+  ),
+  handleAuth: (password, filePath) => (
+    dispatch(actions.auth(password, filePath))
+  )
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Homepage);

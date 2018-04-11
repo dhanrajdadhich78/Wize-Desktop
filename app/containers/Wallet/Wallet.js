@@ -19,14 +19,16 @@ class Wallet extends Component {
   handleSubmitTransaction = (to, amount) => {
     const userData = this.props.userData;
     const minenow = this.state.minenow;
+    const bcNode = `http://${this.props.bcNodes[0]}:4000`;
     ipcRenderer.send('transaction:create', {
       userData,
       to,
       amount,
-      minenow
+      minenow,
+      bcNode
     });
     ipcRenderer.on('transaction:done', () => {
-      this.props.getBalance(this.props.userData.address);
+      this.props.getBalance(this.props.userData.address, bcNode);
     });
   };
   render() {
@@ -62,7 +64,8 @@ Wallet.propTypes = {
     address: PropTypes.string
   }),
   balance: PropTypes.number.isRequired,
-  getBalance: PropTypes.func.isRequired
+  getBalance: PropTypes.func.isRequired,
+  bcNodes: PropTypes.arrayOf(PropTypes.string)
 };
 
 Wallet.defaultProps = {
@@ -70,16 +73,18 @@ Wallet.defaultProps = {
     csk: null,
     cpk: null,
     address: null
-  }
+  },
+  bcNodes: []
 };
 
 const mapStateToProps = state => ({
   userData: state.auth.userData,
-  balance: state.blockchain.balance
+  balance: state.blockchain.balance,
+  bcNodes: state.digest.digestInfo.bcNodes
 });
 
 const mapDispatchToProps = dispatch => ({
-  getBalance: address => dispatch(actions.getBalance(address))
+  getBalance: (address, bcNode) => dispatch(actions.getBalance(address, bcNode))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);

@@ -12,8 +12,7 @@ import FilesTable from '../../components/PagesSections/FilesList/FilesTable/File
 
 class FilesList extends Component {
   state = {
-    files: null,
-    // transferTo: null
+    files: null
   };
   componentDidMount() {
     this.handleGetFiles();
@@ -21,13 +20,15 @@ class FilesList extends Component {
   //  request to raft through ipcRenderer, that gets file list
   handleGetFiles = () => {
     const userData = this.props.userData;
-    ipcRenderer.send('file:list', userData);
+    const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
+    ipcRenderer.send('file:list', { userData, raftNode });
     ipcRenderer.on('file:your-list', (event, filesList) => this.setState({ files: filesList }));
   };
   //  request to raft and fs through ipcRenderer, that handles file download
   handleDownload = filename => {
     const userData = this.props.userData;
-    ipcRenderer.send('file:compile', { userData, filename });
+    const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
+    ipcRenderer.send('file:compile', { userData, filename, raftNode });
     ipcRenderer.on('file:receive', (event, base64File) => {
       const blob = b64toBlob(base64File);
       FileSaver.default(blob, filename);
@@ -36,20 +37,12 @@ class FilesList extends Component {
   //  request to raft and fs through ipcRenderer, that handles file delete
   handleDelete = filename => {
     const userData = this.props.userData;
-    ipcRenderer.send('file:remove', { userData, filename });
+    const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
+    ipcRenderer.send('file:remove', { userData, filename, raftNode });
     ipcRenderer.on('file:removed', () => {
       this.handleGetFiles();
     });
   };
-  // handleCloseModal = () => {
-  //   this.setState({ modalContent: null, transferTo: null });
-  //   this.handleGetFiles();
-  // };
-  // handleTransfer = filename => {
-  //   const userData = this.props.userData;
-  //   const to = this.state.transferTo;
-  //   ipcRenderer.send('file:transfer', { userData, filename, to });
-  // };
   render() {
     return (
       <div className={classes.FilesListWrapper}>
@@ -68,11 +61,13 @@ FilesList.propTypes = {
     csk: PropTypes.string.isRequired,
     cpk: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired
-  }).isRequired
+  }).isRequired,
+  raftNodes: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 const mapStateToProps = state => ({
-  userData: state.auth.userData
+  userData: state.auth.userData,
+  raftNodes: state.digest.digestInfo.raftNodes
 });
 
 export default connect(mapStateToProps)(FilesList);
