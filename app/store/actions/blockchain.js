@@ -6,7 +6,6 @@ import * as actionTypes from './actionTypes';
 const getBalanceStart = (address, bcNode) => dispatch => {
   ipcRenderer.send('blockchain:wallet-check', { address, bcNode });
   ipcRenderer.once('blockchain:wallet-checked', (event, data) => {
-    console.log(data);
     dispatch(getBalanceSuccess(JSON.parse(data)));
     ipcRenderer.removeAllListeners('blockchain:wallet-check');
   });
