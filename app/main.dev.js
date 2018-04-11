@@ -162,25 +162,8 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       throw new Error('There is no credentials file');
     } else {
       const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
-      // create and mount bucket
-      const origin = JSON.parse(decrypt.strData).cpk;
-      // //  remember cpk of user for unmount
-      cpkGlob = origin;
-      // user origin create and mount requests
-      // axios.post(`${fsUrl}`, { data: { origin } })
-      //   .then(() => (
-      //     axios.post(`${fsUrl}/${origin}/mount`)
-      //       .then(response => console.log(response.data))
-      //       .catch(error => console.log(error.response))
-      //   ))
-      //   .catch(error => {
-      //     if (error.response.status === 500) {
-      //       return axios.post(`${fsUrl}/${origin}/mount`)
-      //         .then(response => console.log(response.data))
-      //         .catch(er => console.log(er.response));
-      //     }
-      //     console.log(error.response);
-      //   });
+      //  remember cpk of user
+      cpkGlob = JSON.parse(decrypt.strData).cpk;
       // on user data decryption and mounting fs - give userData to react part
       mainWindow.webContents.send('auth:complete', decrypt.strData);
     }
@@ -188,7 +171,6 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
 });
 ipcMain.on('fs:mount', (event, fsUrl) => {
   const origin = cpkGlob;
-  console.log(fsUrl[0] === fsUrl[2]);
   let reqs = [];
   let reqs2 = [];
   if (fsUrl[0] === fsUrl[2]) {
@@ -212,7 +194,13 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
       if (error.response.status === 500) {
         return setTimeout(() => axios.all(reqs2)
           .then(() => mainWindow.webContents.send('fs:mounted'))
-          .catch(err => console.log(err.response)), 100);
+          .catch(err => {
+            if (err.response.status === 500) {
+              mainWindow.webContents.send('fs:mounted');
+            } else {
+              console.log(err.response.message);
+            }
+          }), 100);
       }
       console.log(error.response);
     }), 100);
@@ -255,7 +243,7 @@ ipcMain.on('file:list', (event, { userData, raftNode }) => (
       }
       mainWindow.webContents.send('file:your-list', filesList);
     })
-    .catch(error => console.log(error.response))
+    .catch(error => { throw new Error(error); })
 ));
 //  send files listener
 ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) => {
@@ -345,11 +333,11 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
               // when all shards are uploaded - update user raft object
               updRaft(res1.data, res.filename, res.fileInfo);
             }))
-            .catch(reason => console.log(reason));
+            .catch(reason => { throw new Error(reason); });
         }, ((i + 1) * 1000))
       ))
     ))
-    .catch(error => console.log(error));
+    .catch(error => { throw new Error(error); });
 });
 //  on file download listener
 ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
@@ -370,7 +358,7 @@ ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
         setTimeout(() => (
           axios.all(shardsReq)
             .then(ress => resolve(ress))
-            .catch(error => console.log(error))
+            .catch(error => { throw new Error(error); })
         ), 100)
       ));
     })
@@ -382,7 +370,7 @@ ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
         mainWindow.webContents.send('file:receive', base64File);
       }
     })
-    .catch(error => console.log(error))
+    .catch(error => { throw new Error(error); })
 ));
 //  on file remove listener
 ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
@@ -410,7 +398,7 @@ ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
               return updateObj;
             })
             .then(uObj => resolve(uObj))
-            .catch(error => console.log(error))
+            .catch(error => { throw new Error(error); })
         ), 100)
       ))
         .then(uObj => new Promise((resolve, reject) => (
@@ -420,9 +408,9 @@ ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
               .catch(error => reject(error.response))
           ), 100)
         )))
-        .catch(error => console.log(error));
+        .catch(error => { throw new Error(error); });
     })
-    .catch(error => console.log(error))
+    .catch(error => { throw new Error(error); })
 ));
 //  on blockchain wallet check listener
 ipcMain.on('blockchain:wallet-check', (event, { address, bcUrl }) => (
@@ -445,7 +433,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
 
   return setTimeout(() => (
     axios.post(`${bcNode}/send`, prepData)
-      .then(({ data }) => { mainWindow.webContents.send('transaction:done'); return console.log(data); })
+      .then(() => mainWindow.webContents.send('transaction:done'))
       .catch(error => { throw new Error(error); })
   ), 100);
 });
