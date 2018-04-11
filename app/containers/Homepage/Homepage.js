@@ -31,8 +31,6 @@ class Homepage extends Component {
     dropzoneInput: true
   });
   render() {
-    // const fsNode = `http://${this.props.fsNodes[0]}/buckets`;
-    // const bcNode = `http://${this.props.bcNodes[0]}:4000`;
     let view = (
       <Auth
         authError={this.props.authError}
@@ -93,8 +91,6 @@ Homepage.propTypes = {
   handleAuth: PropTypes.func.isRequired,
   authError: PropTypes.string,
   credentials: PropTypes.arrayOf(PropTypes.string).isRequired
-  // fsNodes: PropTypes.arrayOf(PropTypes.string).isRequired,
-  // bcNodes: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 Homepage.defaultProps = {
@@ -110,8 +106,6 @@ const mapStateToProps = state => ({
   userData: state.auth.userData,
   authError: state.auth.error,
   credentials: state.commonInfo.credentials
-  // fsNodes: state.digest.fsNodes,
-  // bcNodes: state.digest.bcNodes
 });
 
 const mapDispatchToProps = dispatch => ({
