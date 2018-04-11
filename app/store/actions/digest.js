@@ -21,7 +21,7 @@ const getDigestSuccess = digestInfo => ({
 // eslint-disable-next-line import/prefer-default-export
 export const getDigest = (userData, password) => dispatch => {
   dispatch(getDigestStart(userData, password));
-  ipcRenderer.on('digest:success', (event, data) => {
+  ipcRenderer.once('digest:success', (event, data) => {
     dispatch(getDigestSuccess(data));
     const fsNodes = data.storageNodes.map(item => `http://${item}:13000/buckets`);
     const bcNode = `http://${data.bcNodes[0]}:4000`;

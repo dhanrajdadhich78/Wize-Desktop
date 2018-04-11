@@ -13,10 +13,12 @@ import CreateTransaction from '../../components/PagesSections/Wallet/CreateTrans
 
 class Wallet extends Component {
   state = {
-    minenow: true
+    minenow: true,
+    transactionLoading: false
   };
   handleOnMineNowCheck = () => this.setState({ minenow: !this.state.minenow });
   handleSubmitTransaction = (to, amount) => {
+    this.setState({ transactionLoading: true });
     const userData = this.props.userData;
     const minenow = this.state.minenow;
     const bcNode = `http://${this.props.bcNodes[0]}:4000`;
@@ -27,8 +29,9 @@ class Wallet extends Component {
       minenow,
       bcNode
     });
-    ipcRenderer.on('transaction:done', () => {
+    ipcRenderer.once('transaction:done', () => {
       this.props.getBalance(this.props.userData.address, bcNode);
+      this.setState({ transactionLoading: false });
     });
   };
   render() {
@@ -46,6 +49,7 @@ class Wallet extends Component {
               Trans<span>action</span>
             </Heading>
             <CreateTransaction
+              transactionLoading={this.state.transactionLoading}
               minenow={this.state.minenow}
               handleOnMineNowCheck={() => this.handleOnMineNowCheck()}
               handleSubmitTransaction={(to, amount) => this.handleSubmitTransaction(to, amount)}

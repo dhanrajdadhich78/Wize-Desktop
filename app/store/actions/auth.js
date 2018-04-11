@@ -20,7 +20,7 @@ const regSuccess = userData => () => ({
 
 export const registration = (password, filePath) => dispatch => {
   dispatch(regStart(password));
-  ipcRenderer.on('registration:complete', (event, userData) => {
+  ipcRenderer.once('registration:complete', (event, userData) => {
     dispatch(regSuccess(JSON.parse(userData)));
     dispatch(auth(password, filePath));
   });
@@ -44,9 +44,9 @@ const authSuccess = userData => ({
 
 export const auth = (password, filePath) => dispatch => {
   dispatch(authStart(password, filePath));
-  ipcRenderer.on('auth:complete', (event, userData) => {
+  ipcRenderer.once('auth:complete', (event, userData) => {
     dispatch(getDigest(JSON.parse(userData), password));
-    ipcRenderer.on('fs:mounted', () => {
+    ipcRenderer.once('fs:mounted', () => {
       dispatch(authSuccess(JSON.parse(userData)));
     });
   });
@@ -59,6 +59,8 @@ export const auth = (password, filePath) => dispatch => {
   // ipcRenderer.on('auth:error', (event, error) => dispatch(authFail(error)));
 };
 
-export const logout = () => ({
-  type: actionTypes.AUTH_LOGOUT
-});
+export const logout = () => {
+  return {
+    type: actionTypes.AUTH_LOGOUT
+  };
+};
