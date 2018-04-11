@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
-import * as FileSaver from 'file-saver';
+import { saveAs } from 'file-saver';
 
 import classes from './FilesList.css';
 
@@ -22,16 +22,16 @@ class FilesList extends Component {
     const userData = this.props.userData;
     const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
     ipcRenderer.send('file:list', { userData, raftNode });
-    ipcRenderer.on('file:your-list', (event, filesList) => this.setState({ files: filesList }));
+    ipcRenderer.once('file:your-list', (event, filesList) => this.setState({ files: filesList }));
   };
   //  request to raft and fs through ipcRenderer, that handles file download
   handleDownload = filename => {
     const userData = this.props.userData;
     const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
     ipcRenderer.send('file:compile', { userData, filename, raftNode });
-    ipcRenderer.on('file:receive', (event, base64File) => {
+    ipcRenderer.once('file:receive', (event, base64File) => {
       const blob = b64toBlob(base64File);
-      FileSaver.default(blob, filename);
+      saveAs(blob, filename);
     });
   };
   //  request to raft and fs through ipcRenderer, that handles file delete
@@ -39,7 +39,7 @@ class FilesList extends Component {
     const userData = this.props.userData;
     const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
     ipcRenderer.send('file:remove', { userData, filename, raftNode });
-    ipcRenderer.on('file:removed', () => {
+    ipcRenderer.once('file:removed', () => {
       this.handleGetFiles();
     });
   };
