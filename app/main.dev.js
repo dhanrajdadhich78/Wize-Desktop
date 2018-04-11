@@ -18,7 +18,7 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
-const { DIGEST_URL, RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
+const { DIGEST_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
@@ -124,7 +124,6 @@ ipcMain.on('registration:start', (event, password) => (
     }))
     .then(userData => {
       const strData = JSON.stringify(userData);
-      console.log(`userData ${strData}`);
       //  save to file
       // eslint-disable-next-line promise/always-return
       if (cF.ensureDirectoryExistence(configFolder)) {
@@ -136,7 +135,6 @@ ipcMain.on('registration:start', (event, password) => (
             : null
         ));
         const credArr = cF.cleanArray(credFiles);
-        console.log(`credArr ${credArr}`);
         fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
           if (err) {
             throw new Error(err);
@@ -169,24 +167,55 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       // //  remember cpk of user for unmount
       cpkGlob = origin;
       // user origin create and mount requests
-      axios.post(`${FS_URL}`, { data: { origin } })
-        .then(() => (
-          axios.post(`${FS_URL}/${origin}/mount`)
-            .then(response => console.log(response.data))
-            .catch(error => console.log(error.response))
-        ))
-        .catch(error => {
-          if (error.response.status === 500) {
-            return axios.post(`${FS_URL}/${origin}/mount`)
-              .then(response => console.log(response.data))
-              .catch(er => console.log(er.response));
-          }
-          console.log(error.response);
-        });
+      // axios.post(`${fsUrl}`, { data: { origin } })
+      //   .then(() => (
+      //     axios.post(`${fsUrl}/${origin}/mount`)
+      //       .then(response => console.log(response.data))
+      //       .catch(error => console.log(error.response))
+      //   ))
+      //   .catch(error => {
+      //     if (error.response.status === 500) {
+      //       return axios.post(`${fsUrl}/${origin}/mount`)
+      //         .then(response => console.log(response.data))
+      //         .catch(er => console.log(er.response));
+      //     }
+      //     console.log(error.response);
+      //   });
       // on user data decryption and mounting fs - give userData to react part
       mainWindow.webContents.send('auth:complete', decrypt.strData);
     }
   });
+});
+ipcMain.on('fs:mount', (event, fsUrl) => {
+  const origin = cpkGlob;
+  console.log(fsUrl[0] === fsUrl[2]);
+  let reqs = [];
+  let reqs2 = [];
+  if (fsUrl[0] === fsUrl[2]) {
+    reqs = [
+      axios.post(fsUrl[0], { data: { origin } })
+    ];
+    reqs2 = [
+      axios.post(`${fsUrl[0]}/${origin}/mount`, { data: { origin } })
+    ];
+  } else {
+    reqs = fsUrl.map(url => axios.post(url, { data: { origin } }));
+    reqs2 = fsUrl.map(url => axios.post(`${url}/${origin}/mount`, { data: { origin } }));
+  }
+  // user origin create and mount requests
+  return setTimeout(() => axios.all(reqs)
+    .then(() => (setTimeout(() => axios.all(reqs2)
+      .then(() => mainWindow.webContents.send('fs:mounted'))
+      .catch(error => console.log(error.response)), 100)
+    ))
+    .catch(error => {
+      if (error.response.status === 500) {
+        return setTimeout(() => axios.all(reqs2)
+          .then(() => mainWindow.webContents.send('fs:mounted'))
+          .catch(err => console.log(err.response)), 100);
+      }
+      console.log(error.response);
+    }), 100);
 });
 //  get network digest listener
 ipcMain.on('digest:get', (event, { userData, password }) => {
@@ -202,8 +231,8 @@ ipcMain.on('digest:get', (event, { userData, password }) => {
     .catch(err => { throw new Error(err); });
 });
 //  get my files list listener
-ipcMain.on('file:list', (event, userData) => (
-  axios.get(`${RAFT_URL}/${userData.cpk}`)
+ipcMain.on('file:list', (event, { userData, raftNode }) => (
+  axios.get(`${raftNode}/${userData.cpk}`)
     .then((response) => {
       let filesList = [];
       // eslint-disable-next-line promise/always-return
@@ -229,7 +258,7 @@ ipcMain.on('file:list', (event, userData) => (
     .catch(error => console.log(error.response))
 ));
 //  send files listener
-ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
+ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) => {
   const updRaft = (defaultObj, filename, fileInfo) => {
     const updateObj = defaultObj[userData.cpk]
       ? {
@@ -247,7 +276,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
       };
     return new Promise((resolve, reject) => {
       setTimeout(() => (
-        axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
+        axios.post(`${raftNode}/${userData.cpk}`, updateObj)
           .then(resp => resolve(resp.data))
           .catch(error => reject(error.response))
       ), 100);
@@ -309,7 +338,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
         setTimeout(() => {
           const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
           return axios.all([
-            axios.get(`${RAFT_URL}/${userData.cpk}`),
+            axios.get(`${raftNode}/${userData.cpk}`),
             ...reqs
           ])
             .then(axios.spread(res1 => {
@@ -323,8 +352,8 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
     .catch(error => console.log(error));
 });
 //  on file download listener
-ipcMain.on('file:compile', (event, { userData, filename }) => (
-  axios.get(`${RAFT_URL}/${userData.cpk}`)
+ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
+  axios.get(`${raftNode}/${userData.cpk}`)
     .then(response => {
       const fileList = {
         ...JSON.parse(response.data[userData.cpk])
@@ -356,8 +385,8 @@ ipcMain.on('file:compile', (event, { userData, filename }) => (
     .catch(error => console.log(error))
 ));
 //  on file remove listener
-ipcMain.on('file:remove', (event, { userData, filename }) => (
-  axios.get(`${RAFT_URL}/${userData.cpk}`)
+ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
+  axios.get(`${raftNode}/${userData.cpk}`)
     //  user raft object
     // eslint-disable-next-line promise/always-return
     .then(response => {
@@ -386,7 +415,7 @@ ipcMain.on('file:remove', (event, { userData, filename }) => (
       ))
         .then(uObj => new Promise((resolve, reject) => (
           setTimeout(() => (
-            axios.post(`${RAFT_URL}/${userData.cpk}`, uObj)
+            axios.post(`${raftNode}/${userData.cpk}`, uObj)
               .then(() => resolve(mainWindow.webContents.send('file:removed')))
               .catch(error => reject(error.response))
           ), 100)
@@ -396,18 +425,17 @@ ipcMain.on('file:remove', (event, { userData, filename }) => (
     .catch(error => console.log(error))
 ));
 //  on blockchain wallet check listener
-ipcMain.on('blockchain:wallet-check', (event, address) => {
-  console.log('get balance');
-  return axios.get(`${BLOCKCHAIN_URL}/wallet/${address}`)
-    .then(({data}) => (
+ipcMain.on('blockchain:wallet-check', (event, { address, bcUrl }) => (
+  setTimeout(() => axios.get(`${bcUrl}/wallet/${address}`)
+    .then(({ data }) => (
       mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
     ))
     .catch(error => {
       throw new Error(error.respose.data);
-    });
-});
+    }), 100)
+));
 //  on create prepare and create transaction listener
-ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
+ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode }) => {
   const prepData = {
     from: userData.address,
     to,
@@ -415,7 +443,9 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
     minenow
   };
 
-  return axios.post(`${BLOCKCHAIN_URL}/send`, prepData)
-    .then(({ data }) => { mainWindow.webContents.send('transaction:done'); return console.log(data); })
-    .catch(error => { throw new Error(error); });
+  return setTimeout(() => (
+    axios.post(`${bcNode}/send`, prepData)
+      .then(({ data }) => { mainWindow.webContents.send('transaction:done'); return console.log(data); })
+      .catch(error => { throw new Error(error); })
+  ), 100);
 });

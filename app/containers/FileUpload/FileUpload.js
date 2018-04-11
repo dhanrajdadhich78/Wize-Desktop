@@ -24,7 +24,7 @@ class Files extends Component {
       for (let i = 0; i < 3; i++) {
         digestServers.push(`http://${this.props.digestInfo.storageNodes[i]}:13000/buckets`);
       }
-
+      const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
       const timestamp = Math.round(+new Date() / 1000);
       const promises = _.map(accepted, file => (new Promise(resolve => {
         const reader = new FileReader();
@@ -37,11 +37,17 @@ class Files extends Component {
         });
       })));
       Promise.all(promises)
-        .then(files => ipcRenderer.send('file:send', { userData, files, digestServers }))
+        .then(files => ipcRenderer.send('file:send', {
+          userData,
+          files,
+          digestServers,
+          raftNode
+        }))
         .catch(error => console.log(error));
       if (rejected.length) {
         this.hanfleFlashReject(rejected[0]);
       }
+      // eslint-disable-next-line no-alert
     } else { alert('You don\'t have enough storage nodes'); }
   };
   hanfleFlashReject = file => {
@@ -92,13 +98,15 @@ Files.propTypes = {
     cpk: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired
   }).isRequired,
-  digestInfo: PropTypes.shape().isRequired
+  digestInfo: PropTypes.shape().isRequired,
+  raftNodes: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 
 const mapStateToProps = state => ({
   isAuth: state.auth.authKey !== null,
   userData: state.auth.userData,
-  digestInfo: state.digest.digestInfo
+  digestInfo: state.digest.digestInfo,
+  raftNodes: state.digest.digestInfo.raftNodes
 });
 
 export default connect(mapStateToProps)(Files);
