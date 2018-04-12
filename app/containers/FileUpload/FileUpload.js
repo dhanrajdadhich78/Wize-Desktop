@@ -22,9 +22,9 @@ class Files extends Component {
       const userData = this.props.userData;
       const digestServers = [];
       for (let i = 0; i < 3; i++) {
-        digestServers.push(`http://${this.props.digestInfo.storageNodes[i]}:13000/buckets`);
+        digestServers.push(`${this.props.digestInfo.storageNodes[i]}/buckets`);
       }
-      const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
+      const raftNode = `${this.props.raftNodes[0]}/key`;
       const timestamp = Math.round(+new Date() / 1000);
       const promises = _.map(accepted, file => (new Promise(resolve => {
         const reader = new FileReader();
