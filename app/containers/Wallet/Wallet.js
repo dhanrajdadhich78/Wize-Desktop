@@ -21,7 +21,7 @@ class Wallet extends Component {
     this.setState({ transactionLoading: true });
     const userData = this.props.userData;
     const minenow = this.state.minenow;
-    const bcNode = `http://${this.props.bcNodes[0]}:4000`;
+    const bcNode = `${this.props.bcNodes[0]}`;
     ipcRenderer.send('transaction:create', {
       userData,
       to,

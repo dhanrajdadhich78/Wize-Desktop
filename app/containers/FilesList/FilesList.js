@@ -20,14 +20,14 @@ class FilesList extends Component {
   //  request to raft through ipcRenderer, that gets file list
   handleGetFiles = () => {
     const userData = this.props.userData;
-    const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
+    const raftNode = `${this.props.raftNodes[0]}/key`;
     ipcRenderer.send('file:list', { userData, raftNode });
     ipcRenderer.once('file:your-list', (event, filesList) => this.setState({ files: filesList }));
   };
   //  request to raft and fs through ipcRenderer, that handles file download
   handleDownload = filename => {
     const userData = this.props.userData;
-    const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
+    const raftNode = `${this.props.raftNodes[0]}/key`;
     ipcRenderer.send('file:compile', { userData, filename, raftNode });
     ipcRenderer.once('file:receive', (event, base64File) => {
       const blob = b64toBlob(base64File);
@@ -37,7 +37,7 @@ class FilesList extends Component {
   //  request to raft and fs through ipcRenderer, that handles file delete
   handleDelete = filename => {
     const userData = this.props.userData;
-    const raftNode = `http://${this.props.raftNodes[0]}:11001/key`;
+    const raftNode = `${this.props.raftNodes[0]}/key`;
     ipcRenderer.send('file:remove', { userData, filename, raftNode });
     ipcRenderer.once('file:removed', () => {
       this.handleGetFiles();

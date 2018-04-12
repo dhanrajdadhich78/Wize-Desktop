@@ -23,8 +23,8 @@ export const getDigest = (userData, password) => dispatch => {
   dispatch(getDigestStart(userData, password));
   ipcRenderer.once('digest:success', (event, data) => {
     dispatch(getDigestSuccess(data));
-    const fsNodes = data.storageNodes.map(item => `http://${item}:13000/buckets`);
-    const bcNode = `http://${data.bcNodes[0]}:4000`;
+    const fsNodes = data.storageNodes.map(item => `${item}/buckets`);
+    const bcNode = `${data.bcNodes[0]}`;
     dispatch(getBalance(userData.address, bcNode));
     ipcRenderer.send('fs:mount', fsNodes);
   });
