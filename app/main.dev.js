@@ -21,6 +21,7 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
+// TODO
 const wallet = require('./electron/wallet');
 const { DIGEST_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
