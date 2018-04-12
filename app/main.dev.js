@@ -121,6 +121,7 @@ ipcMain.on('credentials-files-list:scan', () => {
 });
 //  on credentials generate listener
 ipcMain.on('registration:start', (event, password) => {
+  /*
   //  random sha256 hash
   const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
   const d = bigi.fromBuffer(hash);
@@ -134,13 +135,18 @@ ipcMain.on('registration:start', (event, password) => {
   //  get private key
   const csk = bs58check.decode(keyPair.toWIF()).toString('hex');
   //  get address
-  const address = keyPair.getAddress();
+  const address = keyPair.getAddress();  
   //  json with credentials
   const userData = {
     csk,
     cpk,
     address
   };
+  */
+
+  const userData = wallet.newCredentials();
+  console.log(`userData ${JSON.stringify(userData)}`);
+
   const strData = JSON.stringify(userData);
   //  save to file
   if (cF.ensureDirectoryExistence(configFolder)) {
@@ -183,6 +189,8 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
       // create and mount bucket
       const origin = JSON.parse(decrypt.strData).cpk;
+      const userData = JSON.parse(decrypt.strData);
+      console.log(`userData ${JSON.stringify(userData)}`);
       // //  remember cpk of user for unmount
       cpkGlob = origin;
       // user origin create and mount requests
@@ -514,6 +522,7 @@ ipcMain.on('blockchain:wallet-check', (event, address) => {
 });
 //  on create prepare and create transaction listener
 ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
+  console.log('transaction:create');
   const prepData = {
     from: userData.address,
     to,
@@ -521,35 +530,40 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
     pubkey: userData.cpk,
     privkey: userData.csk
   };
-  return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
-    .then(({ data }) => {
-      // console.log(`data ${JSON.stringify(data)}`);
-      // const signatures = data.data.map(transaction => (
-      //   wallet.ecdsaSign(transaction, userData.csk)
-      // ));
-      // console.log(`signatures: ${signatures}`);
-      return {
-        from: userData.address,
-        txid: data.txid,
-        minenow,
-        signatures: data.signatures
-        // signatures,
-        // signaturesGO: data.signatures
-      };
-    })
-    .then(sendData => {
-      // console.log(sendData.signatures, sendData.signaturesGO);
-      const prom = new Promise((resolve, reject) => {
-        setTimeout(() => (
-          axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
-            .then(resp => resolve(resp.data))
-            .catch(error => reject(error.response))
-        ), 100);
-      });
-      return prom.then(d => console.log(d)).catch(error => console.log(error));
-    })
-    .then(() => mainWindow.webContents.send('transaction:done'))
-    .catch(error => {
-      throw new Error(error.respose.data);
-    });
+  console.log(`prepData ${JSON.stringify(prepData)}`);
+  return setTimeout(() => (
+    axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
+      .then(({ data }) => {
+        console.log(data);
+        //console.log(`data ${JSON.stringify(data)}`);
+        //const signatures = data.data.map(transaction => (
+        //   wallet.ecdsaSign(transaction, userData.csk)
+        //));
+        //console.log(`signatures: ${signatures}`);
+        return {
+          from: userData.address,
+          txid: data.txid,
+          minenow,
+          signatures: data.signatures
+          // signatures,
+          // signaturesGO: data.signatures
+        };
+      })
+      .then(sendData => {
+        console.log(sendData);
+        // console.log(sendData.signatures, sendData.signaturesGO);
+        const prom = new Promise((resolve, reject) => {
+          setTimeout(() => (
+            axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
+              .then(resp => resolve(resp.data))
+              .catch(error => reject(error.response))
+          ), 100);
+        });
+        return prom.then(d => console.log(d)).catch(error => console.log(error));
+      })
+      .then(() => mainWindow.webContents.send('transaction:done'))
+      .catch(error => {
+        throw new Error(error.respose.data);
+      })
+    ), 100);
 });
