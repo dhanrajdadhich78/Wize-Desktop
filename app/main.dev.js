@@ -22,7 +22,12 @@ const { DIGEST_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
-const configFolder = process.platform !== 'win32' ? `${process.cwd()}/.wizeconfig` : `${process.cwd()}\\wizeconfig`;
+let configFolder = `${process.cwd()}/.wizeconfig`;
+if (process.platform === 'darwin') {
+  configFolder = '/Applications/Wizebit.app/Contents/Resources/.wizeconfig';
+} else if (process.platform === 'win32') {
+  configFolder = `${process.cwd()}\\wizeconfig`;
+}
 
 let mainWindow;
 let cpkGlob;
