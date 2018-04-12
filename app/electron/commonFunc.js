@@ -8,22 +8,23 @@ const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
 const axios = require('axios');
 
-const { FS_URL } = require('../utils/const');
-
 /**
  * unmount fs buket
  * @param cpk {string}
+ * @param serversArray {array}
  * @param funcAfter {function}
  */
-const unmountFs = (cpk, funcAfter = null) => (
-  axios.post(`${FS_URL}/${cpk}/unmount`)
+const unmountFs = (cpk, serversArray, funcAfter = null) => {
+  // const reqs = serversArray.map(url => axios.post(`${url}/${cpk}/unmount`));
+  // axios.all(reqs)
+  axios.post(`${serversArray[0]}/${cpk}/unmount`)
     .catch(error => {
       console.log(error);
       if (funcAfter) {
         funcAfter();
       }
-    })
-);
+    });
+};
 
 
 /**

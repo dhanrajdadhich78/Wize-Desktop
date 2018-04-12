@@ -1,4 +1,4 @@
-/* eslint-disable promise/catch-or-return,object-curly-newline */
+/* eslint-disable promise/catch-or-return,object-curly-newline,array-callback-return,promise/always-return */
 /* eslint global-require: 0, flowtype-errors/show-errors: 0 */
 /**
  * This module executes inside of electron's main process. You can start
@@ -31,6 +31,7 @@ if (process.platform === 'darwin') {
 
 let mainWindow;
 let cpkGlob;
+let fsUrlGlob;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -81,7 +82,7 @@ app.on('ready', async () => {
   });
   mainWindow.on('closed', () => {
     if (cpkGlob) {
-      cF.unmountFs(cpkGlob, app.quit);
+      cF.unmountFs(cpkGlob, fsUrlGlob, app.quit);
     } else {
       app.quit();
     }
@@ -98,7 +99,7 @@ app.on('ready', async () => {
   menuBuilder.buildMenu();
 });
 // listener, that unmounts fs
-ipcMain.on('fs:unmount', () => (cpkGlob ? cF.unmountFs(cpkGlob) : null));
+ipcMain.on('fs:unmount', () => (cpkGlob ? cF.unmountFs(cpkGlob, fsUrlGlob) : null));
 //  listener, that check if user internet connection is available
 ipcMain.on('internet-connection:check', () => (
   isOnline()
@@ -176,32 +177,34 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
 });
 ipcMain.on('fs:mount', (event, fsUrl) => {
   const origin = cpkGlob;
+  const threeUrls = fsUrl.slice(0, 3);
+  fsUrlGlob = threeUrls;
   let reqs = [];
   let reqs2 = [];
-  if (fsUrl[0] === fsUrl[2]) {
-    reqs = [
-      axios.post(fsUrl[0], { data: { origin } })
-    ];
-    reqs2 = [
-      axios.post(`${fsUrl[0]}/${origin}/mount`, { data: { origin } })
-    ];
-  } else {
-    reqs = fsUrl.map(url => axios.post(url, { data: { origin } }));
-    reqs2 = fsUrl.map(url => axios.post(`${url}/${origin}/mount`, { data: { origin } }));
-  }
+  // if (threeUrls[0] === threeUrls[2]) {
+  reqs = [
+    axios.post(threeUrls[0], { data: { origin } })
+  ];
+  reqs2 = [
+    axios.post(`${threeUrls[0]}/${origin}/mount`, { data: { origin } })
+  ];
+  // } else {
+  //   reqs = threeUrls.map(url => axios.post(url, { data: { origin } }));
+  //   reqs2 = threeUrls.map(url => axios.post(`${url}/${origin}/mount`, { data: { origin } }));
+  // }
   // user origin create and mount requests
-  return setTimeout(() => axios.all(reqs)
+  setTimeout(() => axios.all(reqs)
     .then(() => (setTimeout(() => axios.all(reqs2)
-      .then(() => mainWindow.webContents.send('fs:mounted'))
+      // .then(() => mainWindow.webContents.send('fs:mounted'))
       .catch(error => console.log(error.response)), 100)
     ))
     .catch(error => {
       if (error.response.status === 500) {
         return setTimeout(() => axios.all(reqs2)
-          .then(() => mainWindow.webContents.send('fs:mounted'))
+          // .then(() => mainWindow.webContents.send('fs:mounted'))
           .catch(err => {
             if (err.response.status === 500) {
-              mainWindow.webContents.send('fs:mounted');
+              // mainWindow.webContents.send('fs:mounted');
             } else {
               console.log(err.response.message);
             }
@@ -209,6 +212,8 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
       }
       console.log(error.response);
     }), 100);
+
+  mainWindow.webContents.send('fs:mounted');
 });
 //  get network digest listener
 ipcMain.on('digest:get', (event, { userData, password }) => {
@@ -276,7 +281,9 @@ ipcMain.on('file:list', (event, { userData, raftNode }) => (
 ));
 //  send files listener
 ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) => {
+  const threeUrls = digestServers.slice(0, 3);
   const updRaft = (defaultObj, filename, fileInfo) => {
+    console.log('update raft');
     const updateObj = defaultObj[userData.cpk]
       ? {
         ...defaultObj,
@@ -293,7 +300,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
       };
     return new Promise((resolve, reject) => {
       setTimeout(() => (
-        axios.post(`${raftNode}/${userData.cpk}`, updateObj)
+        axios.post(raftNode, updateObj)
           .then(resp => resolve(resp.data))
           .catch(error => reject(error.response))
       ), 100);
@@ -310,7 +317,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
         //  create sha256 signature
         const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
         //  shards addresses array
-        const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
+        const shardsAddresses = threeUrls.map(v => `${v}/${userData.cpk}`);
         const filename = file.name;
         //  aes info
         const fileInfo = {
@@ -351,17 +358,73 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
       })
     ))
     .then(reqsArray => (
+      //  TODO: find out why this code didn't work on prod servers
+      //
+      // return reqsArray.map((res, i) => {
+      //   setTimeout(() => {
+      //     const reqs = res.requests.map(({url, data}) => axios.post(url, data));
+      //     return axios.all([
+      //       axios.get(`${raftNode}/${userData.cpk}`),
+      //       ...reqs
+      //     ])
+      //       .then(axios.spread(res1 => {
+      //         console.log('world');
+      //         // when all shards are uploaded - update user raft object
+      //         updRaft(res1.data, res.filename, res.fileInfo);
+      //       }))
+      //       .catch(reason => {
+      //         throw new Error(reason);
+      //       });
+      //   }, ((i + 1) * 1000));
+      // });
+
+
+
+      // reqsArray.map(res => {
+      //   setTimeout(() => (
+      //     axios.post(res.requests[0].url, res.requests[0].data)
+      //   ), 100);
+      //   setTimeout(() => (
+      //     axios.post(res.requests[1].url, res.requests[1].data)
+      //   ), 1100);
+      //   setTimeout(() => (
+      //     axios.post(res.requests[2].url, res.requests[2].data)
+      //   ), 2100);
+      //   setTimeout(() => (
+      //     axios.get(`${raftNode}/${userData.cpk}`)
+      //       .then(({ data }) => {
+      //         // when all shards are uploaded - update user raft object
+      //         updRaft(data, res.filename, res.fileInfo);
+      //       })
+      //       .catch(reason => {
+      //         throw new Error(reason);
+      //       })
+      //   ), 3100);
+      // })
+
       reqsArray.map((res, i) => (
         setTimeout(() => {
-          const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
-          return axios.all([
-            axios.get(`${raftNode}/${userData.cpk}`),
-            ...reqs
+          const getRaft = () => axios.get(`${raftNode}/${userData.cpk}`);
+          const fs0 = () => axios.post(res.requests[0].url, res.requests[0].data);
+          const fs1 = () => axios.post(res.requests[1].url, res.requests[1].data);
+          const fs2 = () => axios.post(res.requests[2].url, res.requests[2].data);
+          // const theWay = 'https://api.coinmarketcap.com/v1/ticker/ethereum/';
+          // const getRaft = () => axios.get(theWay);
+          // const fs0 = () => axios.get(theWay);
+          // const fs1 = () => axios.get(theWay);
+          // const fs2 = () => axios.get(theWay);
+          console.log('before promise all');
+          console.log(res.requests[0].data);
+          return Promise.all([
+            getRaft(),
+            fs0(),
+            fs1(),
+            fs2()
           ])
-            .then(axios.spread(res1 => {
-              // when all shards are uploaded - update user raft object
-              updRaft(res1.data, res.filename, res.fileInfo);
-            }))
+            .then(([res1, res2, res3, res4]) => {
+              console.log('in res promise all');
+              // updRaft(res1.data, res.filename, res.fileInfo);
+            })
             .catch(reason => { throw new Error(reason); });
         }, ((i + 1) * 1000))
       ))
@@ -381,24 +444,54 @@ ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
       const fileDataObj = JSON.parse(decryptedData.strData);
       const shardsReq = fileDataObj.shardsAddresses.map((shardAddress, index) => {
         const fname = cF.aesEncrypt(filename, userData.csk).encryptedHex;
+        console.log(`${shardAddress}/files/${fname}.${index}`);
         return axios.get(`${shardAddress}/files/${fname}.${index}`);
       });
-      return new Promise(resolve => (
-        setTimeout(() => (
-          axios.all(shardsReq)
-            .then(ress => resolve(ress))
-            .catch(error => { throw new Error(error); })
-        ), 100)
-      ));
+      // return new Promise(resolve => (
+      //   setTimeout(() => (
+      //     axios.all(shardsReq)
+      //       .then(ress => resolve(ress))
+      //       .catch(error => { throw new Error(error); })
+      //   ), 100)
+      // ));
+      //
+      //
+      // const fname = cF.aesEncrypt(filename, userData.csk).encryptedHex;
+      // const getOne = () => (
+      //   axios.get(`${fileDataObj.shardsAddresses[0]}/files/${fname}.0`)
+      // );
+      // const getTwo = () => (
+      //   axios.get(`${fileDataObj.shardsAddresses[1]}/files/${fname}.1`)
+      // );
+      // const getThree = () => (
+      //   axios.get(`${fileDataObj.shardsAddresses[2]}/files/${fname}.2`)
+      // );
+
+      console.log('and...');
+      // return Promise.all(shardsReq)
+      //   .then(() => {
+      //     console.log('congratz');
+      //     // Use the data from the results like so:
+      //     // results[0].data
+      //     // results[1].data
+      //   })
+      //   .catch(error => {
+      //     throw new Error(error);
+      //   });
+      return shardsReq[0]
+        .then(res1 => shardsReq[1]
+          .then(res2 => shardsReq[2]
+            .then(res3 => console.log('congratz', res1, res2, res3))));
     })
-    .then(responses => {
-      const shards = responses.map(res => cF.aesDecrypt(res.data, userData.csk).strData);
-      const base64File = shards.join('');
-      // eslint-disable-next-line promise/always-return
-      if (base64File) {
-        mainWindow.webContents.send('file:receive', base64File);
-      }
-    })
+    // .then(responses => {
+    //   // console.log('download2');
+    //   const shards = responses.map(res => cF.aesDecrypt(res.data, userData.csk).strData);
+    //   const base64File = shards.join('');
+    //   // eslint-disable-next-line promise/always-return
+    //   if (base64File) {
+    //     mainWindow.webContents.send('file:receive', base64File);
+    //   }
+    // })
     .catch(error => { throw new Error(error); })
 ));
 //  on file remove listener
