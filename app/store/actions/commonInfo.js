@@ -2,8 +2,11 @@ import { ipcRenderer } from 'electron';
 
 import * as actionTypes from '../actions/actionTypes';
 
-const getCredFilesListStart = () => {
+const getCredFilesListStart = () => dispatch => {
   ipcRenderer.send('credentials-files-list:scan');
+  ipcRenderer.once('credentials-files-list:get', (event, credentials) => (
+    dispatch(getCredFilesListSuccess(credentials))
+  ));
   return { type: actionTypes.GET_CRED_FILES_LIST_START };
 };
 
@@ -17,9 +20,6 @@ const getCredFilesListSuccess = credentials => ({
 // eslint-disable-next-line import/prefer-default-export
 export const getCredFilesList = () => dispatch => {
   dispatch(getCredFilesListStart());
-  ipcRenderer.on('credentials-files-list:get', (event, credentials) => (
-    dispatch(getCredFilesListSuccess(credentials))
-  ));
 };
 
 const ckeckInternetStart = () => {

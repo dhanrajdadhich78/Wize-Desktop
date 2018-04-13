@@ -18,6 +18,9 @@ class Homepage extends Component {
     credFilesArr: this.props.credentials,
     dropzoneInput: true
   };
+  componentWillMount() {
+    this.props.getCredFilesList();
+  }
   handleToggleAltCredFile = () => {
     if (!this.state.altCredFilePath === true) {
       this.setState({ credFilePath: this.props.credentials[0] });
@@ -31,6 +34,9 @@ class Homepage extends Component {
     dropzoneInput: true
   });
   render() {
+    if (this.props.credentials !== this.state.credFilesArr) {
+      this.setState({ credFilesArr: this.props.credentials });
+    }
     let view = (
       <Auth
         authError={this.props.authError}
@@ -90,7 +96,8 @@ Homepage.propTypes = {
   handleRegister: PropTypes.func.isRequired,
   handleAuth: PropTypes.func.isRequired,
   authError: PropTypes.string,
-  credentials: PropTypes.arrayOf(PropTypes.string).isRequired
+  credentials: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getCredFilesList: PropTypes.func.isRequired
 };
 
 Homepage.defaultProps = {
@@ -114,7 +121,8 @@ const mapDispatchToProps = dispatch => ({
   ),
   handleAuth: (password, filePath) => (
     dispatch(actions.auth(password, filePath))
-  )
+  ),
+  getCredFilesList: () => dispatch(actions.getCredFilesList())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Homepage);
