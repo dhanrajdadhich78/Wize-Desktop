@@ -115,6 +115,15 @@ ipcMain.on('credentials-files-list:scan', () => {
         ? file
         : null
     ));
+
+    // TODO: only for creating admin credentials
+    //const aes = cF.adminEncrypt();
+    //fs.writeFile(`${configFolder}/credentials-0.bak`, aes.encryptedHex, err => {
+    //  if (err) {
+    //    console.log(err);
+    //  }
+    //});
+
     const credentials = cF.cleanArray(credFiles);
     return mainWindow.webContents.send('credentials-files-list:get', credentials);
   }
@@ -387,7 +396,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
           const fs1 = () => axios.post(res.requests[1].url, res.requests[1].data);
           const fs2 = () => axios.post(res.requests[2].url, res.requests[2].data);
           console.log('before promise all');
-          console.log(res.requests[0].data);
+          //console.log(res.requests[0].data);
           return Promise.all([
             getRaft(),
             fs0(),
@@ -402,7 +411,11 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
         }, ((i + 1) * 1000))
       ))
     ))
-    .catch(error => { throw new Error(error); });
+    .catch(error => {
+      console.log('error');
+      console.log(error.response);
+      throw new Error(error);
+    });
 });
 //  on file download listener
 ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
