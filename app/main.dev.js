@@ -386,11 +386,6 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
           const fs0 = () => axios.post(res.requests[0].url, res.requests[0].data);
           const fs1 = () => axios.post(res.requests[1].url, res.requests[1].data);
           const fs2 = () => axios.post(res.requests[2].url, res.requests[2].data);
-          // const theWay = 'https://api.coinmarketcap.com/v1/ticker/ethereum/';
-          // const getRaft = () => axios.get(theWay);
-          // const fs0 = () => axios.get(theWay);
-          // const fs1 = () => axios.get(theWay);
-          // const fs2 = () => axios.get(theWay);
           console.log('before promise all');
           console.log(res.requests[0].data);
           return Promise.all([
@@ -434,7 +429,6 @@ ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
       ));
     })
     .then(responses => {
-      // console.log('download2');
       const shards = responses.map(res => cF.aesDecrypt(res.data, userData.csk).strData);
       const base64File = shards.join('');
       // eslint-disable-next-line promise/always-return
