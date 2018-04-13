@@ -43,7 +43,7 @@ const toggleCredFiles = props => {
         elementConfig={{
           type: 'select',
           options: props.credFilesArr.map(cred => ({
-            value: `./.wizeconfig/${cred}`,
+            value: `${cred}`,
             displayValue: cred.substring(cred.lastIndexOf('/'))
           }))
         }}

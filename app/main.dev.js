@@ -1,4 +1,5 @@
-/* eslint-disable promise/catch-or-return,object-curly-newline */
+// eslint-disable-next-line max-len
+/* eslint-disable promise/catch-or-return,object-curly-newline,array-callback-return,promise/always-return */
 /* eslint global-require: 0, flowtype-errors/show-errors: 0 */
 /**
  * This module executes inside of electron's main process. You can start
@@ -20,15 +21,22 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
+// TODO
 const wallet = require('./electron/wallet');
-const { DIGEST_URL, RAFT_URL, FS_URL, BLOCKCHAIN_URL } = require('./utils/const');
+const { DIGEST_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
-const configFolder = process.platform !== 'win32' ? `${process.cwd()}/.wizeconfig` : `${process.cwd()}\\wizeconfig`;
+let configFolder = `${process.cwd()}/.wizeconfig`;
+if (process.platform === 'darwin') {
+  configFolder = '/Applications/Wizebit.app/Contents/Resources/.wizeconfig';
+} else if (process.platform === 'win32') {
+  configFolder = `${process.cwd()}\\wizeconfig`;
+}
 
 let mainWindow;
 let cpkGlob;
+let fsUrlGlob;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -94,18 +102,14 @@ app.on('ready', async () => {
   });
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
-  // console.log(wallet.newCredentials());
-  // axios.post(`${BLOCKCHAIN_URL}/wallet/new`, {})
-  //   .then(({ data }) => console.log(data))
-  //   .catch(error => { throw new Error(error); });
 });
 // listener, that unmounts fs
-ipcMain.on('fs:unmount', () => (cpkGlob ? cF.unmountFs(cpkGlob) : null));
+ipcMain.on('fs:unmount', () => (cpkGlob ? cF.unmountFs(cpkGlob, fsUrlGlob) : null));
 //  listener, that check if user internet connection is available
-ipcMain.on('internet-connection:check', () => {
+ipcMain.on('internet-connection:check', () => (
   isOnline()
-    .then(online => mainWindow.webContents.send('internet-connection:status', online));
-});
+    .then(online => mainWindow.webContents.send('internet-connection:status', online))
+));
 //  listener, that scan default credential folder on users machine
 ipcMain.on('credentials-files-list:scan', () => {
   if (cF.ensureDirectoryExistence(configFolder)) {
@@ -115,61 +119,97 @@ ipcMain.on('credentials-files-list:scan', () => {
         ? file
         : null
     ));
+
+    // TODO: only for creating admin credentials
+    //const aes = cF.adminEncrypt();
+    //fs.writeFile(`${configFolder}/credentials-0.bak`, aes.encryptedHex, err => {
+    //  if (err) {
+    //    console.log(err);
+    //  }
+    //});
+
     const credentials = cF.cleanArray(credFiles);
-    mainWindow.webContents.send('credentials-files-list:get', credentials);
+    return mainWindow.webContents.send('credentials-files-list:get', credentials);
   }
+
+  return false;
 });
 //  on credentials generate listener
-ipcMain.on('registration:start', (event, password) => {
-  /*
-  //  random sha256 hash
-  const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
-  const d = bigi.fromBuffer(hash);
-  //  generate key pair
-  const keyPair = new bitcoin.ECPair(d, null, { compressed: false });
-  //  extract public key buffer(compressed)
-  const cpkBuffer = keyPair.getPublicKeyBuffer();
-  //  get readable public key
-  //  to revert -> Buffer.from(publicKey, 'hex')
-  const cpk = cpkBuffer.toString('hex');
-  //  get private key
-  const csk = bs58check.decode(keyPair.toWIF()).toString('hex');
-  //  get address
-  const address = keyPair.getAddress();  
-  //  json with credentials
-  const userData = {
-    csk,
-    cpk,
-    address
-  };
-  */
+ipcMain.on('registration:start', (event, password) => (
+  //  on desktop
+  // //  random sha256 hash
+  // const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
+  // const d = bigi.fromBuffer(hash);
+  // //  generate key pair
+  // const keyPair = new bitcoin.ECPair(d, null, { compressed: false });
+  // //  extract public key buffer(compressed)
+  // const cpkBuffer = keyPair.getPublicKeyBuffer();
+  // //  get readable public key
+  // //  to revert -> Buffer.from(publicKey, 'hex')
+  // const cpk = cpkBuffer.toString('hex');
+  // //  get private key
+  // const csk = bs58check.decode(keyPair.toWIF()).toString('hex');
+  // //  get address
+  // const address = keyPair.getAddress();
+  // //  json with credentials
+  // const userData = {
+  //   csk,
+  //   cpk,
+  //   address
+  // };
+  // const strData = JSON.stringify(userData);
+  // //  save to file
+  // if (cF.ensureDirectoryExistence(configFolder)) {
+  //   const aes = cF.aesEncrypt(strData, password, 'hex');
+  //   fs.readdir(configFolder, (error, files) => {
+  //     if (error) {
+  //       throw new Error(error);
+  //     }
+  //     const credFiles = files.map(file => (
+  //       !file.indexOf('credentials')
+  //         ? file
+  //         : null
+  //     ));
+  //     const credArr = cF.cleanArray(credFiles);
+  //     fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
+  //       if (err) {
+  //         throw new Error(err);
+  //       }
+  //       mainWindow.webContents.send('registration:complete', strData);
+  //     });
+  //   });
+  // }
 
-  const userData = wallet.newCredentials();
-  console.log(`userData ${JSON.stringify(userData)}`);
-
-  const strData = JSON.stringify(userData);
-  //  save to file
-  if (cF.ensureDirectoryExistence(configFolder)) {
-    const aes = cF.aesEncrypt(strData, password, 'hex');
-    fs.readdir(configFolder, (error, files) => {
-      if (error) {
-        throw new Error(error);
+  //  on server
+  setTimeout(() => axios.post(`${BLOCKCHAIN_URL}/wallet/new`, {})
+    .then(({ data }) => ({
+      address: data.address,
+      cpk: data.pubkey,
+      csk: data.privkey
+    }))
+    .then(userData => {
+      const strData = JSON.stringify(userData);
+      //  save to file
+      // eslint-disable-next-line promise/always-return
+      if (cF.ensureDirectoryExistence(configFolder)) {
+        const aes = cF.aesEncrypt(strData, password, 'hex');
+        const files = fs.readdirSync(configFolder);
+        const credFiles = files.map(file => (
+          !file.indexOf('credentials')
+            ? file
+            : null
+        ));
+        const credArr = cF.cleanArray(credFiles);
+        fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
+          if (err) {
+            throw new Error(err);
+          }
+          mainWindow.webContents.send('registration:complete', strData);
+        });
       }
-      const credFiles = files.map(file => (
-        !file.indexOf('credentials')
-          ? file
-          : null
-      ));
-      const credArr = cF.cleanArray(credFiles);
-      fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
-        if (err) {
-          throw new Error(err);
-        }
-        mainWindow.webContents.send('registration:complete', strData);
-      });
-    });
-  }
-});
+    })
+    .catch(error => { throw new Error(error); }), 100)
+));
 //  on auth listener
 ipcMain.on('auth:start', (event, { password, filePath }) => {
   let encryptedHex;
@@ -178,7 +218,7 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
   if (credFilePath.indexOf('/') < 0 || !credFilePath) {
     credFilePath = `${configFolder}/${filePath}`;
   }
-  fs.readFile(credFilePath, (err, data) => {
+  return fs.readFile(credFilePath, (err, data) => {
     if (err) {
       throw new Error(err);
     }
@@ -187,48 +227,93 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
       throw new Error('There is no credentials file');
     } else {
       const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
-      // create and mount bucket
-      const origin = JSON.parse(decrypt.strData).cpk;
-      const userData = JSON.parse(decrypt.strData);
-      console.log(`userData ${JSON.stringify(userData)}`);
-      // //  remember cpk of user for unmount
-      cpkGlob = origin;
-      // user origin create and mount requests
-      axios.post(`${FS_URL}`, { data: { origin } })
-        .then(() => (
-          axios.post(`${FS_URL}/${origin}/mount`)
-            .then(response => console.log(response.data))
-            .catch(error => console.log(error.response))
-        ))
-        .catch(error => {
-          if (error.response.status === 500) {
-            return axios.post(`${FS_URL}/${origin}/mount`)
-              .then(response => console.log(response.data))
-              .catch(er => console.log(er.response));
-          }
-          console.log(error.response);
-        });
+      //  remember cpk of user
+      cpkGlob = JSON.parse(decrypt.strData).cpk;
       // on user data decryption and mounting fs - give userData to react part
       mainWindow.webContents.send('auth:complete', decrypt.strData);
     }
   });
 });
+ipcMain.on('fs:mount', (event, fsUrl) => {
+  const origin = cpkGlob;
+  const threeUrls = fsUrl.slice(0, 3);
+  fsUrlGlob = threeUrls;
+  let reqs = [];
+  let reqs2 = [];
+  if (threeUrls[0] === threeUrls[2]) {
+    reqs = [
+      axios.post(threeUrls[0], { data: { origin } })
+    ];
+    reqs2 = [
+      axios.post(`${threeUrls[0]}/${origin}/mount`, { data: { origin } })
+    ];
+  } else {
+    reqs = threeUrls.map(url => axios.post(url, { data: { origin } }));
+    reqs2 = threeUrls.map(url => axios.post(`${url}/${origin}/mount`, { data: { origin } }));
+  }
+  // user origin create and mount requests
+  setTimeout(() => axios.all(reqs)
+    .then(() => (setTimeout(() => axios.all(reqs2)
+      // .then(() => mainWindow.webContents.send('fs:mounted'))
+      .catch(error => console.log(error.response)), 100)
+    ))
+    .catch(error => {
+      if (error.response.status === 500) {
+        return setTimeout(() => axios.all(reqs2)
+          // .then(() => mainWindow.webContents.send('fs:mounted'))
+          .catch(err => {
+            if (err.response.status === 500) {
+              // mainWindow.webContents.send('fs:mounted');
+            } else {
+              console.log(err.response.message);
+            }
+          }), 100);
+      }
+      console.log(error.response);
+    }), 100);
+
+  mainWindow.webContents.send('fs:mounted');
+});
 //  get network digest listener
 ipcMain.on('digest:get', (event, { userData, password }) => {
-  const reqData = {
-    data: {
-      address: userData.address,
-      pubKey: userData.cpk,
-      AES: cF.getHash(password)
-    }
-  };
-  return axios.post(`${DIGEST_URL}/hello/application`, reqData)
-    .then(({ data }) => mainWindow.webContents.send('digest:success', data))
-    .catch(err => { throw new Error(err); });
+  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    const data = {
+      bcNodes: [
+        'http://127.0.0.1:4000',
+        'http://127.0.0.1:4000',
+        'http://127.0.0.1:4000'
+      ],
+      raftNodes: [
+        'http://127.0.0.1:11001',
+        'http://127.0.0.1:11001',
+        'http://127.0.0.1:11001'
+      ],
+      storageNodes: [
+        'http://127.0.0.1:13000',
+        'http://127.0.0.1:13000',
+        'http://127.0.0.1:13000'
+      ],
+      spacelfet: 0,
+      totalNodes: 0,
+      suspicious: 0
+    };
+    mainWindow.webContents.send('digest:success', data);
+  } else {
+    const reqData = {
+      data: {
+        address: userData.address,
+        pubKey: userData.cpk,
+        AES: cF.getHash(password)
+      }
+    };
+    return axios.post(`${DIGEST_URL}/hello/application`, reqData)
+      .then(({ data }) => mainWindow.webContents.send('digest:success', data))
+      .catch(err => { throw new Error(err); });
+  }
 });
 //  get my files list listener
-ipcMain.on('file:list', (event, userData) => {
-  axios.get(`${RAFT_URL}/${userData.cpk}`)
+ipcMain.on('file:list', (event, { userData, raftNode }) => (
+  axios.get(`${raftNode}/${userData.cpk}`)
     .then((response) => {
       let filesList = [];
       // eslint-disable-next-line promise/always-return
@@ -251,86 +336,13 @@ ipcMain.on('file:list', (event, userData) => {
       }
       mainWindow.webContents.send('file:your-list', filesList);
     })
-    .catch(error => console.log(error.response));
-});
+    .catch(error => { throw new Error(error); })
+));
 //  send files listener
-ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
-  //  sync way
-  // //  update user raft object
-  // const updRaft = (defaultObj, signature, shardsAddresses, { name, size, timestamp }) => {
-  //   // console.log(`raft: ${defaultObj}`);
-  //   //  aes name
-  //   const filename = cF.aesEncrypt(name, userData.csk);
-  //   //  aes file info
-  //   const fileInfoObj = {
-  //     size,
-  //     timestamp,
-  //     signature,
-  //     shardsAddresses
-  //   };
-  //   const fileInfo = cF.aesEncrypt(JSON.stringify(fileInfoObj), userData.csk);
-  //   const updateObj = defaultObj[userData.cpk]
-  //     ? {
-  //       ...defaultObj,
-  //       [userData.cpk]: JSON.stringify({
-  //         ...JSON.parse(defaultObj[userData.cpk]),
-  //         [filename.encryptedHex]: fileInfo.encryptedHex
-  //       })
-  //     }
-  //     : {
-  //       ...defaultObj,
-  //       [userData.cpk]: JSON.stringify({
-  //         [filename.encryptedHex]: fileInfo.encryptedHex
-  //       })
-  //     };
-  //   //  update user raft object request
-  //   // return axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
-  //   //   .then(resp => console.log(resp.data))
-  //   //   .catch(error => console.log(error.response));
-  //   return new Promise((resolve, reject) => {
-  //     setTimeout(() => (
-  //       axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
-  //         .then(resp => resolve(resp.data))
-  //         .catch(error => reject(error.response))
-  //     ), 100);
-  //   });
-  // };
-  // // ask raft about user files, then create and send shards for digest servers
-  // files.map(file => {
-  //   //  create shards
-  //   const rawShards = cF.fileCrushing(file);
-  //   //  encrypt shards info
-  //   const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
-  //   //  create sha256 signature
-  // eslint-disable-next-line max-len
-  //   const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
-  //   //  shards addresses array
-  //   const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
-  //   //  shards upload requests array
-  //   const shardsReq = digestServers.map((url, index) => {
-  //     const data = {
-  //       data: {
-  //         name: `${cF.aesEncrypt(file.name, userData.csk).encryptedHex}.${index}`,
-  //         content: shards[index]
-  //       }
-  //     };
-  //     return axios.post(`${url}/${userData.cpk}/put`, data);
-  //   });
-  //   //  axios requests
-  //   axios.all([
-  //     axios.get(`${RAFT_URL}/${userData.cpk}`),
-  //     ...shardsReq
-  //   ])
-  //     .then(axios.spread(res1 => {
-  //       // when all shards are uploaded - update user raft object
-  //       updRaft(res1.data, signature, shardsAddresses, file);
-  //     }))
-  //     .then(() => console.log('send is end'))
-  //     .catch(reason => console.log(reason));
-  // });
-
-  //  async way
+ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) => {
+  const threeUrls = digestServers.slice(0, 3);
   const updRaft = (defaultObj, filename, fileInfo) => {
+    console.log('update raft');
     const updateObj = defaultObj[userData.cpk]
       ? {
         ...defaultObj,
@@ -347,7 +359,7 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
       };
     return new Promise((resolve, reject) => {
       setTimeout(() => (
-        axios.post(`${RAFT_URL}/${userData.cpk}`, updateObj)
+        axios.post(raftNode, updateObj)
           .then(resp => resolve(resp.data))
           .catch(error => reject(error.response))
       ), 100);
@@ -358,13 +370,13 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
     const shards = rawShards.map(shard => cF.aesEncrypt(shard, userData.csk).encryptedHex);
     resolve({ file, shards });
   }));
-  Promise.all(filesPromise)
+  return Promise.all(filesPromise)
     .then(results => (
       results.map(({ file, shards }) => {
         //  create sha256 signature
         const signature = bitcoin.crypto.sha256(Buffer.from(`${file.name}${file.size}${file.timestamp}${userData.cpk}`)).toString('hex');
         //  shards addresses array
-        const shardsAddresses = digestServers.map(v => `${v}/${userData.cpk}`);
+        const shardsAddresses = threeUrls.map(v => `${v}/${userData.cpk}`);
         const filename = file.name;
         //  aes info
         const fileInfo = {
@@ -405,26 +417,58 @@ ipcMain.on('file:send', (event, { userData, files, digestServers }) => {
       })
     ))
     .then(reqsArray => (
+      //  TODO: find out why this code didn't work on prod servers
+      //
+      // reqsArray.map(res => {
+      //   console.log('start');
+      //   setTimeout(() => {
+      //     const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
+      //     return Promise.all([
+      //       axios.get(`${raftNode}/${userData.cpk}`),
+      //       ...reqs
+      //     ])
+      //       .then(responses => {
+      //         console.log('success');
+      //         // when all shards are uploaded - update user raft object
+      //         updRaft(responses[0].data, res.filename, res.fileInfo)
+      //       })
+      //       .catch(reason => {
+      //         console.log(reason);
+      //       });
+      //   }, 4000);
+      // })
+
       reqsArray.map((res, i) => (
         setTimeout(() => {
-          const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
-          return axios.all([
-            axios.get(`${RAFT_URL}/${userData.cpk}`),
-            ...reqs
+          const getRaft = () => axios.get(`${raftNode}/${userData.cpk}`);
+          const fs0 = () => axios.post(res.requests[0].url, res.requests[0].data);
+          const fs1 = () => axios.post(res.requests[1].url, res.requests[1].data);
+          const fs2 = () => axios.post(res.requests[2].url, res.requests[2].data);
+          console.log('before promise all');
+          //console.log(res.requests[0].data);
+          return Promise.all([
+            getRaft(),
+            fs0(),
+            fs1(),
+            fs2()
           ])
-            .then(axios.spread(res1 => {
-              // when all shards are uploaded - update user raft object
-              updRaft(res1.data, res.filename, res.fileInfo);
-            }))
-            .catch(reason => console.log(reason));
+            .then(results => {
+              console.log('in res promise all');
+              updRaft(results[0].data, res.filename, res.fileInfo);
+            })
+            .catch(reason => { console.log(reason); });
         }, ((i + 1) * 1000))
       ))
     ))
-    .catch(error => console.log(error));
+    .catch(error => {
+      console.log('error');
+      console.log(error.response);
+      throw new Error(error);
+    });
 });
 //  on file download listener
-ipcMain.on('file:compile', (event, { userData, filename }) => {
-  axios.get(`${RAFT_URL}/${userData.cpk}`)
+ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
+  axios.get(`${raftNode}/${userData.cpk}`)
     .then(response => {
       const fileList = {
         ...JSON.parse(response.data[userData.cpk])
@@ -435,13 +479,14 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
       const fileDataObj = JSON.parse(decryptedData.strData);
       const shardsReq = fileDataObj.shardsAddresses.map((shardAddress, index) => {
         const fname = cF.aesEncrypt(filename, userData.csk).encryptedHex;
+        console.log(`${shardAddress}/files/${fname}.${index}`);
         return axios.get(`${shardAddress}/files/${fname}.${index}`);
       });
       return new Promise(resolve => (
         setTimeout(() => (
           axios.all(shardsReq)
             .then(ress => resolve(ress))
-            .catch(error => console.log(error))
+            .catch(error => { throw new Error(error); })
         ), 100)
       ));
     })
@@ -453,11 +498,11 @@ ipcMain.on('file:compile', (event, { userData, filename }) => {
         mainWindow.webContents.send('file:receive', base64File);
       }
     })
-    .catch(error => console.log(error));
-});
+    .catch(error => { throw new Error(error); })
+));
 //  on file remove listener
-ipcMain.on('file:remove', (event, { userData, filename }) => {
-  axios.get(`${RAFT_URL}/${userData.cpk}`)
+ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
+  axios.get(`${raftNode}/${userData.cpk}`)
     //  user raft object
     // eslint-disable-next-line promise/always-return
     .then(response => {
@@ -481,89 +526,85 @@ ipcMain.on('file:remove', (event, { userData, filename }) => {
               return updateObj;
             })
             .then(uObj => resolve(uObj))
-            .catch(error => console.log(error))
+            .catch(error => { throw new Error(error); })
         ), 100)
       ))
         .then(uObj => new Promise((resolve, reject) => (
           setTimeout(() => (
-            axios.post(`${RAFT_URL}/${userData.cpk}`, uObj)
+            axios.post(`${raftNode}/${userData.cpk}`, uObj)
               .then(() => resolve(mainWindow.webContents.send('file:removed')))
               .catch(error => reject(error.response))
           ), 100)
         )))
-        .catch(error => console.log(error));
+        .catch(error => { throw new Error(error); });
     })
-    .catch(error => console.log(error));
-});
-//  on file transfer listener
-ipcMain.on('file:transfer', (event, { userData, filename, to }) => {
-  console.log(userData, filename, to);
-  // //  user raft object
-  // let updateObj = {};
-  // axios.get(`${RAFT_URL}/${userData.cpk}`)
-  // // eslint-disable-next-line promise/always-return
-  //   .then(response => {
-  //     updateObj = {
-  //       ...updateObj,
-  //       ...response.data
-  //     };
-  //   })
-  //   .catch(error => console.log(error));
-});
+    .catch(error => { throw new Error(error); })
+));
 //  on blockchain wallet check listener
-ipcMain.on('blockchain:wallet-check', (event, address) => {
-  axios.get(`${BLOCKCHAIN_URL}/wallet/${address}`)
+ipcMain.on('blockchain:wallet-check', (event, { address, bcNode }) => (
+  setTimeout(() => axios.get(`${bcNode}/wallet/${address}`)
     .then(({ data }) => (
-      mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
+      // mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
+      event.sender.send('blockchain:wallet-checked', JSON.stringify(data))
     ))
     .catch(error => {
       throw new Error(error.respose.data);
-    });
-});
+    }), 100)
+));
 //  on create prepare and create transaction listener
-ipcMain.on('transaction:create', (event, { userData, to, amount, minenow }) => {
-  console.log('transaction:create');
+ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode }) => {
+  //  more difficult
+  // const prepData = {
+  //   from: userData.address,
+  //   to,
+  //   amount: parseInt(amount, 10),
+  //   pubkey: userData.cpk,
+  //   privkey: userData.csk
+  // };
+  // return axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
+  //   .then(({ data }) => {
+  //     // console.log(`data ${JSON.stringify(data)}`);
+  //     // const signatures = data.data.map(transaction => (
+  //     //   wallet.ecdsaSign(transaction, userData.csk)
+  //     // ));
+  //     // console.log(`signatures: ${signatures}`);
+  //     return {
+  //       from: userData.address,
+  //       txid: data.txid,
+  //       minenow,
+  //       signatures: data.signatures
+  //       // signatures,
+  //       // signaturesGO: data.signatures
+  //     };
+  //   })
+  //   .then(sendData => {
+  //     // console.log(sendData.signatures, sendData.signaturesGO);
+  //     const prom = new Promise((resolve, reject) => {
+  //       setTimeout(() => (
+  //         axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
+  //           .then(resp => resolve(resp.data))
+  //           .catch(error => reject(error.response))
+  //       ), 100);
+  //     });
+  //     return prom.then(d => console.log(d)).catch(error => console.log(error));
+  //   })
+  //   .then(() => mainWindow.webContents.send('transaction:done'))
+  //   .catch(error => {
+  //     throw new Error(error.respose.data);
+  //   });
+
+  //easy
   const prepData = {
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
-    pubkey: userData.cpk,
-    privkey: userData.csk
+    minenow
   };
-  console.log(`prepData ${JSON.stringify(prepData)}`);
+
   return setTimeout(() => (
-    axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
-      .then(({ data }) => {
-        console.log(data);
-        //console.log(`data ${JSON.stringify(data)}`);
-        //const signatures = data.data.map(transaction => (
-        //   wallet.ecdsaSign(transaction, userData.csk)
-        //));
-        //console.log(`signatures: ${signatures}`);
-        return {
-          from: userData.address,
-          txid: data.txid,
-          minenow,
-          signatures: data.signatures
-          // signatures,
-          // signaturesGO: data.signatures
-        };
-      })
-      .then(sendData => {
-        console.log(sendData);
-        // console.log(sendData.signatures, sendData.signaturesGO);
-        const prom = new Promise((resolve, reject) => {
-          setTimeout(() => (
-            axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
-              .then(resp => resolve(resp.data))
-              .catch(error => reject(error.response))
-          ), 100);
-        });
-        return prom.then(d => console.log(d)).catch(error => console.log(error));
-      })
+    axios.post(`${bcNode}/send`, prepData)
+      .then(({ data }) => console.log(data))
       .then(() => mainWindow.webContents.send('transaction:done'))
-      .catch(error => {
-        throw new Error(error.respose.data);
-      })
-    ), 100);
+      .catch(error => { throw new Error(error); })
+  ), 100);
 });

@@ -2,6 +2,7 @@ import { ipcRenderer } from 'electron';
 
 import * as actionTypes from './actionTypes';
 
+import { getBalance } from './index';
 
 const getDigestStart = (userData, password) => {
   ipcRenderer.send('digest:get', { userData, password });
@@ -20,5 +21,11 @@ const getDigestSuccess = digestInfo => ({
 // eslint-disable-next-line import/prefer-default-export
 export const getDigest = (userData, password) => dispatch => {
   dispatch(getDigestStart(userData, password));
-  ipcRenderer.on('digest:success', (event, data) => dispatch(getDigestSuccess(data)));
+  ipcRenderer.once('digest:success', (event, data) => {
+    dispatch(getDigestSuccess(data));
+    const fsNodes = data.storageNodes.map(item => `${item}/buckets`);
+    const bcNode = `${data.bcNodes[0]}`;
+    dispatch(getBalance(userData.address, bcNode));
+    ipcRenderer.send('fs:mount', fsNodes);
+  });
 };

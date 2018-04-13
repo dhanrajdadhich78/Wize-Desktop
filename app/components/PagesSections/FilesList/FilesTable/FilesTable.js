@@ -61,9 +61,13 @@ const filesTable = props => {
 };
 
 filesTable.propTypes = {
-  files: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  files: PropTypes.arrayOf(PropTypes.shape()),
   handleDownload: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired
+};
+
+filesTable.defaultProps = {
+  files: []
 };
 
 export default filesTable;
