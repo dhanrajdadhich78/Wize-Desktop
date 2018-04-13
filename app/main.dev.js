@@ -218,40 +218,40 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
 });
 //  get network digest listener
 ipcMain.on('digest:get', (event, { userData, password }) => {
-  // if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-  //   const data = {
-  //     bcNodes: [
-  //       'http://127.0.0.1:4000',
-  //       'http://127.0.0.1:4000',
-  //       'http://127.0.0.1:4000'
-  //     ],
-  //     raftNodes: [
-  //       'http://127.0.0.1:11001',
-  //       'http://127.0.0.1:11001',
-  //       'http://127.0.0.1:11001'
-  //     ],
-  //     storageNodes: [
-  //       'http://127.0.0.1:13000',
-  //       'http://127.0.0.1:13000',
-  //       'http://127.0.0.1:13000'
-  //     ],
-  //     spacelfet: 0,
-  //     totalNodes: 0,
-  //     suspicious: 0
-  //   };
-  //   mainWindow.webContents.send('digest:success', data);
-  // } else {
-  const reqData = {
-    data: {
-      address: userData.address,
-      pubKey: userData.cpk,
-      AES: cF.getHash(password)
-    }
-  };
-  return axios.post(`${DIGEST_URL}/hello/application`, reqData)
-    .then(({ data }) => mainWindow.webContents.send('digest:success', data))
-    .catch(err => { throw new Error(err); });
-  // }
+  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    const data = {
+      bcNodes: [
+        'http://127.0.0.1:4000',
+        'http://127.0.0.1:4000',
+        'http://127.0.0.1:4000'
+      ],
+      raftNodes: [
+        'http://127.0.0.1:11001',
+        'http://127.0.0.1:11001',
+        'http://127.0.0.1:11001'
+      ],
+      storageNodes: [
+        'http://127.0.0.1:13000',
+        'http://127.0.0.1:13000',
+        'http://127.0.0.1:13000'
+      ],
+      spacelfet: 0,
+      totalNodes: 0,
+      suspicious: 0
+    };
+    mainWindow.webContents.send('digest:success', data);
+  } else {
+    const reqData = {
+      data: {
+        address: userData.address,
+        pubKey: userData.cpk,
+        AES: cF.getHash(password)
+      }
+    };
+    return axios.post(`${DIGEST_URL}/hello/application`, reqData)
+      .then(({ data }) => mainWindow.webContents.send('digest:success', data))
+      .catch(err => { throw new Error(err); });
+  }
 });
 //  get my files list listener
 ipcMain.on('file:list', (event, { userData, raftNode }) => (
