@@ -35,7 +35,10 @@ class Homepage extends Component {
   });
   render() {
     if (this.props.credentials !== this.state.credFilesArr) {
-      this.setState({ credFilesArr: this.props.credentials });
+      this.setState({
+        credFilesArr: this.props.credentials,
+        credFilePath: this.props.credentials.length ? this.props.credentials[0] : null
+      });
     }
     let view = (
       <Auth
