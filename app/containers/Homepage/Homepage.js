@@ -18,6 +18,9 @@ class Homepage extends Component {
     credFilesArr: this.props.credentials,
     dropzoneInput: true
   };
+  componentWillMount() {
+    this.props.getCredFilesList();
+  }
   handleToggleAltCredFile = () => {
     if (!this.state.altCredFilePath === true) {
       this.setState({ credFilePath: this.props.credentials[0] });
@@ -31,12 +34,20 @@ class Homepage extends Component {
     dropzoneInput: true
   });
   render() {
+    if (this.props.credentials !== this.state.credFilesArr) {
+      this.setState({
+        credFilesArr: this.props.credentials,
+        credFilePath: this.props.credentials.length ? this.props.credentials[0] : null
+      });
+    }
     let view = (
       <Auth
         authError={this.props.authError}
         cachePassword={this.state.password}
         userData={this.props.userData}
-        handleAuth={(password, filePath) => this.props.handleAuth(password, filePath)}
+        handleAuth={(password, filePath) => (
+          this.props.handleAuth(password, filePath)
+        )}
         altCredFilePath={this.state.altCredFilePath}
         handleToggleAltCredFile={() => this.handleToggleAltCredFile()}
         credFilePath={this.state.credFilePath}
@@ -52,7 +63,9 @@ class Homepage extends Component {
       view = (
         <Registration
           userData={this.props.userData}
-          handleRegister={(password, filePath) => this.props.handleRegister(password, filePath)}
+          handleRegister={(password, filePath) => (
+            this.props.handleRegister(password, filePath)
+          )}
           cachePassword={password => this.setState({ password })}
           lastCredFile={`credentials-${this.props.credentials.length}.bak`}
         />
@@ -86,7 +99,8 @@ Homepage.propTypes = {
   handleRegister: PropTypes.func.isRequired,
   handleAuth: PropTypes.func.isRequired,
   authError: PropTypes.string,
-  credentials: PropTypes.arrayOf(PropTypes.string).isRequired
+  credentials: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getCredFilesList: PropTypes.func.isRequired
 };
 
 Homepage.defaultProps = {
@@ -105,8 +119,13 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  handleRegister: (password, filePath) => dispatch(actions.registration(password, filePath)),
-  handleAuth: (password, filePath) => dispatch(actions.auth(password, filePath))
+  handleRegister: (password, filePath) => (
+    dispatch(actions.registration(password, filePath))
+  ),
+  handleAuth: (password, filePath) => (
+    dispatch(actions.auth(password, filePath))
+  ),
+  getCredFilesList: () => dispatch(actions.getCredFilesList())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Homepage);

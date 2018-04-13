@@ -3,25 +3,28 @@ import { ipcRenderer } from 'electron';
 import * as actionTypes from './actionTypes';
 
 
-const getBallanceStart = address => {
-  ipcRenderer.send('blockchain:wallet-check', address);
+const getBalanceStart = (address, bcNode) => dispatch => {
+  ipcRenderer.send('blockchain:wallet-check', { address, bcNode });
+  ipcRenderer.once('blockchain:wallet-checked', (event, data) => {
+    dispatch(getBalanceSuccess(JSON.parse(data)));
+    ipcRenderer.removeAllListeners('blockchain:wallet-check');
+  });
   return {
-    type: actionTypes.GET_BALLANCE_START
+    type: actionTypes.GET_BALANCE_START
   };
 };
 
-const getBallanceSuccess = data => ({
-  type: actionTypes.GET_BALLANCE_SUCCESS,
-  ballance: data.credit,
+const getBalanceSuccess = data => ({
+  type: actionTypes.GET_BALANCE_SUCCESS,
+  balance: data.credit,
   success: data.success
 });
 
-// const getBallanceFail = () => ();
+// const getBalanceFail = () => ();
 
 // eslint-disable-next-line import/prefer-default-export
-export const getBallance = address => dispatch => {
-  dispatch(getBallanceStart(address));
-  ipcRenderer.on('blockchain:wallet-checked', (event, data) => dispatch(getBallanceSuccess(JSON.parse(data))));
+export const getBalance = (address, bcNode) => dispatch => {
+  dispatch(getBalanceStart(address, bcNode));
 };
 
 // const ckeckBlockchainStart = () => ();

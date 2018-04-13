@@ -22,7 +22,7 @@ class Layout extends Component {
         <div className={classes.Layout}>
           <main>
             <SideMenu
-              blockChain={this.props.bcNodes.length >= 3}
+              blockChain={this.props.bcNodes.length > 0}
               toggleMenu={() => this.setState({ menuClosed: !this.state.menuClosed })}
             />
             <article>

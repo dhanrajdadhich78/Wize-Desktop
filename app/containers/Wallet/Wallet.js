@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -12,16 +13,25 @@ import CreateTransaction from '../../components/PagesSections/Wallet/CreateTrans
 
 class Wallet extends Component {
   state = {
-    minenow: true
+    minenow: true,
+    transactionLoading: false
   };
   handleOnMineNowCheck = () => this.setState({ minenow: !this.state.minenow });
   handleSubmitTransaction = (to, amount) => {
-    // eslint-disable-next-line prefer-destructuring
+    this.setState({ transactionLoading: true });
     const userData = this.props.userData;
     const minenow = this.state.minenow;
-    ipcRenderer.send('transaction:create', { userData, to, amount, minenow });
-    ipcRenderer.on('transaction:done', () => {
-      this.props.getBallance(this.props.userData.address);
+    const bcNode = `${this.props.bcNodes[0]}`;
+    ipcRenderer.send('transaction:create', {
+      userData,
+      to,
+      amount,
+      minenow,
+      bcNode
+    });
+    ipcRenderer.once('transaction:done', () => {
+      this.props.getBalance(this.props.userData.address, bcNode);
+      this.setState({ transactionLoading: false });
     });
   };
   render() {
@@ -32,13 +42,14 @@ class Wallet extends Component {
           <div className={classes.WaleltsInfo}>
             <p>Wallet: <span>{this.props.userData.address}</span></p>
             <p>Public key: <span>{this.props.userData.cpk}</span></p>
-            <p>Ballance: <span>{ this.props.ballance } WB</span></p>
+            <p>Balance: <span>{ this.props.balance } WB</span></p>
           </div>
           <div className={classes.WalletOperations}>
             <Heading size={2} fontSize={24} fontWeight={200} divider={false}>
               Trans<span>action</span>
             </Heading>
             <CreateTransaction
+              transactionLoading={this.state.transactionLoading}
               minenow={this.state.minenow}
               handleOnMineNowCheck={() => this.handleOnMineNowCheck()}
               handleSubmitTransaction={(to, amount) => this.handleSubmitTransaction(to, amount)}
@@ -56,8 +67,9 @@ Wallet.propTypes = {
     cpk: PropTypes.string,
     address: PropTypes.string
   }),
-  ballance: PropTypes.number.isRequired,
-  getBallance: PropTypes.func.isRequired
+  balance: PropTypes.number.isRequired,
+  getBalance: PropTypes.func.isRequired,
+  bcNodes: PropTypes.arrayOf(PropTypes.string)
 };
 
 Wallet.defaultProps = {
@@ -65,16 +77,18 @@ Wallet.defaultProps = {
     csk: null,
     cpk: null,
     address: null
-  }
+  },
+  bcNodes: []
 };
 
 const mapStateToProps = state => ({
   userData: state.auth.userData,
-  ballance: state.blockchain.ballance
+  balance: state.blockchain.balance,
+  bcNodes: state.digest.digestInfo.bcNodes
 });
 
 const mapDispatchToProps = dispatch => ({
-  getBallance: address => dispatch(actions.getBallance(address))
+  getBalance: (address, bcNode) => dispatch(actions.getBalance(address, bcNode))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
