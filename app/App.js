@@ -40,12 +40,12 @@ class App extends Component {
           routes = (
             <Layout>
               <Switch>
-                <Route exact path="/" component={Account} />
-                <Route exact path="/wallet" component={Wallet} />
-                <Route exact path="/file-upload" component={FileUpload} />
-                <Route exact path="/files-list" component={FilesList} />
-                <Route exact path="/ghost-pad" component={GhostPad} />
-                <Route exact path="/miners" component={Miners} />
+                <Route exact path="/" component={Account} key={Math.random()} />
+                <Route exact path="/wallet" component={Wallet} key={Math.random()} />
+                <Route exact path="/file-upload" component={FileUpload} key={Math.random()} />
+                <Route exact path="/files-list" component={FilesList} key={Math.random()} />
+                <Route exact path="/ghost-pad" component={GhostPad} key={Math.random()} />
+                <Route exact path="/miners" component={Miners} key={Math.random()} />
                 <Redirect to="/" />
               </Switch>
             </Layout>
