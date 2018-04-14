@@ -176,9 +176,22 @@ const fileCrushing = (file, shardsNumber = 3) => {
  * @returns {string}
  */
 const getHash = string => {
-  // const publicSHA256 = bitcoin.crypto.sha256(string);
-  const publicSHA256 = SHA256(string);
-  return ripemd160(publicSHA256).toString(CryptoJS.enc.Hex);
+  const buffer = Buffer.from(string, 'hex')
+  const _publicSHA256 = bitcoin.crypto.sha256(buffer);
+  console.log(_publicSHA256);
+
+  const _ripemd160 = bitcoin.crypto.ripemd160(_publicSHA256);
+  console.log(_ripemd160);
+  console.log(_ripemd160.toString('hex'));
+
+  return _ripemd160.toString('hex');
+  
+  //const words = CryptoJS.enc.Utf16.parse(string);
+  //const publicSHA256 = SHA256(words);
+  //console.log(words);
+  //console.log(publicSHA256.toString());
+  //return ripemd160(publicSHA256).toString(CryptoJS.enc.Hex);
+  //return ripemd160(publicSHA256.toString()).toString();
 };
 
 module.exports = {
