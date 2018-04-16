@@ -1,9 +1,8 @@
-const CryptoJS = require('crypto-js');
-//const bs58check = require('bs58check');
-const bs58 = require('bs58');
-//const bigi = require('bigi');
-//const reverse = require("buffer-reverse")
+// FIXME: bitcoinjs or crypto-js - only one!
 const bitcoin = require('bitcoinjs-lib');
+const CryptoJS = require('crypto-js');
+const bs58 = require('bs58');
+// FIXME: crypto?
 const crypto = require('crypto');
 const cF = require('./commonFunc');
 
