@@ -1,8 +1,9 @@
 /* eslint-disable max-len,no-plusplus */
 const fs = require('fs');
-const bitcoin = require('bitcoinjs-lib');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
+// FIXME: bitcoinjs or crypto-js - only one!
+const bitcoin = require('bitcoinjs-lib');
 const CryptoJS = require('crypto-js');
 const SHA256 = require('crypto-js/sha256');
 const ripemd160 = require('crypto-js/ripemd160');
@@ -68,7 +69,8 @@ const ensureDirectoryExistence = filePath => {
   return true;
 };
 
-// TODO: only for creating admin credentials
+// FIXME:
+// only for creating admin credentials
 const adminEncrypt = () => {
   const userData = {
     address: "14b21WZ21rQcXQfNRdqNcLesjxXcX5PMP4",
@@ -175,22 +177,24 @@ const fileCrushing = (file, shardsNumber = 3) => {
  * @returns {string}
  */
 const getHash = string => {
-  const buffer = Buffer.from(string, 'hex')
-  const _publicSHA256 = bitcoin.crypto.sha256(buffer);
-  console.log(_publicSHA256);
-
-  const _ripemd160 = bitcoin.crypto.ripemd160(_publicSHA256);
-  console.log(_ripemd160);
-  console.log(_ripemd160.toString('hex'));
-
-  return _ripemd160.toString('hex');
-  
+  // FIXME: perhaps we should use CryptoJS.enc.Utf8.parse(string)?
   //const words = CryptoJS.enc.Utf16.parse(string);
-  //const publicSHA256 = SHA256(words);
+  //const publicSHA256 = SHA256(words); // wrong value
   //console.log(words);
   //console.log(publicSHA256.toString());
-  //return ripemd160(publicSHA256).toString(CryptoJS.enc.Hex);
-  //return ripemd160(publicSHA256.toString()).toString();
+  //return ripemd160(publicSHA256).toString(CryptoJS.enc.Hex); // wrong value
+  //return ripemd160(publicSHA256.toString()).toString(); // wrong value too
+  
+  // FIXME: bitcoinjs or crypto-js? bitcoinjs works
+  const buffer = Buffer.from(string, 'hex')
+  const publicSHA256 = bitcoin.crypto.sha256(buffer);
+  //console.log(publicSHA256);
+
+  const ripemd160 = bitcoin.crypto.ripemd160(publicSHA256);
+  //console.log(ripemd160);
+  //console.log(ripemd160.toString('hex'));
+
+  return ripemd160.toString('hex');
 };
 
 module.exports = {
