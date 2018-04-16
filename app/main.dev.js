@@ -13,16 +13,19 @@
  */
 const path = require('path');
 const fs = require('fs');
+
+// Crypto
 const bitcoin = require('bitcoinjs-lib');
-const bigi = require('bigi');
-const bs58check = require('bs58check');
+const wallet = require('./electron/wallet');
+// FIXME: to remove, these libs dont use anymore
+//const bigi = require('bigi');
+//const bs58check = require('bs58check');
+
 const _ = require('lodash');
 const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
-// TODO
-const wallet = require('./electron/wallet');
 const { DIGEST_URL, BLOCKCHAIN_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
@@ -120,7 +123,8 @@ ipcMain.on('credentials-files-list:scan', () => {
         : null
     ));
 
-    // TODO: only for creating admin credentials
+    // FIXME: 
+    // only for creating admin credentials
     //const aes = cF.adminEncrypt();
     //fs.writeFile(`${configFolder}/credentials-0.bak`, aes.encryptedHex, err => {
     //  if (err) {
@@ -136,6 +140,7 @@ ipcMain.on('credentials-files-list:scan', () => {
 });
 //  on credentials generate listener
 ipcMain.on('registration:start', (event, password) => {
+  // FIXME: to remove
   //  on desktop
   // //  random sha256 hash
   // const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
@@ -158,6 +163,8 @@ ipcMain.on('registration:start', (event, password) => {
   //   address
   // };
 
+  // work version
+  // FIXME: check this, more error handling
   const userData = wallet.newCredentials();
   console.log(userData);
 
@@ -184,6 +191,7 @@ ipcMain.on('registration:start', (event, password) => {
     });
   }
 
+  // FIXME: to remove
   //  on server
   // setTimeout(() => axios.post(`${BLOCKCHAIN_URL}/wallet/new`, {})
   //   .then(({ data }) => ({
@@ -557,7 +565,10 @@ ipcMain.on('blockchain:wallet-check', (event, { address, bcNode }) => (
 ));
 //  on create prepare and create transaction listener
 ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode }) => {
-  //  more difficult
+  // work version
+  // FIXME: to remove privkey
+  // TODO: to replace pubkey with pubkeyhash
+  // TODO: to add validating address on the desktop (address 'to' 100%)
   const prepData = {
     from: userData.address,
     to,
@@ -566,14 +577,17 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
     privkey: userData.csk
   };
   return setTimeout(() => (
+    // FIXME: check this, more error handling
     axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
       .then(({ data }) => {
+        // FIXME: check signatures and data.signatures
         console.log(`data ${JSON.stringify(data)}`);
         const signatures = data.data.map(transactionHash => (
            wallet.ecdsaSign(transactionHash, userData.csk)
         ));
         console.log(`signatures: ${signatures}`);
         
+        // TODO
         return {
           from: userData.address,
           txid: data.txid,
@@ -581,6 +595,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
           signatures: signatures
         };
       })
+      // FIXME: check this, more error handling
       .then(sendData => {
         const prom = new Promise((resolve, reject) => {
           setTimeout(() => (
@@ -597,6 +612,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
       })
     ), 100);
 
+  // FIXME: to remove
   //easy
   // const prepData = {
   //   from: userData.address,
