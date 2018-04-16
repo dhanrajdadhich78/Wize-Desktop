@@ -11,15 +11,13 @@
  *
  * @flow
  */
+//  node
 const path = require('path');
 const fs = require('fs');
 
-// Crypto
+//  Crypto
 const bitcoin = require('bitcoinjs-lib');
 const wallet = require('./electron/wallet');
-// FIXME: to remove, these libs dont use anymore
-//const bigi = require('bigi');
-//const bs58check = require('bs58check');
 
 const _ = require('lodash');
 const axios = require('axios');
@@ -90,7 +88,7 @@ app.on('ready', async () => {
   });
   mainWindow.on('closed', () => {
     if (cpkGlob) {
-      cF.unmountFs(cpkGlob, app.quit);
+      cF.unmountFs(cpkGlob, fsUrlGlob, app.quit);
     } else {
       app.quit();
     }
@@ -123,15 +121,6 @@ ipcMain.on('credentials-files-list:scan', () => {
         : null
     ));
 
-    // FIXME: 
-    // only for creating admin credentials
-    //const aes = cF.adminEncrypt();
-    //fs.writeFile(`${configFolder}/credentials-0.bak`, aes.encryptedHex, err => {
-    //  if (err) {
-    //    console.log(err);
-    //  }
-    //});
-
     const credentials = cF.cleanArray(credFiles);
     return mainWindow.webContents.send('credentials-files-list:get', credentials);
   }
@@ -140,34 +129,8 @@ ipcMain.on('credentials-files-list:scan', () => {
 });
 //  on credentials generate listener
 ipcMain.on('registration:start', (event, password) => {
-  // FIXME: to remove
-  //  on desktop
-  // //  random sha256 hash
-  // const hash = bitcoin.crypto.sha256(Buffer.from(new Date().getTime().toString()));
-  // const d = bigi.fromBuffer(hash);
-  // //  generate key pair
-  // const keyPair = new bitcoin.ECPair(d, null, { compressed: false });
-  // //  extract public key buffer(compressed)
-  // const cpkBuffer = keyPair.getPublicKeyBuffer();
-  // //  get readable public key
-  // //  to revert -> Buffer.from(publicKey, 'hex')
-  // const cpk = cpkBuffer.toString('hex');
-  // //  get private key
-  // const csk = bs58check.decode(keyPair.toWIF()).toString('hex');
-  // //  get address
-  // const address = keyPair.getAddress();
-  // //  json with credentials
-  // const userData = {
-  //   csk,
-  //   cpk,
-  //   address
-  // };
-
-  // work version
-  // FIXME: check this, more error handling
+  //  create user data with wallet service
   const userData = wallet.newCredentials();
-  console.log(userData);
-
   const strData = JSON.stringify(userData);
   //  save to file
   if (cF.ensureDirectoryExistence(configFolder)) {
@@ -190,37 +153,6 @@ ipcMain.on('registration:start', (event, password) => {
       });
     });
   }
-
-  // FIXME: to remove
-  //  on server
-  // setTimeout(() => axios.post(`${BLOCKCHAIN_URL}/wallet/new`, {})
-  //   .then(({ data }) => ({
-  //     address: data.address,
-  //     cpk: data.pubkey,
-  //     csk: data.privkey
-  //   }))
-  //   .then(userData => {
-  //     const strData = JSON.stringify(userData);
-  //     //  save to file
-  //     // eslint-disable-next-line promise/always-return
-  //     if (cF.ensureDirectoryExistence(configFolder)) {
-  //       const aes = cF.aesEncrypt(strData, password, 'hex');
-  //       const files = fs.readdirSync(configFolder);
-  //       const credFiles = files.map(file => (
-  //         !file.indexOf('credentials')
-  //           ? file
-  //           : null
-  //       ));
-  //       const credArr = cF.cleanArray(credFiles);
-  //       fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
-  //         if (err) {
-  //           throw new Error(err);
-  //         }
-  //         mainWindow.webContents.send('registration:complete', strData);
-  //       });
-  //     }
-  //   })
-  //   .catch(error => { throw new Error(error); }), 100)
 });
 //  on auth listener
 ipcMain.on('auth:start', (event, { password, filePath }) => {
@@ -305,7 +237,7 @@ ipcMain.on('digest:get', (event, { userData, password }) => {
         'http://127.0.0.1:13000',
         'http://127.0.0.1:13000'
       ],
-      spacelfet: 0,
+      spaceleft: 0,
       totalNodes: 0,
       suspicious: 0
     };
@@ -577,54 +509,34 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
     privkey: userData.csk
   };
   return setTimeout(() => (
-    // FIXME: check this, more error handling
-    axios.post(`${BLOCKCHAIN_URL}/prepare`, prepData)
+    axios.post(`${bcNode}/prepare`, prepData)
       .then(({ data }) => {
-        // FIXME: check signatures and data.signatures
-        console.log(`data ${JSON.stringify(data)}`);
         const signatures = data.data.map(transactionHash => (
-           wallet.ecdsaSign(transactionHash, userData.csk)
+          wallet.ecdsaSign(transactionHash, userData.csk)
         ));
-        console.log(`signatures: ${signatures}`);
-        
-        // TODO
         return {
           from: userData.address,
           txid: data.txid,
           minenow,
-          signatures: signatures
+          signatures
         };
       })
-      // FIXME: check this, more error handling
       .then(sendData => {
         const prom = new Promise((resolve, reject) => {
           setTimeout(() => (
-            axios.post(`${BLOCKCHAIN_URL}/sign`, sendData)
+            axios.post(`${bcNode}/sign`, sendData)
               .then(resp => resolve(resp.data))
               .catch(error => reject(error.response))
           ), 100);
         });
-        return prom.then(d => console.log(d)).catch(error => console.log(error));
+        return prom
+          .then(d => console.log(d))
+          .catch(error => console.log(error));
       })
       .then(() => mainWindow.webContents.send('transaction:done'))
       .catch(error => {
+        console.log(error.response);
         throw new Error(error.respose.data);
       })
-    ), 100);
-
-  // FIXME: to remove
-  //easy
-  // const prepData = {
-  //   from: userData.address,
-  //   to,
-  //   amount: parseInt(amount, 10),
-  //   minenow
-  // };
-
-  // return setTimeout(() => (
-  //   axios.post(`${bcNode}/send`, prepData)
-  //     .then(({ data }) => console.log(data))
-  //     .then(() => mainWindow.webContents.send('transaction:done'))
-  //     .catch(error => { throw new Error(error); })
-  // ), 100);
+  ), 100);
 });
