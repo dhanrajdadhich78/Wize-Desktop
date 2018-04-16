@@ -587,7 +587,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
         ));
         console.log(`signatures: ${signatures}`);
         
-        // TODO
+        // TODO: minenow - true and false
         return {
           from: userData.address,
           txid: data.txid,
