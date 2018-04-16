@@ -2,23 +2,18 @@
 const fs = require('fs');
 const aesjs = require('aes-js');
 const pbkdf2 = require('pbkdf2');
-// FIXME: bitcoinjs or crypto-js - only one!
 const bitcoin = require('bitcoinjs-lib');
-const CryptoJS = require('crypto-js');
-const SHA256 = require('crypto-js/sha256');
-const ripemd160 = require('crypto-js/ripemd160');
 const axios = require('axios');
 
 /**
- * unmount fs buket
+ * unmount fs buckets
  * @param cpk {string}
  * @param serversArray {array}
  * @param funcAfter {function}
  */
 const unmountFs = (cpk, serversArray, funcAfter = null) => {
-  // const reqs = serversArray.map(url => axios.post(`${url}/${cpk}/unmount`));
-  // axios.all(reqs)
-  axios.post(`${serversArray[0]}/${cpk}/unmount`)
+  const reqs = serversArray.map(url => axios.post(`${url}/${cpk}/unmount`));
+  axios.all(reqs)
     .catch(error => {
       console.log(error);
       if (funcAfter) {
@@ -67,22 +62,6 @@ const ensureDirectoryExistence = filePath => {
     ensureDirectoryExistence(filePath);
   }
   return true;
-};
-
-// FIXME:
-// only for creating admin credentials
-const adminEncrypt = () => {
-  const userData = {
-    address: "14b21WZ21rQcXQfNRdqNcLesjxXcX5PMP4",
-    cpk: "18db234a25b57fd05020bc31444452deec65a425534e2bb2bcf9ce2f01a1b6f97287000eeece78629597d64637851d6e05cd5c2c6fa9d6d1ca410391db967a91",
-    csk: "90665570941d31da6af6a32ab58a0c81fbd90165be7bbc994d050a7143d9d1a7"
-  }
-  const strData = JSON.stringify(userData);
-  const password = "123456";
-
-  const aes = aesEncrypt(strData, password, 'hex');
-  console.log(aes.encryptedHex);
-  return aes;
 };
 
 /**
@@ -177,24 +156,9 @@ const fileCrushing = (file, shardsNumber = 3) => {
  * @returns {string}
  */
 const getHash = string => {
-  // FIXME: perhaps we should use CryptoJS.enc.Utf8.parse(string)?
-  //const words = CryptoJS.enc.Utf16.parse(string);
-  //const publicSHA256 = SHA256(words); // wrong value
-  //console.log(words);
-  //console.log(publicSHA256.toString());
-  //return ripemd160(publicSHA256).toString(CryptoJS.enc.Hex); // wrong value
-  //return ripemd160(publicSHA256.toString()).toString(); // wrong value too
-  
-  // FIXME: bitcoinjs or crypto-js? bitcoinjs works
-  const buffer = Buffer.from(string, 'hex')
+  const buffer = Buffer.from(string, 'hex');
   const publicSHA256 = bitcoin.crypto.sha256(buffer);
-  //console.log(publicSHA256);
-
-  const ripemd160 = bitcoin.crypto.ripemd160(publicSHA256);
-  //console.log(ripemd160);
-  //console.log(ripemd160.toString('hex'));
-
-  return ripemd160.toString('hex');
+  return bitcoin.crypto.ripemd160(publicSHA256).toString('hex');
 };
 
 module.exports = {

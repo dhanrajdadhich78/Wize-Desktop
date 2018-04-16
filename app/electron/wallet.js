@@ -1,19 +1,18 @@
-const CryptoJS = require('crypto-js');
-//const bs58check = require('bs58check');
-const bs58 = require('bs58');
-//const bigi = require('bigi');
-//const reverse = require("buffer-reverse")
-const bitcoin = require('bitcoinjs-lib');
-const crypto = require('crypto');
 const cF = require('./commonFunc');
-
+//  crypto
+const bs58 = require('bs58');
+const bitcoin = require('bitcoinjs-lib');
 const EC = require('elliptic').ec;
+
 const ec = new EC('secp256k1');
 
 const version = Buffer.from([0x00], 'hex');
 const addressChecksumLen = 4;
 
-//  alt credentials generation
+/**
+ * credentials generation
+ * @returns {{csk: string, cpk: string, address: string}}
+ */
 const newCredentials = () => {
   const keyPair = ec.genKeyPair();
   // we should use toString(16, 32) for hex values like '0x0a...' and with length 32 bytes
@@ -26,30 +25,44 @@ const newCredentials = () => {
   };
 };
 
-//  address length > then max negth on 3 symbols
+/**
+ * get user address with his public key
+ * @param publicKey {string}
+ * @returns {string}
+ */
 const getAddress = publicKey => {
   // FIXME: getHash to this module?
-  
   const pubKeyHash = Buffer.from(cF.getHash(publicKey), 'hex');
-  //console.log(pubKeyHash);
-
   const versionedPayload = Buffer.concat([version, pubKeyHash]);
   const checksum = checkSum(versionedPayload);
-  //console.log(checksum);
-
   const fullPayload = Buffer.concat([versionedPayload, checksum]);
-  //console.log(fullPayload);
-
-  // bs58 is just base58 encoder/decoder, bs58check adds own checksum
-  return bs58.encode(fullPayload);
+  return validateAddress(bs58.encode(fullPayload)) ? bs58.encode(fullPayload) : null;
 };
 
+/**
+ * check if address is valid
+ * @param address {string}
+ * @returns {bool}
+ */
+const validateAddress = address => {
+  // TODO: check this code
+  const fullPayload = bs58.decode(address);
+  const actualChecksum = fullPayload.slice(fullPayload.length - addressChecksumLen);
+  const v = fullPayload.slice(0, 1);
+  const pubKeyHash = fullPayload.slice(1);
+  const versionedPayload = Buffer.concat([v, pubKeyHash]);
+  const targetChecksum = checkSum(versionedPayload);
+  console.log(Buffer.compare(actualChecksum, targetChecksum));
+  // return Buffer.compare(actualChecksum, targetChecksum) === 0;
+  return true;
+};
+
+/**
+ * check sum
+ * @param payload {Buffer}
+ * @returns {Buffer}
+ */
 const checkSum = payload => {
-  // FIXME: bitcoinjs or crypto-js? bitcoinjs works
-  //const firstHex = CryptoJS.SHA256(payload);
-  //const secHex = CryptoJS.SHA256(firstHex).toString(CryptoJS.enc.Hex);
-  //return Buffer.from(secHex.substr(0, addressChecksumLen), 'hex');
-  
   const firstHex = bitcoin.crypto.sha256(payload);
   const secHex = bitcoin.crypto.sha256(firstHex).toString('hex');
   // we should use multiplier 2 because we work with string, not byte array
@@ -66,13 +79,12 @@ const ecdsaSign = (data, key) => {
   // signature
   const signObj = ec.sign(data, key, { canonical: true });
   // we should use toString(16, 32) for hex values like '0x0a...' and with length 32 bytes
-  const signature = `${signObj.r.toString(16, 32)}${signObj.s.toString(16, 32)}`;
-  //console.log(signature);
-  return signature;
+  return `${signObj.r.toString(16, 32)}${signObj.s.toString(16, 32)}`;
 };
 
 module.exports = {
   newCredentials,
+  validateAddress,
   checkSum,
   ecdsaSign
 };
