@@ -36,7 +36,7 @@ const getAddress = publicKey => {
   const versionedPayload = Buffer.concat([version, pubKeyHash]);
   const checksum = checkSum(versionedPayload);
   const fullPayload = Buffer.concat([versionedPayload, checksum]);
-  return validateAddress(bs58.encode(fullPayload)) ? bs58.encode(fullPayload) : null;
+  return bs58.encode(fullPayload);
 };
 
 /**
