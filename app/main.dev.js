@@ -461,7 +461,6 @@ ipcMain.on('blockchain:wallet-check', (event, { address, bcNode }) => (
 //  on create prepare and create transaction listener
 ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode }) => {
   // work version
-  // FIXME: to remove privkey
   // TODO: to replace pubkey with pubkeyhash
   if (!wallet.validateAddress(to)) {
     mainWindow.webContents.send('transaction:done');
@@ -472,8 +471,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
-    pubkey: userData.cpk,
-    // privkey: userData.csk
+    pubkey: userData.cpk
   };
   return setTimeout(() => (
     axios.post(`${bcNode}/prepare`, prepData)
