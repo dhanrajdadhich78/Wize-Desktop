@@ -25,7 +25,7 @@ const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
 const { DIGEST_URL } = require('./utils/const');
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const MenuBuilder = require('./menu');
 
 let configFolder = `${process.cwd()}/.wizeconfig`;
@@ -137,7 +137,7 @@ ipcMain.on('registration:start', (event, password) => {
     const aes = cF.aesEncrypt(strData, password, 'hex');
     fs.readdir(configFolder, (error, files) => {
       if (error) {
-        throw new Error(error);
+        dialog.showErrorBox('Error', error);
       }
       const credFiles = files.map(file => (
         !file.indexOf('credentials')
@@ -147,7 +147,7 @@ ipcMain.on('registration:start', (event, password) => {
       const credArr = cF.cleanArray(credFiles);
       fs.writeFile(`${configFolder}/credentials-${credArr.length}.bak`, aes.encryptedHex, err => {
         if (err) {
-          throw new Error(err);
+          dialog.showErrorBox('Error', err);
         }
         mainWindow.webContents.send('registration:complete', strData);
       });
@@ -164,18 +164,18 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
   }
   return fs.readFile(credFilePath, (err, data) => {
     if (err) {
-      throw new Error(err);
+      dialog.showErrorBox('Error', err);
     }
     encryptedHex = data;
     if (!encryptedHex) {
-      throw new Error('There is no credentials file');
-    } else {
-      const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
-      //  remember cpk of user
-      cpkGlob = JSON.parse(decrypt.strData).cpk;
-      // on user data decryption and mounting fs - give userData to react part
-      mainWindow.webContents.send('auth:complete', decrypt.strData);
+      dialog.showErrorBox('Error', 'There is no credentials file');
+      return;
     }
+    const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
+    //  remember cpk of user
+    cpkGlob = JSON.parse(decrypt.strData).cpk;
+    // on user data decryption and mounting fs - give userData to react part
+    mainWindow.webContents.send('auth:complete', decrypt.strData);
   });
 });
 ipcMain.on('fs:mount', (event, fsUrl) => {
@@ -252,7 +252,7 @@ ipcMain.on('digest:get', (event, { userData, password }) => {
     };
     return axios.post(`${DIGEST_URL}/hello/application`, reqData)
       .then(({ data }) => mainWindow.webContents.send('digest:success', data))
-      .catch(err => { throw new Error(err); });
+      .catch(err => dialog.showErrorBox('Error', err.response.data));
   }
 });
 //  get my files list listener
@@ -280,7 +280,7 @@ ipcMain.on('file:list', (event, { userData, raftNode }) => (
       }
       mainWindow.webContents.send('file:your-list', filesList);
     })
-    .catch(error => { throw new Error(error); })
+    .catch(error => dialog.showErrorBox('Error', error.response.data))
 ));
 //  send files listener
 ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) => {
@@ -370,15 +370,11 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
             .then(results => {
               updRaft(results[0].data, res.filename, res.fileInfo);
             })
-            .catch(reason => { console.log(reason); });
+            .catch(reason => dialog.showErrorBox('Error', reason.response.data));
         }, ((i + 1) * 1000))
       ))
     ))
-    .catch(error => {
-      console.log('error');
-      console.log(error.response);
-      throw new Error(error);
-    });
+    .catch(error => dialog.showErrorBox('Error', error.response.data));
 });
 //  on file download listener
 ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
@@ -393,14 +389,13 @@ ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
       const fileDataObj = JSON.parse(decryptedData.strData);
       const shardsReq = fileDataObj.shardsAddresses.map((shardAddress, index) => {
         const fname = cF.aesEncrypt(filename, userData.csk).encryptedHex;
-        console.log(`${shardAddress}/files/${fname}.${index}`);
         return axios.get(`${shardAddress}/files/${fname}.${index}`);
       });
       return new Promise(resolve => (
         setTimeout(() => (
           axios.all(shardsReq)
             .then(ress => resolve(ress))
-            .catch(error => { throw new Error(error); })
+            .catch(error => dialog.showErrorBox('Error', error.response.data))
         ), 100)
       ));
     })
@@ -412,7 +407,7 @@ ipcMain.on('file:compile', (event, { userData, filename, raftNode }) => (
         mainWindow.webContents.send('file:receive', base64File);
       }
     })
-    .catch(error => { throw new Error(error); })
+    .catch(error => dialog.showErrorBox('Error', error.response.data))
 ));
 //  on file remove listener
 ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
@@ -440,7 +435,7 @@ ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
               return updateObj;
             })
             .then(uObj => resolve(uObj))
-            .catch(error => { throw new Error(error); })
+            .catch(error => dialog.showErrorBox('Error', error.response.data))
         ), 100)
       ))
         .then(uObj => new Promise((resolve, reject) => (
@@ -450,9 +445,9 @@ ipcMain.on('file:remove', (event, { userData, filename, raftNode }) => (
               .catch(error => reject(error.response))
           ), 100)
         )))
-        .catch(error => { throw new Error(error); });
+        .catch(error => dialog.showErrorBox('Error', error.response.data));
     })
-    .catch(error => { throw new Error(error); })
+    .catch(error => dialog.showErrorBox('Error', error.response.data))
 ));
 //  on blockchain wallet check listener
 ipcMain.on('blockchain:wallet-check', (event, { address, bcNode }) => (
@@ -461,22 +456,24 @@ ipcMain.on('blockchain:wallet-check', (event, { address, bcNode }) => (
       // mainWindow.webContents.send('blockchain:wallet-checked', JSON.stringify(data))
       event.sender.send('blockchain:wallet-checked', JSON.stringify(data))
     ))
-    .catch(error => {
-      throw new Error(error.respose.data);
-    }), 100)
+    .catch(error => dialog.showErrorBox('Error', error.response.data)), 100)
 ));
 //  on create prepare and create transaction listener
 ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode }) => {
   // work version
   // FIXME: to remove privkey
   // TODO: to replace pubkey with pubkeyhash
-  // TODO: to add validating address on the desktop (address 'to' 100%)
+  if (!wallet.validateAddress(to)) {
+    mainWindow.webContents.send('transaction:done');
+    dialog.showErrorBox('Error', 'Entered address is not valid');
+    return;
+  }
   const prepData = {
     from: userData.address,
     to,
     amount: parseInt(amount, 10),
     pubkey: userData.cpk,
-    privkey: userData.csk
+    // privkey: userData.csk
   };
   return setTimeout(() => (
     axios.post(`${bcNode}/prepare`, prepData)
@@ -501,12 +498,9 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
         });
         return prom
           .then(d => console.log(d))
-          .catch(error => console.log(error));
+          .catch(error => dialog.showErrorBox('Error', error.response.data));
       })
       .then(() => mainWindow.webContents.send('transaction:done'))
-      .catch(error => {
-        console.log(error.response);
-        throw new Error(error.respose.data);
-      })
+      .catch(error => dialog.showErrorBox('Error', error.response.data))
   ), 100);
 });
