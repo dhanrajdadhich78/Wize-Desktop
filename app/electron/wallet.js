@@ -45,16 +45,14 @@ const getAddress = publicKey => {
  * @returns {bool}
  */
 const validateAddress = address => {
-  // TODO: check this code
   const fullPayload = bs58.decode(address);
-  const actualChecksum = fullPayload.slice(fullPayload.length - addressChecksumLen);
-  const v = fullPayload.slice(0, 1);
-  const pubKeyHash = fullPayload.slice(1);
-  const versionedPayload = Buffer.concat([v, pubKeyHash]);
+  const bytesPayload = [...fullPayload];
+  const actualChecksum = Buffer.from(bytesPayload.slice(bytesPayload.length - addressChecksumLen), 'hex');
+  const v = bytesPayload.slice(0, 1);
+  const pubKeyHash = bytesPayload.slice(1, bytesPayload.length - addressChecksumLen);
+  const versionedPayload = Buffer.from([...v, ...pubKeyHash], 'hex');
   const targetChecksum = checkSum(versionedPayload);
-  console.log(Buffer.compare(actualChecksum, targetChecksum));
-  // return Buffer.compare(actualChecksum, targetChecksum) === 0;
-  return true;
+  return Buffer.compare(actualChecksum, targetChecksum) === 0;
 };
 
 /**

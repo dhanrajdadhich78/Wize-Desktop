@@ -24,7 +24,7 @@ const axios = require('axios');
 const isOnline = require('is-online');
 
 const cF = require('./electron/commonFunc');
-const { DIGEST_URL, BLOCKCHAIN_URL } = require('./utils/const');
+const { DIGEST_URL } = require('./utils/const');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const MenuBuilder = require('./menu');
 
@@ -286,7 +286,6 @@ ipcMain.on('file:list', (event, { userData, raftNode }) => (
 ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) => {
   const threeUrls = digestServers.slice(0, 3);
   const updRaft = (defaultObj, filename, fileInfo) => {
-    console.log('update raft');
     const updateObj = defaultObj[userData.cpk]
       ? {
         ...defaultObj,
@@ -361,43 +360,14 @@ ipcMain.on('file:send', (event, { userData, files, digestServers, raftNode }) =>
       })
     ))
     .then(reqsArray => (
-      //  TODO: find out why this code didn't work on prod servers
-      //
-      // reqsArray.map(res => {
-      //   console.log('start');
-      //   setTimeout(() => {
-      //     const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
-      //     return Promise.all([
-      //       axios.get(`${raftNode}/${userData.cpk}`),
-      //       ...reqs
-      //     ])
-      //       .then(responses => {
-      //         console.log('success');
-      //         // when all shards are uploaded - update user raft object
-      //         updRaft(responses[0].data, res.filename, res.fileInfo)
-      //       })
-      //       .catch(reason => {
-      //         console.log(reason);
-      //       });
-      //   }, 4000);
-      // })
-
       reqsArray.map((res, i) => (
         setTimeout(() => {
-          const getRaft = () => axios.get(`${raftNode}/${userData.cpk}`);
-          const fs0 = () => axios.post(res.requests[0].url, res.requests[0].data);
-          const fs1 = () => axios.post(res.requests[1].url, res.requests[1].data);
-          const fs2 = () => axios.post(res.requests[2].url, res.requests[2].data);
-          console.log('before promise all');
-          //console.log(res.requests[0].data);
+          const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
           return Promise.all([
-            getRaft(),
-            fs0(),
-            fs1(),
-            fs2()
+            axios.get(`${raftNode}/${userData.cpk}`),
+            ...reqs
           ])
             .then(results => {
-              console.log('in res promise all');
               updRaft(results[0].data, res.filename, res.fileInfo);
             })
             .catch(reason => { console.log(reason); });
