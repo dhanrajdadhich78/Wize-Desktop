@@ -476,11 +476,11 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
   return setTimeout(() => (
     axios.post(`${bcNode}/prepare`, prepData)
       .then(({ data }) => {
-        const signatures = data.data.map(transactionHash => (
+        const signatures = data.hashes.map(transactionHash => (
           wallet.ecdsaSign(transactionHash, userData.csk)
         ));
         return {
-          from: userData.address,
+          //from: userData.address,
           txid: data.txid,
           minenow,
           signatures
