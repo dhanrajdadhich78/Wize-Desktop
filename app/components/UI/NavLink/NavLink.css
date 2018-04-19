@@ -1,0 +1,28 @@
+.NavLink a {
+  height: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #f4f6f7;
+  text-decoration: none;
+  position: relative;
+  outline: none;
+}
+
+.NavLink a::after {
+  position: absolute;
+  content: "";
+  display: block;
+  bottom: -8px;
+  right: 0;
+  width: 0;
+  height: 3.5px;
+  background-color: #e14737;
+  transition: all 0.2s linear;
+}
+
+.NavLink a:hover::after,
+.NavLink a:focus::after,
+.NavLink a.Active::after {
+  width: 13px;
+}
