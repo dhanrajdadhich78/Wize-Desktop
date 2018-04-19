@@ -1,9 +1,5 @@
-import logo from './logo.png';
-import lock from './lock.png';
-import dropToUpload from './drop-to-upload.jpg';
+import bg from './bg.png';
 
 export default {
-  logo,
-  lock,
-  dropToUpload
+  bg
 };
