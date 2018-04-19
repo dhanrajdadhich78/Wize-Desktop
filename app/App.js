@@ -30,24 +30,22 @@ class App extends Component {
         routes = (
           <div style={{ padding: '0 30px 30px' }}>
             <Switch>
-              <Route exact path="/" component={Homepage} />
+              <Route path="/" component={Homepage} />
               <Redirect to="/" />
             </Switch>
           </div>
         );
         if (this.props.isAuth) {
           routes = (
-            <Layout>
-              <Switch>
-                <Route exact path="/" component={Account} key={Math.random()} />
-                <Route exact path="/wallet" component={Wallet} key={Math.random()} />
-                <Route exact path="/file-upload" component={FileUpload} key={Math.random()} />
-                <Route exact path="/files-list" component={FilesList} key={Math.random()} />
-                <Route exact path="/ghost-pad" component={GhostPad} key={Math.random()} />
-                <Route exact path="/miners" component={Miners} key={Math.random()} />
-                <Redirect to="/" />
-              </Switch>
-            </Layout>
+            <Switch>
+              <Route exact path="/" component={Account} key={Math.random()} />
+              <Route exact path="/wallet" component={Wallet} key={Math.random()} />
+              <Route exact path="/file-upload" component={FileUpload} key={Math.random()} />
+              <Route exact path="/files-list" component={FilesList} key={Math.random()} />
+              <Route exact path="/ghost-pad" component={GhostPad} key={Math.random()} />
+              <Route exact path="/miners" component={Miners} key={Math.random()} />
+              <Redirect to="/" />
+            </Switch>
           );
         }
       } else {
@@ -55,9 +53,9 @@ class App extends Component {
       }
     }
     return (
-      <div>
+      <Layout>
         {routes}
-      </div>
+      </Layout>
     );
   }
 }
