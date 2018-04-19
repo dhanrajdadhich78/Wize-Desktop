@@ -110,15 +110,22 @@ class PinCode extends Component {
 
     return updatedArray;
   };
+  handleButtonClick = val => {
+    this.setState({ timer: 59 });
+    this.props.buttonClick(val);
+  };
   render() {
     return (
-      <div>
+      <div className={classes.PinCode}>
         <div className={classes.Heading}>
           System identification
         </div>
         <div className={classes.Buttons}>
-          {this.state.buttons.map(button => (
+          {this.state.buttons.map((button, i) => (
             <button
+              onClick={() => this.handleButtonClick(button.value)}
+              // eslint-disable-next-line react/no-array-index-key
+              key={i}
               className={classes.Button}
               style={
                 this.state.timer < 1 || this.state.timer > 59
@@ -151,24 +158,41 @@ class PinCode extends Component {
             </button>
           ))}
         </div>
-        <div>
-          <form>
-            <button>
-              Enter
-            </button>
-            <input type="text" />
-          </form>
-          <div>
-            {this.state.timer}
+        <form className={classes.FormLine}>
+          <button tabIndex={-1}>
+            Enter
+          </button>
+          <div className={classes.InputBlock}>
+            <div>
+              Please enter you pin
+            </div>
+            <input
+              type="password"
+              value={this.props.password}
+              tabIndex={-1}
+            />
           </div>
-        </div>
+          <div className={classes.Timer}>
+            <span>[</span>
+            {this.state.timer >= 10 ? this.state.timer : `0${this.state.timer}`}
+            <span>]</span>
+          </div>
+        </form>
       </div>
     );
   }
 }
 
 PinCode.propTypes = {
+  password: PropTypes.PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   buttonClick: PropTypes.func.isRequired
+};
+
+PinCode.defaultProps = {
+  password: ''
 };
 
 export default PinCode;

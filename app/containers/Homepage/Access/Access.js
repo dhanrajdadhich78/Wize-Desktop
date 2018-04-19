@@ -10,14 +10,14 @@ import Auth from '../../../components/Auth/Auth';
 
 class Access extends Component {
   state = {
-    password: null,
+    password: '',
     altCredFilePath: false,
     credFilePath: this.props.credentials.length ? this.props.credentials[0] : '',
     credFilesArr: this.props.credentials,
     dropzoneInput: true
   };
   handleOnPinCode = val => {
-    if (this.state.password) {
+    if (`${this.state.password}${val}`.length <= 12) {
       this.setState({ password: this.state.password ? `${this.state.password}${val}` : val });
     }
   };
@@ -26,21 +26,21 @@ class Access extends Component {
       <div className={classes.Access}>
         <Auth
           buttonClick={val => this.handleOnPinCode(val)}
-          authError={this.props.authError}
-          cachePassword={this.state.password}
-          userData={this.props.userData}
-          handleAuth={(password, filePath) => (
-            this.props.handleAuth(password, filePath)
-          )}
-          altCredFilePath={this.state.altCredFilePath}
-          handleToggleAltCredFile={() => this.handleToggleAltCredFile()}
-          credFilePath={this.state.credFilePath}
-          handleDropCredFile={file => this.handleDropCredFile(file)}
-          credFilesArr={this.state.credFilesArr}
-          onCredFilesSelectChange={val => this.onCredFilesSelectChange(val)}
-          dropzoneInput={this.state.dropzoneInput}
-          handleReturnDropzoneInput={() => this.handleReturnDropzoneInput()}
-          lastCredFile={`credentials-${this.props.credentials.length}.bak`}
+          password={this.state.password}
+          // authError={this.props.authError}
+          // userData={this.props.userData}
+          // handleAuth={(password, filePath) => (
+          //   this.props.handleAuth(password, filePath)
+          // )}
+          // altCredFilePath={this.state.altCredFilePath}
+          // handleToggleAltCredFile={() => this.handleToggleAltCredFile()}
+          // credFilePath={this.state.credFilePath}
+          // handleDropCredFile={file => this.handleDropCredFile(file)}
+          // credFilesArr={this.state.credFilesArr}
+          // onCredFilesSelectChange={val => this.onCredFilesSelectChange(val)}
+          // dropzoneInput={this.state.dropzoneInput}
+          // handleReturnDropzoneInput={() => this.handleReturnDropzoneInput()}
+          // lastCredFile={`credentials-${this.props.credentials.length}.bak`}
         />
       </div>
     );
@@ -48,25 +48,25 @@ class Access extends Component {
 }
 
 Access.propTypes = {
-  userData: PropTypes.shape({
-    csk: PropTypes.string,
-    cpk: PropTypes.string,
-    address: PropTypes.string
-  }),
-  handleAuth: PropTypes.func.isRequired,
-  authError: PropTypes.string,
-  credentials: PropTypes.arrayOf(PropTypes.string).isRequired,
-  getCredFilesList: PropTypes.func.isRequired
+  // userData: PropTypes.shape({
+  //   csk: PropTypes.string,
+  //   cpk: PropTypes.string,
+  //   address: PropTypes.string
+  // }),
+  // handleAuth: PropTypes.func.isRequired,
+  // authError: PropTypes.string,
+  // credentials: PropTypes.arrayOf(PropTypes.string).isRequired,
+  // getCredFilesList: PropTypes.func.isRequired
 };
 
-Access.defaultProps = {
-  userData: {
-    csk: null,
-    cpk: null,
-    address: null
-  },
-  authError: null
-};
+// Access.defaultProps = {
+//   userData: {
+//     csk: null,
+//     cpk: null,
+//     address: null
+//   },
+//   authError: null
+// };
 
 const mapStateToProps = state => ({
   userData: state.auth.userData,

@@ -146,7 +146,8 @@ class Auth extends Component {
       <div className={classes.Auth}>
         <div className={classes.PinCode}>
           <PinCode
-            buttonClick={val => this.buttonClick(val)}
+            password={this.props.password}
+            buttonClick={val => this.props.buttonClick(val)}
           />
         </div>
         <div className={classes.FileSection}>
@@ -167,7 +168,10 @@ Auth.propTypes = {
   //   cpk: PropTypes.string,
   //   address: PropTypes.string
   // }),
-  // cachePassword: PropTypes.string,
+  password: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   // handleAuth: PropTypes.func.isRequired,
   // authError: PropTypes.string,
   // altCredFilePath: PropTypes.bool.isRequired,
@@ -184,13 +188,13 @@ Auth.propTypes = {
 };
 
 Auth.defaultProps = {
-  login: true
+  login: true,
   // userData: {
   //   csk: null,
   //   cpk: null,
   //   address: null
   // },
-  // cachePassword: null,
+  password: '',
   // authError: null
 };
 

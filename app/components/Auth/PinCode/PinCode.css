@@ -1,3 +1,7 @@
+.PinCode {
+  padding-right: calc(100% / 3);
+}
+
 .Heading {
   color: #e34530;
   font-size: 12px;
@@ -9,7 +13,6 @@
 .Buttons {
   display: flex;
   width: 100%;
-  padding-right: calc(100% / 3);
   justify-content: space-between;
   flex-flow: wrap;
   box-sizing: border-box;
@@ -247,3 +250,65 @@
   height: 100%;
 }
 
+.FormLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.FormLine button {
+  border: none;
+  flex: 1;
+  color: #30d6d6;
+  font-size: 16px;
+  font-weight: 400;
+  text-transform: uppercase;
+  width: 100%;
+  background-color: rgba(22, 94, 106, 0.3);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.FormLine .InputBlock {
+  flex: 2;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.InputBlock > div {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+}
+
+.InputBlock input {
+  outline: none;
+  pointer-events: none;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  color: #3bd5d5;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 4px;
+}
+
+.Timer {
+  flex: 1;
+  text-align: right;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Timer > span {
+  color: #0c6791;
+  font-weight: 900;
+  font-size: 16px;
+}
