@@ -1,10 +1,15 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
+import NavLink from '../UI/NavLink/NavLink';
+
+import classes from './Header.css';
+import { logo } from '../../assets/img/img';
+
+import { RELEASE_VERSION } from '../../utils/const';
 
 const header = props => {
-  const listItems = [
+  let listItems = [
     {
       link: '/access',
       label: 'Access'
@@ -14,16 +19,24 @@ const header = props => {
       label: 'Register'
     }
   ];
+  if (props.isAuth) {
+    listItems = [];
+  }
   return (
-    <div>
+    <div className={classes.Header}>
+      <div className={classes.Logo}>
+        <img src={logo} alt="Ghostdrive" />
+        <div className={classes.ReleaseVersion}>{ RELEASE_VERSION }</div>
+      </div>
       <nav>
-        <ul>
+        <ul className={classes.NavList}>
           {
             listItems.map((item, index) => (
               <li key={index}>
-                <NavLink to={item.link}>
-                  {item.label}
-                </NavLink>
+                <NavLink
+                  link={item.link}
+                  label={item.label}
+                />
               </li>
             ))
           }

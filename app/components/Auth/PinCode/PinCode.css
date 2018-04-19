@@ -1,0 +1,249 @@
+.Heading {
+  color: #e34530;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-bottom: 30px;
+}
+
+.Buttons {
+  display: flex;
+  width: 100%;
+  padding-right: calc(100% / 3);
+  justify-content: space-between;
+  flex-flow: wrap;
+  box-sizing: border-box;
+}
+
+.Button {
+  width: calc((100% - 24px) / 3);
+  padding-top: calc((100% - 24px) / 3);
+  position: relative;
+  border: 1px solid #165e6a;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.Button:hover,
+.Button:active {
+  background-color: rgba(22, 94, 106, 0.3);
+}
+
+.FocusBlock {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: all 0.4s linear;
+}
+
+.Button:focus .FocusBlock {
+  opacity: 1;
+}
+
+.ButtonInnerContainer > div {
+  text-align: left;
+}
+
+.FocusBlock > div {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+}
+
+.FocusBlock > div:first-of-type {
+  top: 0;
+  left: 0;
+}
+
+.FocusBlock > div:nth-of-type(2) {
+  top: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(3) {
+  right: 0;
+  bottom: 0;
+}
+
+.FocusBlock > div:last-of-type {
+  bottom: 0;
+  left: 0;
+}
+
+.FocusBlock > div:first-of-type::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.FocusBlock > div:first-of-type::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.FocusBlock > div:nth-of-type(2)::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(2)::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(3)::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(3)::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.FocusBlock > div:last-of-type::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.FocusBlock > div:last-of-type::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.ButtonInnerContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  margin: 5px;
+  box-sizing: border-box;
+  border: 2px solid #3596b7;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px;
+  z-index: 1;
+}
+
+.ButtonInnerContainer::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  background-color: #3596b7;
+  transform: rotate(45deg);
+}
+
+.ButtonInnerContainer > div:first-of-type {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.ButtonInnerContainer > div:nth-of-type(2) {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.ButtonInnerContainer > div:nth-of-type(3) {
+  color: #96bd0d;
+  font-size: 8px;
+  font-weight: 400;
+  text-transform: uppercase;
+  position: absolute;
+  left: 8px;
+  bottom: 10px;
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: block;
+  width: 10px;
+  height: 10px;
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::before,
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::after {
+  content: '';
+  display: block;
+  background-color: #3596b7;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::before {
+  width: 100%;
+  height: 4px;
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::after {
+  width: 4px;
+  height: 100%;
+}
+

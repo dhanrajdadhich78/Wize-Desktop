@@ -5,6 +5,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import { checkInternet } from './store/actions/index';
 
+import PreventSelection from './utils/preventSelection';
 import Spinner from './components/UI/Spinner/Spinner';
 import Layout from './hoc/Layout/Layout';
 import NoInternetConnection from './components/NoInternetConnection/NoInternetConnection';
@@ -18,6 +19,7 @@ import Miners from './containers/Miners/Miners';
 
 class App extends Component {
   componentWillMount() {
+    PreventSelection(document);
     this.props.checkInternet();
   }
   render() {

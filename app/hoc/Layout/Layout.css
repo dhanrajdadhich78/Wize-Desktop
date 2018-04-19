@@ -10,7 +10,7 @@
   overflow-x: hidden;
   justify-content: flex-end;
   background-size: cover;
-  margin: 15px;
+  margin: 0 15px;
 }
 
 .Layout main article {
