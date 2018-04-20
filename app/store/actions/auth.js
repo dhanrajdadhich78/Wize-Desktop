@@ -25,7 +25,7 @@ const authStart = (password, filePath) => {
   return { type: actionTypes.AUTH_START };
 };
 
-const authSuccess = userData => ({
+export const authSuccess = userData => ({
   type: actionTypes.AUTH_SUCCESS,
   userData
 });
