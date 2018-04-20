@@ -135,7 +135,12 @@ class Auth extends Component {
                   handleDropCredFile={file => this.props.handleDropCredFile(file)}
                 />
               )
-              : <Registration />
+              : (
+                <Registration
+                  regForm={this.props.regForm}
+                  handleDownload={() => this.props.handleDownload()}
+                />
+              )
           }
         </div>
       </div>
@@ -149,15 +154,19 @@ Auth.propTypes = {
     PropTypes.number
   ]),
   handleAuth: PropTypes.func.isRequired,
-  handleDropCredFile: PropTypes.func,
   login: PropTypes.bool,
-  buttonClick: PropTypes.func.isRequired
+  buttonClick: PropTypes.func.isRequired,
+  regForm: PropTypes.shape({}),
+  handleDropCredFile: PropTypes.func,
+  handleDownload: PropTypes.func
 };
 
 Auth.defaultProps = {
   login: true,
   password: '',
-  handleDropCredFile: null
+  regForm: {},
+  handleDropCredFile: () => null,
+  handleDownload: () => null
 };
 
 export default Auth;

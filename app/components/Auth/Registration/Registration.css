@@ -1,17 +1,14 @@
-.Login {
+.Registration {
   width: 100%;
   height: 100%;
-}
-
-.Login > div {
-  width: 100% !important;
-  height: 100% !important;
-  border: none !important;
-  border-radius: 0 !important;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+}
+
+.Registration > div {
+  display: block;
 }
 
 .Content > h1 {
@@ -32,8 +29,44 @@
   pointer-events: none;
 }
 
+.Inputs {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% + 90px);
+}
+
+.Inputs input {
+  background-color: transparent;
+  border: none;
+  pointer-events: none;
+  text-transform: lowercase;
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: right;
+  padding: 15px 0;
+  width: 50%;
+  margin-left: 50%;
+}
+
+.Inputs input::placeholder {
+  text-transform: lowercase;
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.Inputs input:first-of-type {
+  border-bottom: 1px solid #0c6791;
+}
+
 .FileLine {
   display: flex;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
 }
 
 .FileLine > img {
@@ -45,6 +78,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: flex-start;
+  height: 35px;
 }
 
 .FileLine > div p {
@@ -69,4 +104,14 @@
   color: #fff;
   font-size: 4px;
   font-weight: 400;
+}
+
+.ImgLine {
+  display: flex;
+  justify-content: flex-end;
+  width: calc(100% + 90px);
+}
+
+.ImgLine > img {
+  height: 35px;
 }

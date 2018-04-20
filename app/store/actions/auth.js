@@ -8,23 +8,16 @@ const regStart = (password) => {
   return { type: actionTypes.REGISTRATION_START };
 };
 
-const regSuccess = userData => () => ({
+const regSuccess = encryptedData => () => ({
   type: actionTypes.REGISTRATION_SUCCESS,
-  userData
+  encryptedData
 });
 
-// export  const regFail = error => ({
-//   type: actionTypes.REGISTRATION_FAIL,
-//   error
-// });
-
-export const registration = (password, filePath) => dispatch => {
+export const registration = password => dispatch => {
   dispatch(regStart(password));
-  ipcRenderer.once('registration:complete', (event, userData) => {
-    dispatch(regSuccess(JSON.parse(userData)));
-    dispatch(auth(password, filePath));
-  });
-  // ipcRenderer.on('registration:error', (event, error) => dispatch(regFail(error)));
+  ipcRenderer.once('registration:complete', (event, encryptedData) => (
+    dispatch(regSuccess(encryptedData))
+  ));
 };
 
 const authStart = (password, filePath) => {
@@ -37,11 +30,6 @@ const authSuccess = userData => ({
   userData
 });
 
-// const authFail = error => ({
-//   type: actionTypes.AUTH_FAIL,
-//   error
-// });
-
 export const auth = (password, filePath) => dispatch => {
   dispatch(authStart(password, filePath));
   ipcRenderer.once('auth:complete', (event, userData) => {
@@ -50,13 +38,6 @@ export const auth = (password, filePath) => dispatch => {
       dispatch(authSuccess(JSON.parse(userData)));
     });
   });
-  // dispatch(authStart(password, filePath, fsNode));
-  // ipcRenderer.on('auth:complete', (event, userData) => {
-  //   dispatch(authSuccess(JSON.parse(userData)));
-  //   dispatch(getDigest(userData, password));
-  //   dispatch(getBalance(JSON.parse(userData).address, bcNode));
-  // });
-  // ipcRenderer.on('auth:error', (event, error) => dispatch(authFail(error)));
 };
 
 export const logout = () => {
