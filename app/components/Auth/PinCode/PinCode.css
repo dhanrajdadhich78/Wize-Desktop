@@ -1,5 +1,10 @@
 .PinCode {
   padding-right: calc(100% / 3);
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .Heading {
@@ -52,6 +57,14 @@
 
 .ButtonInnerContainer > div {
   text-align: left;
+}
+
+.InputBlock > div {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
 }
 
 .FocusBlock > div {
@@ -221,6 +234,48 @@
   bottom: 10px;
 }
 
+.FormLine button > div:first-of-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.FormLine button > div:last-of-type {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.FormLine button > div:last-of-type > div {
+  width: 10px;
+  height: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+}
+
+.FormLine button > div:last-of-type > div:first-of-type {
+  top: 0;
+  left: 0;
+}
+
+.FormLine button > div:last-of-type > div:nth-of-type(2) {
+  top: 0;
+  right: 0;
+}
+
+.FormLine button > div:last-of-type > div:nth-of-type(3) {
+  right: 0;
+  bottom: 0;
+}
+
+.FormLine button > div:last-of-type > div:last-of-type {
+  bottom: 0;
+  left: 0;
+}
+
 .Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type {
   position: absolute;
   bottom: 0;
@@ -265,25 +320,30 @@
   text-transform: uppercase;
   width: 100%;
   background-color: rgba(22, 94, 106, 0.3);
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 15px 0;
   cursor: pointer;
   outline: none;
   box-sizing: border-box;
+  position: relative;
+}
+
+.FormLine button::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 6px;
+  height: 100%;
+  background-color: white;
+  opacity: 0.2;
 }
 
 .FormLine .InputBlock {
   flex: 2;
   display: inline-flex;
   flex-direction: column;
-}
-
-.InputBlock > div {
-  color: #30d6d6;
-  font-size: 12px;
-  font-weight: 500;
-  text-align: center;
-  width: 100%;
 }
 
 .InputBlock input {
@@ -311,4 +371,29 @@
   color: #0c6791;
   font-weight: 900;
   font-size: 16px;
+}
+
+.ToTheRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@media (max-width: 1600px) {
+  .PinCode {
+    padding-right: calc(100% - 350px + 38px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .PinCode {
+    padding-right: 38px;
+  }
+}
+
+@media (max-height: 800px) {
+  .Heading {
+    margin-bottom: 7px;
+  }
 }

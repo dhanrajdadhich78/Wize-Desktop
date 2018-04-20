@@ -148,12 +148,17 @@ class Auth extends Component {
           <PinCode
             password={this.props.password}
             buttonClick={val => this.props.buttonClick(val)}
+            handleSubmit={() => this.props.handleAuth()}
           />
         </div>
         <div className={classes.FileSection}>
           {
             this.props.login
-              ? <Login />
+              ? (
+                <Login
+                  handleDropCredFile={file => this.props.handleDropCredFile(file)}
+                />
+              )
               : <Registration />
           }
         </div>
@@ -172,12 +177,12 @@ Auth.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
-  // handleAuth: PropTypes.func.isRequired,
+  handleAuth: PropTypes.func.isRequired,
   // authError: PropTypes.string,
   // altCredFilePath: PropTypes.bool.isRequired,
   // handleToggleAltCredFile: PropTypes.func.isRequired,
   // credFilePath: PropTypes.string.isRequired,
-  // handleDropCredFile: PropTypes.func.isRequired,
+  handleDropCredFile: PropTypes.func.isRequired,
   // credFilesArr: PropTypes.arrayOf(PropTypes.string).isRequired,
   // onCredFilesSelectChange: PropTypes.func.isRequired,
   // dropzoneInput: PropTypes.bool.isRequired,

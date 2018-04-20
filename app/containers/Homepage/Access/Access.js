@@ -11,27 +11,33 @@ import Auth from '../../../components/Auth/Auth';
 class Access extends Component {
   state = {
     password: '',
-    altCredFilePath: false,
-    credFilePath: this.props.credentials.length ? this.props.credentials[0] : '',
-    credFilesArr: this.props.credentials,
-    dropzoneInput: true
+    // altCredFilePath: false,
+    credFilePath: '',
+    // credFilesArr: this.props.credentials,
+    // dropzoneInput: true
   };
   handleOnPinCode = val => {
     if (`${this.state.password}${val}`.length <= 12) {
       this.setState({ password: this.state.password ? `${this.state.password}${val}` : val });
     }
   };
+  handleDropCredFile = file => this.setState({ credFilePath: file.path });
+  handleSubmitAuthForm = () => {
+    if (this.state.password && this.state.credFilePath) {
+      this.props.handleAuth(this.state.password, this.state.credFilePath);
+    }
+    console.log(this.state.password, this.state.credFilePath);
+  };
   render() {
     return (
       <div className={classes.Access}>
         <Auth
           buttonClick={val => this.handleOnPinCode(val)}
+          handleDropCredFile={file => this.handleDropCredFile(file)}
           password={this.state.password}
           // authError={this.props.authError}
           // userData={this.props.userData}
-          // handleAuth={(password, filePath) => (
-          //   this.props.handleAuth(password, filePath)
-          // )}
+          handleAuth={() => this.handleSubmitAuthForm()}
           // altCredFilePath={this.state.altCredFilePath}
           // handleToggleAltCredFile={() => this.handleToggleAltCredFile()}
           // credFilePath={this.state.credFilePath}
@@ -53,7 +59,7 @@ Access.propTypes = {
   //   cpk: PropTypes.string,
   //   address: PropTypes.string
   // }),
-  // handleAuth: PropTypes.func.isRequired,
+  handleAuth: PropTypes.func.isRequired,
   // authError: PropTypes.string,
   // credentials: PropTypes.arrayOf(PropTypes.string).isRequired,
   // getCredFilesList: PropTypes.func.isRequired
@@ -81,4 +87,4 @@ const mapDispatchToProps = dispatch => ({
   getCredFilesList: () => dispatch(actions.getCredFilesList())
 });
 
-export default  connect(mapStateToProps, mapDispatchToProps)(Access);
+export default connect(mapStateToProps, mapDispatchToProps)(Access);

@@ -1,0 +1,33 @@
+.Footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  box-sizing: border-box;
+}
+
+.Footer > div {
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.Footer > div:first-of-type h3 {
+  color: #2f96ba;
+  font-size: 19px;
+  font-weight: 400;
+  position: relative;
+}
+
+.Footer > div:first-of-type h3::after {
+  position: absolute;
+  content: "";
+  display: block;
+  bottom: -8px;
+  left: 0;
+  width: 13px;
+  height: 3.5px;
+  background-color: #e14737;
+  transition: all 0.2s linear;
+}

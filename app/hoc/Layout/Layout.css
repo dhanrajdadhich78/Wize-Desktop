@@ -5,12 +5,12 @@
 
 .Layout main {
   width: calc(100% - 30px);
-  display: flex;
+  height: calc(100vh - 149px);
   position: relative;
   overflow-x: hidden;
-  justify-content: flex-end;
   background-size: cover;
   margin: 0 15px;
+  box-sizing: border-box;
 }
 
 .Layout main article {
@@ -19,6 +19,11 @@
   border-width: 1px 0 1px 0;
   border-color: #165e6a;
   border-style: solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 30px;
+  box-sizing: border-box;
 }
 
 .SpinnerToMiddle {

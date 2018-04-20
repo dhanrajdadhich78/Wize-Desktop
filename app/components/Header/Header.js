@@ -20,7 +20,32 @@ const header = props => {
     }
   ];
   if (props.isAuth) {
-    listItems = [];
+    listItems = [
+      {
+        link: '/account',
+        label: 'Account'
+      },
+      {
+        link: '/wallet',
+        label: 'Wallet'
+      },
+      {
+        link: '/file-upload',
+        label: 'Upload files'
+      },
+      {
+        link: '/files-list',
+        label: 'Merge files'
+      },
+      {
+        link: '/ghost-pad',
+        label: 'Ghost pad'
+      },
+      {
+        link: '/miners',
+        label: 'Miners'
+      }
+    ];
   }
   return (
     <div className={classes.Header}>

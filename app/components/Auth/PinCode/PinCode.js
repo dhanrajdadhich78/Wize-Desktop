@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import classes from './PinCode.css';
 
+import VertivalLineV from '../../UI/VerticalLineV/VerticalLineV';
+
 class PinCode extends Component {
   state = {
     buttons: [
@@ -158,9 +160,15 @@ class PinCode extends Component {
             </button>
           ))}
         </div>
-        <form className={classes.FormLine}>
+        <form
+          className={classes.FormLine}
+          onSubmit={e => { e.preventDefault(); this.props.handleSubmit(); }}
+        >
           <button tabIndex={-1}>
-            Enter
+            <div>Enter</div>
+            <div>
+              <div /><div /><div /><div />
+            </div>
           </button>
           <div className={classes.InputBlock}>
             <div>
@@ -178,6 +186,9 @@ class PinCode extends Component {
             <span>]</span>
           </div>
         </form>
+        <div className={classes.ToTheRight}>
+          <VertivalLineV count={12} />
+        </div>
       </div>
     );
   }
@@ -188,7 +199,8 @@ PinCode.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
-  buttonClick: PropTypes.func.isRequired
+  buttonClick: PropTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired
 };
 
 PinCode.defaultProps = {
