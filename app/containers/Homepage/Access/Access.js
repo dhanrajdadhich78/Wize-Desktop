@@ -11,20 +11,21 @@ import Auth from '../../../components/Auth/Auth';
 class Access extends Component {
   state = {
     password: '',
-    // altCredFilePath: false,
     credFilePath: '',
-    // credFilesArr: this.props.credentials,
-    // dropzoneInput: true
+    dropzoneAlert: false
   };
   handleOnPinCode = val => {
     if (`${this.state.password}${val}`.length <= 12) {
       this.setState({ password: this.state.password ? `${this.state.password}${val}` : val });
     }
   };
-  handleDropCredFile = file => this.setState({ credFilePath: file.path });
+  handleDropCredFile = file => this.setState({ credFilePath: file.path, dropzoneAlert: false });
   handleSubmitAuthForm = () => {
     if (this.state.password && this.state.credFilePath) {
       this.props.handleAuth(this.state.password, this.state.credFilePath);
+    } else if (!this.state.credFilePath) {
+      this.setState({ dropzoneAlert: true });
+      setTimeout(() => this.setState({ dropzoneAlert: false }), 5000);
     }
     console.log(this.state.password, this.state.credFilePath);
   };
@@ -35,18 +36,8 @@ class Access extends Component {
           buttonClick={val => this.handleOnPinCode(val)}
           handleDropCredFile={file => this.handleDropCredFile(file)}
           password={this.state.password}
-          // authError={this.props.authError}
-          // userData={this.props.userData}
           handleAuth={() => this.handleSubmitAuthForm()}
-          // altCredFilePath={this.state.altCredFilePath}
-          // handleToggleAltCredFile={() => this.handleToggleAltCredFile()}
-          // credFilePath={this.state.credFilePath}
-          // handleDropCredFile={file => this.handleDropCredFile(file)}
-          // credFilesArr={this.state.credFilesArr}
-          // onCredFilesSelectChange={val => this.onCredFilesSelectChange(val)}
-          // dropzoneInput={this.state.dropzoneInput}
-          // handleReturnDropzoneInput={() => this.handleReturnDropzoneInput()}
-          // lastCredFile={`credentials-${this.props.credentials.length}.bak`}
+          dropzoneAlert={this.state.dropzoneAlert}
         />
       </div>
     );
@@ -54,25 +45,8 @@ class Access extends Component {
 }
 
 Access.propTypes = {
-  // userData: PropTypes.shape({
-  //   csk: PropTypes.string,
-  //   cpk: PropTypes.string,
-  //   address: PropTypes.string
-  // }),
-  handleAuth: PropTypes.func.isRequired,
-  // authError: PropTypes.string,
-  // credentials: PropTypes.arrayOf(PropTypes.string).isRequired,
-  // getCredFilesList: PropTypes.func.isRequired
+  handleAuth: PropTypes.func.isRequired
 };
-
-// Access.defaultProps = {
-//   userData: {
-//     csk: null,
-//     cpk: null,
-//     address: null
-//   },
-//   authError: null
-// };
 
 const mapStateToProps = state => ({
   userData: state.auth.userData,

@@ -47,12 +47,7 @@
   bottom: 0;
   left: 0;
   z-index: 0;
-  opacity: 0;
   transition: all 0.4s linear;
-}
-
-.Button:focus .FocusBlock {
-  opacity: 1;
 }
 
 .ButtonInnerContainer > div {
@@ -71,6 +66,7 @@
   position: absolute;
   width: 10px;
   height: 10px;
+  opacity: 0;
 }
 
 .FocusBlock > div:first-of-type {
@@ -91,6 +87,55 @@
 .FocusBlock > div:last-of-type {
   bottom: 0;
   left: 0;
+}
+
+.ButtonInnerContainer > div:first-of-type {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.ButtonInnerContainer > div:nth-of-type(2) {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.ButtonInnerContainer > div:nth-of-type(3) {
+  color: #96bd0d;
+  font-size: 8px;
+  font-weight: 400;
+  text-transform: uppercase;
+  position: absolute;
+  left: 8px;
+  bottom: 10px;
+}
+
+.FormLine button > div:first-of-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.FormLine button > div:last-of-type {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.FormLine button > div:last-of-type > div {
+  width: 10px;
+  height: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+}
+
+.Button:focus .FocusBlock > div {
+  opacity: 1;
 }
 
 .FocusBlock > div:first-of-type::before {
@@ -179,6 +224,7 @@
   position: absolute;
   bottom: 0;
   right: 0;
+  z-index: 0;
 }
 
 .ButtonInnerContainer {
@@ -211,51 +257,6 @@
   transform: rotate(45deg);
 }
 
-.ButtonInnerContainer > div:first-of-type {
-  color: #30d6d6;
-  font-size: 12px;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
-.ButtonInnerContainer > div:nth-of-type(2) {
-  color: #fff;
-  font-size: 36px;
-  font-weight: 400;
-}
-
-.ButtonInnerContainer > div:nth-of-type(3) {
-  color: #96bd0d;
-  font-size: 8px;
-  font-weight: 400;
-  text-transform: uppercase;
-  position: absolute;
-  left: 8px;
-  bottom: 10px;
-}
-
-.FormLine button > div:first-of-type {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.FormLine button > div:last-of-type {
-  z-index: 0;
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.FormLine button > div:last-of-type > div {
-  width: 10px;
-  height: 4px;
-  background-color: #3bd5d5;
-  position: absolute;
-}
-
 .FormLine button > div:last-of-type > div:first-of-type {
   top: 0;
   left: 0;
@@ -274,6 +275,27 @@
 .FormLine button > div:last-of-type > div:last-of-type {
   bottom: 0;
   left: 0;
+}
+
+.Button:nth-of-type(3n) .FocusBlock::before,
+.Button:nth-of-type(3n) .FocusBlock::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  width: 1px;
+  height: calc(100% + 20px);
+  background-color: #3bd5d5;
+  opacity: 0.3;
+}
+
+.Button:nth-of-type(3n) .FocusBlock::before {
+  left: calc(50%);
+  transform: rotate(-44deg);
+}
+
+.Button:nth-of-type(3n) .FocusBlock::after {
+  right: calc(50%);
+  transform: rotate(44deg);
 }
 
 .Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type {
