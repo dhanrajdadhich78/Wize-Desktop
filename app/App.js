@@ -30,23 +30,21 @@ class App extends Component {
       // eslint-disable-next-line no-lonely-if
       if (this.props.internet) {
         routes = (
-          <div style={{ padding: '0 30px 30px' }}>
-            <Switch>
-              <Route path="/" component={Homepage} />
-              <Redirect to="/" />
-            </Switch>
-          </div>
+          <Switch>
+            <Route path="/" component={Homepage} />
+            <Redirect to="/" />
+          </Switch>
         );
         if (this.props.isAuth) {
           routes = (
             <Switch>
-              <Route exact path="/" component={Account} key={Math.random()} />
+              <Route exact path="/account" component={Account} key={Math.random()} />
               <Route exact path="/wallet" component={Wallet} key={Math.random()} />
               <Route exact path="/file-upload" component={FileUpload} key={Math.random()} />
               <Route exact path="/files-list" component={FilesList} key={Math.random()} />
               <Route exact path="/ghost-pad" component={GhostPad} key={Math.random()} />
               <Route exact path="/miners" component={Miners} key={Math.random()} />
-              <Redirect to="/" />
+              <Redirect to="/account" />
             </Switch>
           );
         }

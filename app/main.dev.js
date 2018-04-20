@@ -108,9 +108,8 @@ app.on('ready', async () => {
 ipcMain.on('fs:unmount', () => (cpkGlob ? cF.unmountFs(cpkGlob, fsUrlGlob) : null));
 //  listener, that check if user internet connection is available
 ipcMain.on('internet-connection:check', () => (
-  // isOnline()
-  //   .then(online => mainWindow.webContents.send('internet-connection:status', online))
-  mainWindow.webContents.send('internet-connection:status', true)
+  isOnline()
+    .then(online => mainWindow.webContents.send('internet-connection:status', online))
 ));
 //  listener, that scan default credential folder on users machine
 ipcMain.on('credentials-files-list:scan', () => {
