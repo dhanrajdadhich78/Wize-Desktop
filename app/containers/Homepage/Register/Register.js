@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { saveAs } from 'file-saver';
+import { ipcRenderer } from 'electron';
 
 import * as actions from '../../../store/actions';
 
 import classes from './Register.css';
 
 import Auth from '../../../components/Auth/Auth';
-// import b64toBlob from '../../../utils/b64toBlob';
 
 class Register extends Component {
   state = {
@@ -43,19 +43,26 @@ class Register extends Component {
         },
         password: ''
       });
-      this.handleDownload();
     }
   };
   handleDownload = () => {
-    if (this.props.encryptedData && this.props.encryptedData.length > 0) {
-      const blob = new Blob([this.props.encryptedData], {
-        type: 'text/plain'
+    const blob = new Blob([this.props.encryptedData], {
+      type: 'text/plain'
+    });
+    const filesaver = saveAs(blob, 'credentials.bak');
+    filesaver.onwriteend = () => {
+      console.log('auth');
+      ipcRenderer.send('crypto:decrypt-credentials', {
+        string: this.props.encryptedData,
+        password: this.state.regForm.password
       });
-      const filesaver = saveAs(blob, 'credentials.bak');
-      filesaver.onwriteend = () => {
-        console.log('auth');
-      };
-    }
+      ipcRenderer.once('crypto:decrypted-credentials', (event, credentials) => {
+        if (credentials.csk && credentials.cpk && credentials.address) {
+          console.log(credentials);
+          this.props.authSuccess(credentials);
+        }
+      });
+    };
   };
   render() {
     return (
@@ -75,7 +82,8 @@ class Register extends Component {
 
 Register.propTypes = {
   handleRegister: PropTypes.func.isRequired,
-  encryptedData: PropTypes.string.isRequired
+  encryptedData: PropTypes.string.isRequired,
+  authSuccess: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -84,6 +92,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   handleRegister: password => dispatch(actions.registration(password)),
+  authSuccess: data => dispatch(actions.authSuccess(data))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

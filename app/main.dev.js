@@ -129,10 +129,12 @@ ipcMain.on('credentials-files-list:scan', () => {
 });
 //  on credentials generate listener
 ipcMain.on('registration:start', (event, password) => {
+  console.log('registration');
   //  create user data with wallet service
   const userData = wallet.newCredentials();
   const strData = JSON.stringify(userData);
   const encryptedData = cF.aesEncrypt(strData, password, 'hex').encryptedHex;
+  console.log(encryptedData);
   mainWindow.webContents.send('registration:complete', encryptedData);
   //  save to file
   // if (cF.ensureDirectoryExistence(configFolder)) {
@@ -155,6 +157,11 @@ ipcMain.on('registration:start', (event, password) => {
   //     });
   //   });
   // }
+});
+// decrypt credentials with password
+ipcMain.on('crypto:decrypt-credentials', (event, { string, password }) => {
+  const credentials = cF.aesDecrypt(string, password);
+  mainWindow.webContents.send('crypto:decrypted-credentials', credentials);
 });
 //  on auth listener
 ipcMain.on('auth:start', (event, { password, filePath }) => {
