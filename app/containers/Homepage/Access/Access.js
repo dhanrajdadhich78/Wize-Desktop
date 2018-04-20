@@ -21,7 +21,7 @@ class Access extends Component {
   };
   handleDropCredFile = file => this.setState({ credFilePath: file.path, dropzoneAlert: false });
   handleSubmitAuthForm = () => {
-    if (this.state.password && this.state.credFilePath) {
+    if (this.state.password && this.state.password >= 4 && this.state.credFilePath) {
       this.props.handleAuth(this.state.password, this.state.credFilePath);
     } else if (!this.state.credFilePath) {
       this.setState({ dropzoneAlert: true });

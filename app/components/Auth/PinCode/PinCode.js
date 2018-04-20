@@ -93,6 +93,10 @@ class PinCode extends Component {
       }
     }, 1000);
   }
+  componentWillUnmount() {
+    this.setState({ buttons: this.shuffle(this.state.buttons), timer: 60 });
+    clearInterval();
+  }
   shuffle = array => {
     const updatedArray = [...array];
     let currentIndex = array.length;
