@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import classes from './Auth.css';
@@ -7,31 +6,8 @@ import classes from './Auth.css';
 import PinCode from './PinCode/PinCode';
 import Login from './Login/Login';
 import Registration from './Registration/Registration';
-// import Input from '../UI/Input/Input';
-// import Button from '../UI/Button/Button';
-// import checkValidity from '../../utils/validation';
-// import ToggleCredFiles from './ToggleCredFiles/ToggleCredFiles';
 
 class Auth extends Component {
-  // state = {
-  //   controls: {
-  //     password: {
-  //       elementType: 'input',
-  //       elementConfig: {
-  //         type: 'password'
-  //       },
-  //       label: 'Password',
-  //       value: this.props.cachePassword ? this.props.cachePassword : '',
-  //       validation: {
-  //         required: true,
-  //         minLength: 6
-  //       },
-  //       valid: false,
-  //       touched: false,
-  //       errorMessage: 'Password field is empty'
-  //     }
-  //   }
-  // };
   // componentWillMount() {
   //   Object.keys(this.props.userData).map(key => {
   //     if (!this.props.userData[key]) {
@@ -168,39 +144,20 @@ class Auth extends Component {
 }
 
 Auth.propTypes = {
-  // userData: PropTypes.shape({
-  //   csk: PropTypes.string,
-  //   cpk: PropTypes.string,
-  //   address: PropTypes.string
-  // }),
   password: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
   ]),
   handleAuth: PropTypes.func.isRequired,
-  // authError: PropTypes.string,
-  // altCredFilePath: PropTypes.bool.isRequired,
-  // handleToggleAltCredFile: PropTypes.func.isRequired,
-  // credFilePath: PropTypes.string.isRequired,
-  handleDropCredFile: PropTypes.func.isRequired,
-  // credFilesArr: PropTypes.arrayOf(PropTypes.string).isRequired,
-  // onCredFilesSelectChange: PropTypes.func.isRequired,
-  // dropzoneInput: PropTypes.bool.isRequired,
-  // handleReturnDropzoneInput: PropTypes.func.isRequired,
-  // lastCredFile: PropTypes.string.isRequired
+  handleDropCredFile: PropTypes.func,
   login: PropTypes.bool,
-  buttonClick: PropTypes.func.isRequired,
+  buttonClick: PropTypes.func.isRequired
 };
 
 Auth.defaultProps = {
   login: true,
-  // userData: {
-  //   csk: null,
-  //   cpk: null,
-  //   address: null
-  // },
   password: '',
-  // authError: null
+  handleDropCredFile: null
 };
 
 export default Auth;
