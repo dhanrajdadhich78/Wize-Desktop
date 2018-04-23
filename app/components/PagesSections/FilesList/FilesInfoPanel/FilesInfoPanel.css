@@ -1,3 +1,31 @@
 .FilesInfoPanel {
   height: 200px;
 }
+
+.InnerWrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.InnerWrapper > div:first-of-type {
+  width: calc(((100% - 151px) * 0.4) + 77px);
+  box-sizing: border-box;
+  position: relative;
+}
+
+.InnerWrapper > div:first-of-type::after {
+  content: '';
+  display: block;
+  height: calc(100% - 30px);
+  width: 2px;
+  position: absolute;
+  top: 15px;
+  right: 0;
+  bottom: 15px;
+  background-color: rgba(22, 94, 106, 0.3);
+}
+
+.InnerWrapper > div:last-of-type {
+  width: calc((100% - 151px) * 0.6 + 75px);
+}

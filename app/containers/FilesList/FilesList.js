@@ -35,6 +35,106 @@ class FilesList extends Component {
         name: 2,
         size: 100500,
         date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
       }
     ]
   };
