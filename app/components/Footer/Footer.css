@@ -3,24 +3,54 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 40px;
+  height: 78px;
+  padding: 0 40px;
   box-sizing: border-box;
 }
 
 .Footer > div {
-  height: 48px;
   display: inline-flex;
   align-items: center;
 }
 
-.Footer > div:first-of-type h3 {
+.Balance > div:first-of-type {
+  color: #e34530;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-align: right;
+  margin-top: 2px;
+}
+
+.Balance > div:nth-of-type(2) {
+  color: #2f96ba;
+  font-family: "Digital Counter 7", sans-serif;
+  font-size: 25px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.Balance > div:last-of-type {
+  color: #fff;
+  font-size: 6px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.InfoLeft {
+  display: flex;
+  flex-direction: column;
+}
+
+.InfoLeft h3 {
   color: #2f96ba;
   font-size: 19px;
   font-weight: 400;
   position: relative;
+  margin: 0 0 15px;
 }
 
-.Footer > div:first-of-type h3::after {
+.InfoLeft h3::after {
   position: absolute;
   content: "";
   display: block;
@@ -30,4 +60,83 @@
   height: 3.5px;
   background-color: #e14737;
   transition: all 0.2s linear;
+}
+
+.InfoLeft .Subtitle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.InfoLeft .Subtitle > div:first-of-type {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.InfoLeft .Subtitle > div:nth-of-type(2) {
+  color: #2f96ba;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.InfoLeft .Subtitle > div:last-of-type {
+  color: #fff;
+  font-size: 6px;
+  font-weight: 400;
+  text-transform: uppercase;
+  white-space: pre-wrap;
+}
+
+.Menu {
+  margin-right: 106px;
+}
+
+.Menu > ul {
+  display: flex;
+  list-style: none;
+}
+
+.Menu > ul > li:not(:last-of-type) {
+  margin-right: 15px;
+}
+
+.Menu > ul > li a {
+  color: #e34530;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.Balance {
+  width: 89px;
+  height: 60px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-right: 19px;
+}
+
+.Balance::before,
+.Balance::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  width: 12px;
+  height: 4px;
+  background-color: #3596b7;
+}
+
+.Balance::before {
+  top: 0;
+}
+
+.Balance::after {
+  bottom: 0;
 }

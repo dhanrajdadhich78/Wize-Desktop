@@ -27,7 +27,6 @@ class Access extends Component {
       this.setState({ dropzoneAlert: true });
       setTimeout(() => this.setState({ dropzoneAlert: false }), 5000);
     }
-    console.log(this.state.password, this.state.credFilePath);
   };
   render() {
     return (

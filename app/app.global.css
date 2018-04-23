@@ -9,6 +9,18 @@
   src: url("assets/fonts/Aldrich/Aldrich-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Digital Counter 7";
+  src: url("assets/fonts/digital_counter_7/digital_counter_7.ttf") format("truetype");
+  font-style: oblique;
+}
+
+@font-face {
+  font-family: "Digital Counter 7";
+  src: url("assets/fonts/digital_counter_7/digital_counter_7_italic.ttf") format("truetype");
+  font-style: italic;
+}
+
 /* @import url('https://fonts.googleapis.com/css?family=Montserrat'); */
 
 /* @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro'); */

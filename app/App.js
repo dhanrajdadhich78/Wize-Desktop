@@ -15,7 +15,8 @@ import FileUpload from './containers/FileUpload/FileUpload';
 import Wallet from './containers/Wallet/Wallet';
 import Account from './containers/Account/Account';
 import GhostPad from './containers/GhostPad/GhostPad';
-import Miners from './containers/Miners/Miners';
+import SwapKeys from './containers/SwapKeys/SwapKeys';
+import Logout from './containers/Homepage/Logout/Logout';
 
 class App extends Component {
   componentWillMount() {
@@ -40,11 +41,12 @@ class App extends Component {
             <Switch>
               <Route exact path="/account" component={Account} key={Math.random()} />
               <Route exact path="/wallet" component={Wallet} key={Math.random()} />
-              <Route exact path="/file-upload" component={FileUpload} key={Math.random()} />
-              <Route exact path="/files-list" component={FilesList} key={Math.random()} />
+              <Route exact path="/upload" component={FileUpload} key={Math.random()} />
+              <Route exact path="/files" component={FilesList} key={Math.random()} />
               <Route exact path="/ghost-pad" component={GhostPad} key={Math.random()} />
-              <Route exact path="/miners" component={Miners} key={Math.random()} />
-              <Redirect to="/account" />
+              <Route exact path="/swap-keys" component={SwapKeys} key={Math.random()} />
+              <Route exact path="/logout" component={Logout} key={Math.random()} />
+              <Redirect to="/files" />
             </Switch>
           );
         }

@@ -33,6 +33,9 @@ export const auth = (password, filePath) => dispatch => {
   ipcRenderer.once('auth:complete', (event, userData) => {
     dispatch(getDigest(JSON.parse(userData), password));
     ipcRenderer.once('fs:mounted', () => {
+      console.log(JSON.parse(userData).csk);
+      console.log(JSON.parse(userData).cpk);
+      console.log(JSON.parse(userData).address);
       dispatch(authSuccess(JSON.parse(userData)));
     });
   });
