@@ -198,6 +198,7 @@
     "is-online": "^7.0.0",
     "pbkdf2": "^3.0.14",
     "react": "^16.3.1",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.3.1",
     "react-dropzone": "^4.2.9",
     "react-hot-loader": "^4.0.1",
