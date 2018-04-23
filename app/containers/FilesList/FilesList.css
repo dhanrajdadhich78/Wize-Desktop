@@ -7,5 +7,7 @@
 }
 
 .FilesListMainContent {
-  height: calc(100% - 200px);
+  height: calc(100% - 219px);
+  overflow: hidden;
+  margin-bottom: 19px;
 }
