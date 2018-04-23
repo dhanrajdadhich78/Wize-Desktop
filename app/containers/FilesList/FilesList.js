@@ -8,11 +8,35 @@ import { saveAs } from 'file-saver';
 import classes from './FilesList.css';
 
 import b64toBlob from '../../utils/b64toBlob';
+import FilesTableHeading from '../../components/PagesSections/FilesList/FilesTableHeading/FilesTableHeading';
 import FilesTable from '../../components/PagesSections/FilesList/FilesTable/FilesTable';
+import WithCustomScrolllbar from '../../components/UI/WithCustomScrollbar/WithCustomScrollbar';
+import FilesInfoPanel from '../../components/PagesSections/FilesList/FilesInfoPanel/FilesInfoPanel';
 
 class FilesList extends Component {
   state = {
-    files: null
+    files: [
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 1,
+        size: 100500,
+        date: 1550022,
+      },
+      {
+        name: 2,
+        size: 100500,
+        date: 1550022,
+      }
+    ]
   };
   componentDidMount() {
     this.handleGetFiles();
@@ -46,11 +70,17 @@ class FilesList extends Component {
   render() {
     return (
       <div className={classes.FilesListWrapper}>
-        <FilesTable
-          files={this.state.files}
-          handleDownload={filename => this.handleDownload(filename)}
-          handleDelete={filename => this.handleDelete(filename)}
-        />
+        <div className={classes.FilesListMainContent}>
+          <FilesTableHeading />
+          <WithCustomScrolllbar>
+            <FilesTable
+              files={this.state.files}
+              handleDownload={filename => this.handleDownload(filename)}
+              handleDelete={filename => this.handleDelete(filename)}
+            />
+          </WithCustomScrolllbar>
+        </div>
+        <FilesInfoPanel />
       </div>
     );
   }
