@@ -43,6 +43,17 @@ class Register extends Component {
         },
         password: ''
       });
+      return new Promise(resolve => {
+        if (this.props.encryptedData) {
+          resolve();
+        }
+        setInterval(() => {
+          if (this.props.encryptedData) {
+            resolve();
+          }
+        }, 400);
+      })
+        .then(() => this.handleDownload());
     }
   };
   handleDownload = () => {
@@ -51,18 +62,18 @@ class Register extends Component {
     });
     const filesaver = saveAs(blob, 'credentials.bak');
     filesaver.onwriteend = () => {
-      console.log('auth');
       ipcRenderer.send('crypto:decrypt-credentials', {
         string: this.props.encryptedData,
         password: this.state.regForm.password
       });
       ipcRenderer.once('crypto:decrypted-credentials', (event, credentials) => {
-        if (credentials.csk && credentials.cpk && credentials.address) {
-          console.log(credentials);
-          this.props.authSuccess(credentials);
+        const creds = JSON.parse(credentials);
+        if (creds.csk && creds.cpk && creds.address) {
+          this.props.authSuccess(creds);
         }
       });
     };
+    return filesaver;
   };
   render() {
     return (

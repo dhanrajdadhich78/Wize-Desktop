@@ -8,16 +8,14 @@ const regStart = (password) => {
   return { type: actionTypes.REGISTRATION_START };
 };
 
-const regSuccess = encryptedData => () => ({
+const regSuccess = encryptedData => ({
   type: actionTypes.REGISTRATION_SUCCESS,
   encryptedData
 });
 
 export const registration = password => dispatch => {
   dispatch(regStart(password));
-  ipcRenderer.once('registration:complete', (event, encryptedData) => (
-    dispatch(regSuccess(encryptedData))
-  ));
+  ipcRenderer.once('registration:complete', (event, encryptedData) => dispatch(regSuccess(encryptedData)));
 };
 
 const authStart = (password, filePath) => {
@@ -40,8 +38,6 @@ export const auth = (password, filePath) => dispatch => {
   });
 };
 
-export const logout = () => {
-  return {
-    type: actionTypes.AUTH_LOGOUT
-  };
-};
+export const logout = () => ({
+  type: actionTypes.AUTH_LOGOUT
+});
