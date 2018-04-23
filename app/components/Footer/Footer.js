@@ -1,16 +1,74 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
 
 import classes from './Footer.css';
 
-const footer = () => (
-  <div className={classes.Footer}>
-    <div>
-      <h3>WizeBit Blockchain</h3>
+const footer = props => {
+  const listItems = [
+    {
+      link: '/account',
+      label: 'Account'
+    },
+    {
+      link: '/wallet',
+      label: 'Wallet'
+    },
+    {
+      link: '/swap-keys',
+      label: 'Swap keys'
+    }
+  ];
+  return (
+    <div className={classes.Footer}>
+      <div className={classes.InfoLeft}>
+        <h3>WizeBit Blockchain</h3>
+        <div className={classes.Subtitle}>
+          <div>ERC 721</div>
+          <div>SHARDING</div>
+          <div>WizeBit Blockchain</div>
+        </div>
+      </div>
+      {
+        !props.isAuth
+          ? null
+          : (
+            <div className={classes.InfoRight}>
+              <nav className={classes.Menu}>
+                <ul>
+                  {
+                    listItems.map((item, index) => (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <li key={index}>
+                        <NavLink to={item.link}>
+                          {item.label}
+                        </NavLink>
+                      </li>
+                    ))
+                  }
+                </ul>
+              </nav>
+              <div className={classes.Balance}>
+                <div>BALANCE</div>
+                <div>
+                  {
+                    props.balance
+                      ? props.balance
+                      : 'LOADING...'
+                  }
+                </div>
+                <div>WALLET</div>
+              </div>
+            </div>
+          )
+      }
     </div>
-    <div>
+  );
+};
 
-    </div>
-  </div>
-);
+footer.propTypes = {
+  isAuth: PropTypes.bool.isRequired,
+  balance: PropTypes.number.isRequired
+};
 
 export default footer;

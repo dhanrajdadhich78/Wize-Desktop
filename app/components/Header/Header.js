@@ -22,28 +22,20 @@ const header = props => {
   if (props.isAuth) {
     listItems = [
       {
-        link: '/account',
-        label: 'Account'
+        link: '/files',
+        label: 'Files'
       },
       {
-        link: '/wallet',
-        label: 'Wallet'
-      },
-      {
-        link: '/file-upload',
-        label: 'Upload files'
-      },
-      {
-        link: '/files-list',
-        label: 'Merge files'
+        link: '/upload',
+        label: 'Upload'
       },
       {
         link: '/ghost-pad',
         label: 'Ghost pad'
       },
       {
-        link: '/miners',
-        label: 'Miners'
+        link: '/logout',
+        label: 'Logout'
       }
     ];
   }
