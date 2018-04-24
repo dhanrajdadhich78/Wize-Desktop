@@ -1,0 +1,56 @@
+.Deposit {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.Deposit h3 {
+  color: #e34530;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.Middle {
+  width: 100%;
+  display: flex;
+}
+
+.Middle > input {
+  flex: 4;
+  margin-right: 7px;
+}
+
+.Middle > button {
+  flex: 1;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.Middle > button:first-of-type {
+  margin-right: 7px;
+}
+
+.Middle > input,
+.Middle > button {
+  border: none;
+  height: 50px;
+  background-color: rgba(22, 94, 106, 0.3);
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 15px 0;
+  box-sizing: border-box;
+  text-align: center;
+  outline: none;
+}
+
+.Bottom > p {
+  color: #2f96ba;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  width: calc(100% * 4 / 6 - 14px);
+}
