@@ -72,7 +72,11 @@ const footer = props => {
 
 footer.propTypes = {
   isAuth: PropTypes.bool.isRequired,
-  balance: PropTypes.number.isRequired
+  balance: PropTypes.number
+};
+
+footer.defaultProps = {
+  balance: 0
 };
 
 export default footer;
