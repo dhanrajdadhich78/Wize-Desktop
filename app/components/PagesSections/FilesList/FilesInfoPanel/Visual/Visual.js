@@ -1,14 +1,14 @@
 import React from 'react';
 
 import classes from './Visual.css';
-import { fileImgBlue, graph } from '../../../../../assets/img/img';
+import { fileImgLiteBlue, graph } from '../../../../../assets/img/img';
 
 const visual = () => (
   <div className={classes.Visual}>
-    <div>
-      <div>
+    <div className={classes.Left}>
+      <div className={classes.TopLeft}>
         <div>
-          <img src={fileImgBlue} alt="file" />
+          <img src={fileImgLiteBlue} alt="file" />
         </div>
         <div>
           <div>
@@ -19,19 +19,19 @@ const visual = () => (
               Mining: DR. 0345/D
             </div>
           </div>
-          <div>
-            34%
-          </div>
+        </div>
+        <div>
+          34%
         </div>
       </div>
-      <div>
+      <div className={classes.BottomLeft}>
         <div>
           <div>
             HASH
           </div>
           <div>
             <div>
-              <img src={fileImgBlue} alt="file" />
+              <img src={fileImgLiteBlue} alt="file" />
             </div>
             <div>
               <div>
@@ -47,15 +47,16 @@ const visual = () => (
           </div>
         </div>
         <div>
-          WIZE PROTOCOL
+          <p><span>_</span> WIZE</p>
+          <p>PROTOCOL</p>
         </div>
       </div>
     </div>
-    <div>
-      <div>
+    <div className={classes.Right}>
+      <div className={classes.TopRight}>
         <img src={graph} alt="graph" />
       </div>
-      <div>
+      <div className={classes.BottomRight}>
         Sharding data
       </div>
     </div>
