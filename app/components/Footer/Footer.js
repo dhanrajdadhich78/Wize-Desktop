@@ -15,6 +15,10 @@ const footer = props => {
       label: 'Wallet'
     },
     {
+      link: '/deposit',
+      label: 'Deposit'
+    },
+    {
       link: '/swap-keys',
       label: 'Swap keys'
     }
