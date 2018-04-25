@@ -105,7 +105,12 @@ class Deposit extends Component {
             handleCalculatorFieldChange={(val, key) => this.handleCalculatorFieldChange(val, key)}
           />
         </div>
-        <InfoPanel />
+        <InfoPanel
+          rightColumn={[
+            'Data2',
+            'Statistic'
+          ]}
+        />
       </div>
     );
   }

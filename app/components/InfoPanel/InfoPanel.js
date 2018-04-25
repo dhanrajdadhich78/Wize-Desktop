@@ -8,6 +8,10 @@ import ProgressBar from './ProgressBar/ProgressBar';
 import NavMenu from './NavMenu/NavMenu';
 import Data from './Data/Data';
 import Graph from './Graph/Graph';
+import Data2 from './Data2/Data2';
+import Statistic from './Statistic/Statistic';
+import SecurityLayer from './SecurityLayer/SecurityLayer';
+import NewBlock from './NewBlock/NewBlock';
 
 const infoPanel = props => {
   const getBlock = name => {
@@ -17,6 +21,10 @@ const infoPanel = props => {
       case 'NavMenu': block = <NavMenu key={Math.random()} />; break;
       case 'Data': block = <Data key={Math.random()} />; break;
       case 'Graph': block = <Graph key={Math.random()} />; break;
+      case 'Data2': block = <Data2 key={Math.random()} />; break;
+      case 'Statistic': block = <Statistic key={Math.random()} />; break;
+      case 'SecurityLayer': block = <SecurityLayer key={Math.random()} />; break;
+      case 'NewBlock': block = <NewBlock key={Math.random()} />; break;
       default:
         block = (
           <div key={Math.random()}>

@@ -1,0 +1,30 @@
+.NewBlock {
+  height: 100%;
+  display: flex;
+  padding: 15px 30px;
+  box-sizing: border-box;
+  flex: 2;
+  align-items: center;
+}
+
+.NewBlock > div:last-of-type > div {
+  height: 50%;
+}
+
+.NewBlock > div:last-of-type > div:first-child {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.NewBlock > div:last-of-type > div:last-child {
+  color: #e34530;
+  font-size: 21px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.NewBlock > div:last-of-type > div:last-child > span {
+  color: #fff;
+}

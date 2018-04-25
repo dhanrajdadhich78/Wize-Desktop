@@ -11,6 +11,7 @@ import key from './key.png';
 import lock from './lock.png';
 import xFileBlue from './x-file-blue.png';
 import xFileRed from './x-file-red.png';
+import newBlock from './new-block.png';
 
 export default {
   logo,
@@ -25,5 +26,6 @@ export default {
   key,
   lock,
   xFileBlue,
-  xFileRed
+  xFileRed,
+  newBlock
 };
