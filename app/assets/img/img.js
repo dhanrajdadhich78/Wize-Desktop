@@ -7,6 +7,10 @@ import fileImgLiteBlue from './file-img-lite-blue.png';
 import logo2 from './logo-v2.png';
 import graph from './graph.png';
 import uploadIcon from './upload-file-icon.png';
+import key from './key.png';
+import lock from './lock.png';
+import xFileBlue from './x-file-blue.png';
+import xFileRed from './x-file-red.png';
 
 export default {
   logo,
@@ -17,5 +21,9 @@ export default {
   fileImgLiteBlue,
   logo2,
   graph,
-  uploadIcon
+  uploadIcon,
+  key,
+  lock,
+  xFileBlue,
+  xFileRed
 };

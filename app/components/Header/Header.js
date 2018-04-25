@@ -30,6 +30,10 @@ const header = props => {
         label: 'Upload'
       },
       {
+        link: '/x-files',
+        label: 'X-Files'
+      },
+      {
         link: '/ghost-pad',
         label: 'Ghost pad'
       },
