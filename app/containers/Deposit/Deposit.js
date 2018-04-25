@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import classes from './Deposit.css';
 
 import DepositWallet from '../../components/PagesSections/DepositWallet/DepositWallet';
-import FilesInfoPanel from '../../components/PagesSections/FilesList/FilesInfoPanel/FilesInfoPanel';
+import InfoPanel from '../../components/InfoPanel/InfoPanel';
 
 class Deposit extends Component {
   state = {
@@ -105,7 +105,7 @@ class Deposit extends Component {
             handleCalculatorFieldChange={(val, key) => this.handleCalculatorFieldChange(val, key)}
           />
         </div>
-        <FilesInfoPanel />
+        <InfoPanel />
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import classes from './Visual.css';
-import { fileImgLiteBlue, graph } from '../../../../../assets/img/img';
+import { fileImgLiteBlue, graph } from '../../../assets/img/img';
 
 const visual = () => (
   <div className={classes.Visual}>

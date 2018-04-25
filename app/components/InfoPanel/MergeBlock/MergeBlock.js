@@ -1,7 +1,7 @@
 import React from 'react';
 
 import classes from './MergeBlock.css';
-import { fileImg } from '../../../../../assets/img/img';
+import { fileImg } from '../../../assets/img/img';
 
 const mergeBlock = () => {
   const fileList = [

@@ -10,8 +10,8 @@ import classes from './FilesList.css';
 import b64toBlob from '../../utils/b64toBlob';
 import FilesTableHeading from '../../components/PagesSections/FilesList/FilesTableHeading/FilesTableHeading';
 import FilesTable from '../../components/PagesSections/FilesList/FilesTable/FilesTable';
-import WithCustomScrolllbar from '../../components/UI/WithCustomScrollbar/WithCustomScrollbar';
-import FilesInfoPanel from '../../components/PagesSections/FilesList/FilesInfoPanel/FilesInfoPanel';
+import WithCustomScrollbar from '../../components/UI/WithCustomScrollbar/WithCustomScrollbar';
+import InfoPanel from '../../components/InfoPanel/InfoPanel';
 
 class FilesList extends Component {
   state = {
@@ -172,15 +172,15 @@ class FilesList extends Component {
       <div className={classes.FilesListWrapper}>
         <div className={classes.FilesListMainContent}>
           <FilesTableHeading />
-          <WithCustomScrolllbar>
+          <WithCustomScrollbar>
             <FilesTable
               files={this.state.files}
               handleDownload={filename => this.handleDownload(filename)}
               handleDelete={filename => this.handleDelete(filename)}
             />
-          </WithCustomScrolllbar>
+          </WithCustomScrollbar>
         </div>
-        <FilesInfoPanel />
+        <InfoPanel />
       </div>
     );
   }

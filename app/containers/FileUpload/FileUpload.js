@@ -9,7 +9,7 @@ import Dropzone from 'react-dropzone';
 import classes from './FileUpload.css';
 import { uploadIcon } from '../../assets/img/img';
 import VertivalLineV from '../../components/UI/VerticalLineV/VerticalLineV';
-import FilesInfoPanel from '../../components/PagesSections/FilesList/FilesInfoPanel/FilesInfoPanel';
+import InfoPanel from '../../components/InfoPanel/InfoPanel';
 
 class Files extends Component {
   state = {
@@ -95,7 +95,7 @@ class Files extends Component {
           <VertivalLineV count={7} />
           <VertivalLineV count={7} />
         </div>
-        <FilesInfoPanel />
+        <InfoPanel />
         {progress}
       </div>
     );

@@ -1,13 +1,13 @@
 import React from 'react';
 
-import classes from './FilesInfoPanel.css';
+import classes from './InfoPanel.css';
 
-import InfoPanelWrapper from '../../../UI/InfoPanelWrapper/InfoPanelWrapper';
+import InfoPanelWrapper from '../UI/InfoPanelWrapper/InfoPanelWrapper';
 import MergeBlock from './MergeBlock/MergeBlock';
 import Visual from './Visual/Visual';
 
-const filesInfoPanel = () => (
-  <div className={classes.FilesInfoPanel}>
+const infoPanel = () => (
+  <div className={classes.InfoPanel}>
     <InfoPanelWrapper>
       <div className={classes.InnerWrapper}>
         <div>
@@ -21,4 +21,4 @@ const filesInfoPanel = () => (
   </div>
 );
 
-export default filesInfoPanel;
+export default infoPanel;
