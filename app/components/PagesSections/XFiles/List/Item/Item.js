@@ -42,7 +42,7 @@ const item = props => (
             : null
         }
         <div className={classes.Button}>
-          <button>delete</button>
+          <button onClick={() => console.log('delete')}>delete</button>
         </div>
       </div>
       <div className={classes.Corners}><div /><div /><div /><div /></div>

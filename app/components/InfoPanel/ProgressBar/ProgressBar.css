@@ -1,10 +1,4 @@
-.MergeBlock {
-  display: flex;
-  height: 100%;
-  align-items: center;
-}
-
-.MergeBlock > div {
+.ProgressBar {
   width: calc(100% - 132px);
 }
 
@@ -78,34 +72,4 @@
   color: #fff;
   font-size: 6px;
   font-weight: 400;
-}
-
-.MergeBlock > nav {
-  width: 132px;
-}
-
-.MergeBlock > nav > ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.MergeBlock > nav > ul > li {
-  text-align: right;
-}
-
-.MergeBlock > nav > ul > li > a {
-  color: #2f96ba;
-  font-size: 14px;
-  font-weight: 400;
-  text-decoration: none;
-  padding: 3px 15px;
-  white-space: nowrap;
-}
-
-.MergeBlock > nav > ul > li > a:hover,
-.MergeBlock > nav > ul > li > a:active,
-.MergeBlock > nav > ul > li > a.Active {
-  background-color: rgba(22, 94, 106, 0.3);
-  color: white;
 }
