@@ -101,7 +101,15 @@ class XFiles extends Component {
             </WithCustomScrollbar>
           </div>
           <div className={classes.InfoPanelWrapper}>
-            <InfoPanel />
+            <InfoPanel
+              leftColumn={[
+                'NewBlock',
+                'NavMenu'
+              ]}
+              rightColumn={[
+                'SecurityLayer'
+              ]}
+            />
           </div>
         </div>
         <div className={classes.Right}>
