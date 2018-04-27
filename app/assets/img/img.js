@@ -12,6 +12,7 @@ import lock from './lock.png';
 import xFileBlue from './x-file-blue.png';
 import xFileRed from './x-file-red.png';
 import newBlock from './new-block.png';
+import fileLock from './file-lock.png';
 
 export default {
   logo,
@@ -27,5 +28,6 @@ export default {
   lock,
   xFileBlue,
   xFileRed,
-  newBlock
+  newBlock,
+  fileLock
 };

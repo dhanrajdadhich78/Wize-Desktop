@@ -7,10 +7,10 @@
   width: calc(100% - 30px);
   height: calc(100vh - 149px);
   position: relative;
-  overflow-x: hidden;
   background-size: cover;
   margin: 0 15px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .Layout main article {

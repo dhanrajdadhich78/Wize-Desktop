@@ -1,30 +1,60 @@
 .NewBlock {
   height: 100%;
   display: flex;
-  padding: 15px 30px;
+  padding: 15px 0 15px 15px;
   box-sizing: border-box;
   flex: 2;
   align-items: center;
+  width: calc(100% - 132px);
 }
 
 .NewBlock > div:last-of-type > div {
   height: 50%;
 }
 
-.NewBlock > div:last-of-type > div:first-child {
+.Left > img {
+  margin-right: 15px;
+  height: 125px;
+}
+
+.Top > div:first-child {
   color: #fff;
   font-size: 14px;
   font-weight: 500;
   text-transform: uppercase;
+  margin-bottom: 7px;
 }
 
-.NewBlock > div:last-of-type > div:last-child {
+.Top > div:last-child {
   color: #e34530;
   font-size: 21px;
   font-weight: 500;
   text-transform: uppercase;
+  white-space: nowrap;
+  margin-bottom: 7px;
 }
 
-.NewBlock > div:last-of-type > div:last-child > span {
+.Top div:last-child > span {
   color: #fff;
+}
+
+.Bottom div {
+  color: #30d6d6;
+  font-size: 6px;
+  font-weight: 400;
+}
+
+@media (max-width: 1300px) {
+  .Left > img {
+    height: 75px;
+    margin-right: 7px;
+  }
+
+  .Top > div:first-child {
+    font-size: 10px;
+  }
+
+  .Top > div:last-child {
+    font-size: 14px;
+  }
 }
