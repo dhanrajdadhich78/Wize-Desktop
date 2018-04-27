@@ -1,0 +1,126 @@
+.SecurityLayer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 45px 70px 0;
+  box-sizing: border-box;
+}
+
+.SecurityLayer h2 {
+  color: #e34530;
+  font-size: 16px;
+  font-weight: 300;
+  text-transform: uppercase;
+  margin: 0 0 14px;
+}
+
+.Subtitle > div:first-of-type {
+  color: #2f96ba;
+  font-size: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.Subtitle > div:last-of-type {
+  color: #fff;
+  font-size: 6px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.Subtitle > div:last-of-type::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 3px;
+  background-color: #96ba33;
+  margin-right: 3px;
+}
+
+.Subtitle {
+  margin-bottom: 7px;
+}
+
+.SecurityLayer > ul {
+  display: flex;
+  padding: 0 40px;
+  margin: 0;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  list-style: none;
+  height: 100%;
+  align-items: center;
+}
+
+.SecurityLayer > ul::before,
+.SecurityLayer > ul::after {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+  font-size: 75px;
+  color: #0a394d;
+  font-weight: 300;
+  padding: 15px 0;
+}
+
+.SecurityLayer > ul::after {
+  content: ']';
+  right: 0;
+}
+
+.SecurityLayer > ul::before {
+  content: '[';
+  left: 0;
+}
+
+.SecurityLayer > ul > li {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.SecurityLayer > ul > li > div:first-of-type > img {
+  height: 45px;
+  margin-right: 7px;
+}
+
+.SecurityLayer > ul > li > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.TextBlock > div {
+  margin-bottom: 3px;
+}
+
+.TextBlock > div:first-of-type {
+  color: #e34530;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.TextBlock > div:nth-of-type(2) {
+  display: block;
+  width: 3px;
+  height: 3px;
+  background-color: #96ba33;
+}
+
+.TextBlock > div:nth-of-type(3) {
+  color: #30d6d6;
+  font-size: 5px;
+  font-weight: 400;
+}
+
+.TextBlock > div:last-of-type {
+  color: #fff;
+  font-size: 2px;
+  font-weight: 400;
+}

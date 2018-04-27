@@ -5,11 +5,11 @@ import { newBlock } from '../../../assets/img/img';
 
 const NewBlock = () => (
   <div className={classes.NewBlock}>
-    <div>
-      <img src={newBlock} alt="new block" height={125} />
+    <div className={classes.Left}>
+      <img src={newBlock} alt="new block" />
     </div>
-    <div>
-      <div>
+    <div className={classes.Right}>
+      <div className={classes.Top}>
         <div>
           CREATE
         </div>
@@ -17,7 +17,7 @@ const NewBlock = () => (
           <span>-</span> NEW BLOCK
         </div>
       </div>
-      <div>
+      <div className={classes.Bottom}>
         <div>
           The DSC code used to load resources
         </div>
