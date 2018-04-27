@@ -13,6 +13,8 @@ import xFileBlue from './x-file-blue.png';
 import xFileRed from './x-file-red.png';
 import newBlock from './new-block.png';
 import fileLock from './file-lock.png';
+import ghost from './ghost.svg';
+import polygon from './polygon.svg';
 
 export default {
   logo,
@@ -29,5 +31,7 @@ export default {
   xFileBlue,
   xFileRed,
   newBlock,
-  fileLock
+  fileLock,
+  ghost,
+  polygon
 };
