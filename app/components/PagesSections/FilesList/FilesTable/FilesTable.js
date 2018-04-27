@@ -60,14 +60,14 @@ const filesTable = props => {
                   {/* </button> */}
                   {/* </span> */}
                 </li>
-              )
+              );
             })
           }
         </ul>
       );
     } else {
       list = (
-        <div>
+        <div className={classes.Empty}>
           <h2>You don&apos;t have any files yet.</h2>
         </div>
       );
@@ -82,8 +82,8 @@ const filesTable = props => {
 
 filesTable.propTypes = {
   files: PropTypes.arrayOf(PropTypes.shape()),
-  handleDownload: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired
+  // handleDownload: PropTypes.func.isRequired,
+  // handleDelete: PropTypes.func.isRequired
 };
 
 filesTable.defaultProps = {

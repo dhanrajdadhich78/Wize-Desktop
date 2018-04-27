@@ -11,8 +11,10 @@ import {
 
 const item = props => (
   <div>
-    <button
+    <div
       className={!props.isActive ? classes.Item : [classes.Item, classes.Active].join(' ')}
+      role="button"
+      tabIndex={-1}
       style={props.isActive ? { backgroundImage: `url(${xFileRed})` } : { backgroundImage: `url(${xFileBlue})` }}
       onClick={() => props.onClick(props.index)}
     >
@@ -46,7 +48,7 @@ const item = props => (
         </div>
       </div>
       <div className={classes.Corners}><div /><div /><div /><div /></div>
-    </button>
+    </div>
   </div>
 );
 

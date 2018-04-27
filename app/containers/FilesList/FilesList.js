@@ -15,128 +15,7 @@ import InfoPanel from '../../components/InfoPanel/InfoPanel';
 
 class FilesList extends Component {
   state = {
-    files: [
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 1,
-        size: 100500,
-        date: 1550022,
-      },
-      {
-        name: 2,
-        size: 100500,
-        date: 1550022,
-      }
-    ]
+    files: []
   };
   componentDidMount() {
     this.handleGetFiles();
@@ -172,13 +51,15 @@ class FilesList extends Component {
       <div className={classes.FilesListWrapper}>
         <div className={classes.FilesListMainContent}>
           <FilesTableHeading />
-          <WithCustomScrollbar>
-            <FilesTable
-              files={this.state.files}
-              handleDownload={filename => this.handleDownload(filename)}
-              handleDelete={filename => this.handleDelete(filename)}
-            />
-          </WithCustomScrollbar>
+          <div className={classes.TheContent}>
+            <WithCustomScrollbar>
+              <FilesTable
+                files={this.state.files}
+                handleDownload={filename => this.handleDownload(filename)}
+                handleDelete={filename => this.handleDelete(filename)}
+              />
+            </WithCustomScrollbar>
+          </div>
         </div>
         <InfoPanel />
       </div>
