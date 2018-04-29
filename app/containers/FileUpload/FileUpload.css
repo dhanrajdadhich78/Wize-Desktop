@@ -43,7 +43,7 @@
   right: 0;
 }
 
-.DropzoneWrapper > div:first-of-type img {
+.DropzoneWrapper > div:first-of-type > div > div > img {
   height: 128px;
   margin-bottom: 15px;
 }
@@ -83,6 +83,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.LoadingWrapper {
+  position: relative;
+}
+
+.AnimationWrapper {
+  position: absolute;
+  top: 63px;
+  right: calc(50% - 17px);
+  bottom: 0;
+  left: calc(50% - 17px);
 }
 
 @media (max-height: 760px) {

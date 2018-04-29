@@ -15,6 +15,9 @@ import newBlock from './new-block.png';
 import fileLock from './file-lock.png';
 import ghost from './ghost.svg';
 import polygon from './polygon.svg';
+import folder from './folder.png';
+import ghost2 from './ghost2.svg';
+import polygon2 from './polygon2.svg';
 
 export default {
   logo,
@@ -33,5 +36,8 @@ export default {
   newBlock,
   fileLock,
   ghost,
-  polygon
+  polygon,
+  folder,
+  ghost2,
+  polygon2,
 };
