@@ -9,7 +9,7 @@
   box-sizing: border-box;
   pointer-events: none;
   text-align: center;
-  animation: app-logo-slide 5s normal forwards ease-in-out;
+  animation: app-logo-slide 1.25s normal forwards ease-in-out;
 }
 
 .Ghost {
@@ -25,11 +25,11 @@
   width: 100%;
   display: flex;
   justify-content: space-around;
-  margin-top: -20%;
+  margin-top: -44px;
 }
 
 .BottomPolygon {
-  margin-top: -14%;
+  margin-top: -44px;
 }
 
 .Polygon {
@@ -38,15 +38,15 @@
 }
 
 .First {
-  animation: first-polygon 5s normal forwards ease-in-out;
+  animation: first-polygon 1.25s normal forwards ease-in-out;
 }
 
 .Second {
-  animation: second-polygon 5s normal forwards ease-in-out;
+  animation: second-polygon 1.25s normal forwards ease-in-out;
 }
 
 .Third {
-  animation: third-polygon 5s normal forwards ease-in-out;
+  animation: third-polygon 1.25s normal forwards ease-in-out;
 }
 
 
@@ -107,5 +107,15 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+@media (max-width: 1300px) {
+  .TopPolygons {
+    margin-top: -66px;
+  }
+
+  .BottomPolygon {
+    margin-top: -66px;
   }
 }
