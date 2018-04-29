@@ -1,40 +1,38 @@
 import React from 'react';
 
-import classes from './Ghost.css';
+import classes from './Loading.css';
 
-import { ghost, polygon } from '../../../assets/img/img';
+import { ghost2, polygon2 } from '../../../assets/img/img';
 
-const Ghost = () => (
+const Loading = () => (
   <div className={classes.GhostWrapper}>
     <img
       className={classes.Ghost}
-      src={ghost}
+      src={ghost2}
       alt="ghost"
     />
     <div className={classes.AllPolygons}>
       <div className={classes.TopPolygons}>
         <img
           className={[classes.Polygon, classes.First].join(' ')}
-          src={polygon}
+          src={polygon2}
           alt="polygon"
         />
         <img
           className={[classes.Polygon, classes.Second].join(' ')}
-          src={polygon}
+          src={polygon2}
           alt="polygon"
         />
       </div>
       <div className={classes.BottomPolygon}>
         <img
           className={[classes.Polygon, classes.Third].join(' ')}
-          src={polygon}
+          src={polygon2}
           alt="polygon"
         />
       </div>
     </div>
-
-
   </div>
 );
 
-export default Ghost;
+export default Loading;

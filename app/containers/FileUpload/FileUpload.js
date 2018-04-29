@@ -7,9 +7,10 @@ import _ from 'lodash';
 import Dropzone from 'react-dropzone';
 
 import classes from './FileUpload.css';
-import { uploadIcon } from '../../assets/img/img';
+import { /* uploadIcon, */  folder } from '../../assets/img/img';
 import VertivalLineV from '../../components/UI/VerticalLineV/VerticalLineV';
 import InfoPanel from '../../components/InfoPanel/InfoPanel';
+import Loading from '../../components/Animations/Loading/Loading';
 
 class Files extends Component {
   state = {
@@ -79,7 +80,13 @@ class Files extends Component {
               !this.state.rejected
                 ? (
                   <div>
-                    <img src={uploadIcon} alt="Drop to upload your files" />
+                    {/* <img src={uploadIcon} alt="Drop to upload your files" /> */}
+                    <div className={classes.LoadingWrapper}>
+                      <img src={folder} alt="folder" />
+                      <div className={classes.AnimationWrapper}>
+                        <Loading />
+                      </div>
+                    </div>
                     <p>UPLOAD FILE</p>
                   </div>
                 )
