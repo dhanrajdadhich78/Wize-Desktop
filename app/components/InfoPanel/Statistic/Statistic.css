@@ -36,3 +36,9 @@
 .Numline > div:not(:first-child) {
   margin-left: 9px;
 }
+
+@media (max-width: 1300px) {
+  .Numline > div:not(:first-child) {
+    margin-left: 4px;
+  }
+}

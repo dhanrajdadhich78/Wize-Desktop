@@ -81,3 +81,9 @@
   align-items: center;
   padding: 7px;
 }
+
+@media (max-width: 1300px) {
+  .Heading h3 {
+    font-size: 12px;
+  }
+}
