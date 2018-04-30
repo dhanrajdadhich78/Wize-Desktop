@@ -185,6 +185,7 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
     mainWindow.webContents.send('auth:complete', decrypt.strData);
   });
 });
+
 ipcMain.on('fs:mount', (event, fsUrl) => {
   const origin = cpkGlob;
   const threeUrls = fsUrl.slice(0, 3);
@@ -227,40 +228,50 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
 });
 //  get network digest listener
 ipcMain.on('digest:get', (event, { userData, password }) => {
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-    const data = {
-      bcNodes: [
-        'http://127.0.0.1:4000',
-        'http://127.0.0.1:4000',
-        'http://127.0.0.1:4000'
-      ],
-      raftNodes: [
-        'http://127.0.0.1:11001',
-        'http://127.0.0.1:11001',
-        'http://127.0.0.1:11001'
-      ],
-      storageNodes: [
-        'http://127.0.0.1:13000',
-        'http://127.0.0.1:13000',
-        'http://127.0.0.1:13000'
-      ],
-      spaceleft: 0,
-      totalNodes: 0,
-      suspicious: 0
-    };
-    mainWindow.webContents.send('digest:success', data);
-  } else {
-    const reqData = {
-      data: {
-        address: userData.address,
-        pubKey: userData.cpk,
-        AES: cF.getHash(password)
+  // if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+  //   const data = {
+  //     bcNodes: [
+  //       'http://127.0.0.1:4000',
+  //       'http://127.0.0.1:4000',
+  //       'http://127.0.0.1:4000'
+  //     ],
+  //     raftNodes: [
+  //       'http://127.0.0.1:11001',
+  //       'http://127.0.0.1:11001',
+  //       'http://127.0.0.1:11001'
+  //     ],
+  //     storageNodes: [
+  //       'http://127.0.0.1:13000',
+  //       'http://127.0.0.1:13000',
+  //       'http://127.0.0.1:13000'
+  //     ],
+  //     spaceleft: 0,
+  //     totalNodes: 0,
+  //     suspicious: 0
+  //   };
+  //   mainWindow.webContents.send('digest:success', data);
+  // } else {
+  console.log(userData.address, userData.cpk, userData.csk, cF.getHash(password));
+  const reqData = {
+    address: userData.address,
+    pubKey: userData.cpk,
+    AES: cF.getHash(password)
+  };
+  return axios.post(`${DIGEST_URL}/hello/application`, reqData)
+    .then(({ data }) => mainWindow.webContents.send('digest:success', data))
+    .catch(({ response }) => {
+      if (response.data.message === 'PrivKey is empty') {
+        axios.post(`${DIGEST_URL}/hello/application`, {
+          ...reqData,
+          PrivKey: userData.csk
+        })
+          .then(({ data }) => mainWindow.webContents.send('digest:success', data))
+          .catch(({ res }) => dialog.showErrorBox('Error', res.data.message));
+      } else {
+        dialog.showErrorBox('Error', response.data.message);
       }
-    };
-    return axios.post(`${DIGEST_URL}/hello/application`, reqData)
-      .then(({ data }) => mainWindow.webContents.send('digest:success', data))
-      .catch(err => dialog.showErrorBox('Error', err.response.data));
-  }
+    });
+  // }
 });
 //  get my files list listener
 ipcMain.on('file:list', (event, { userData, raftNode }) => (
