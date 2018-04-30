@@ -56,7 +56,7 @@ const footer = props => {
                 <div>BALANCE</div>
                 <div>
                   {
-                    props.balance
+                    props.balance || props.balance === 0
                       ? props.balance
                       : 'LOADING...'
                   }
