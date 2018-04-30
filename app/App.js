@@ -30,7 +30,7 @@ class App extends Component {
   componentWillMount() {
     PreventSelection(document);
     this.props.checkInternet();
-    setTimeout(() => this.setState({ content: true }), 1249);
+    setTimeout(() => this.setState({ content: true }), 1649);
   }
   render() {
     let routes;

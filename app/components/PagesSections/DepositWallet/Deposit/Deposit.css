@@ -54,3 +54,19 @@
   text-transform: uppercase;
   width: calc(100% * 4 / 6 - 14px);
 }
+
+@media (max-width: 1300px) {
+  .Deposit > div:not(:nth-of-type(2)) {
+    min-height: 1px;
+    display: block;
+  }
+
+  .Deposit h3,
+  .Bottom > p {
+    margin: 14px 0 7px;
+  }
+
+  .Bottom > p {
+    margin-top: 0;
+  }
+}
