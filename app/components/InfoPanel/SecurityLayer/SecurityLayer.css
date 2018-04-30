@@ -124,3 +124,21 @@
   font-size: 2px;
   font-weight: 400;
 }
+
+@media (max-width: 1300px) {
+  .SecurityLayer > ul > li > div:first-of-type > img {
+    height: 30px;
+  }
+
+  .TextBlock > div:first-of-type {
+    font-size: 12px;
+  }
+
+  .SecurityLayer > ul > li {
+    margin-right: 10px;
+  }
+
+  .SecurityLayer > ul > li:last-of-type {
+    margin-right: 35px;
+  }
+}

@@ -41,7 +41,7 @@ class App extends Component {
       if (this.props.internet) {
         routes = (
           <Switch>
-            <Route path="/" component={Homepage} />
+            <Route path="/" component={Homepage} key={Math.random()} />
             <Redirect to="/" />
           </Switch>
         );
