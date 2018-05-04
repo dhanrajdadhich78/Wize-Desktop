@@ -14,9 +14,10 @@ const getNotesSuccess = notes => ({
 
 export const getNotes = (userData, raftNode) => dispatch => {
   dispatch(getNotesStart(userData, raftNode));
-  ipcRenderer.once('get-notes:complete', (event, notes) => (
-    dispatch(getNotesSuccess(notes))
-  ));
+  ipcRenderer.once('get-notes:complete', (event, notes) => {
+    console.log(notes);
+    dispatch(getNotesSuccess(notes));
+  });
 };
 
 const createNoteStart = (note, userData, raftNode) => {

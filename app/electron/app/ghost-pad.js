@@ -7,12 +7,11 @@ const ghostPad = (mainWindow) => {
     const key = `${userData.cpk}_gpd`;
     return axios.get(`${raftNode}/key/${key}`)
       .then(({ data }) => {
-        console.log(data[key]);
-        const notes = data[key] ? cF.aesDecrypt(data[key], userData.csk).strData : [];
+        const notes = data[key] ? JSON.parse(cF.aesDecrypt(data[key], userData.csk).strData) : [];
         console.log(notes);
         return mainWindow.webContents.send('get-notes:complete', notes);
       })
-      .catch(({response}) => {
+      .catch(({ response }) => {
         console.log(response.data);
         return dialog.showErrorBox('Error', response.data);
       });
@@ -26,13 +25,13 @@ const ghostPad = (mainWindow) => {
       .then(({ data }) => (data[key] ? cF.aesDecrypt(data[key], userData.csk).strData : []))
       .then(rawData => {
         console.log('2', rawData);
-        return cF.aesEncrypt([
+        return cF.aesEncrypt(JSON.stringify([
           note,
           ...rawData
-        ], userData.csk).encryptedHex;
+        ]), userData.csk).encryptedHex;
       })
       .then(prepData => {
-        console.log('3', JSON.stringify({ [key]: prepData }));
+        console.log('3', { [key]: prepData });
         // return axios.post(`${raftNode}/key`, { [key]: prepData });
         return new Promise((resolve, reject) => {
           setTimeout(() => (
