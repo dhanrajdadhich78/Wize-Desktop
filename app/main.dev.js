@@ -498,7 +498,7 @@ ipcMain.on('transaction:create', (event, { userData, to, amount, minenow, bcNode
           wallet.ecdsaSign(transactionHash, userData.csk)
         ));
         return {
-          //from: userData.address,
+          // from: userData.address,
           txid: data.txid,
           minenow,
           signatures

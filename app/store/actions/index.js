@@ -10,3 +10,8 @@ export {
 } from './commonInfo';
 export { getBalance } from './blockchain';
 export { getDigest } from './digest';
+export {
+  getNotes,
+  createNote,
+  deleteNote
+} from './notes';
