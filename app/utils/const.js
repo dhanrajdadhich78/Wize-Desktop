@@ -6,3 +6,18 @@ export const DIGEST_URL = 'http://master.wizeprotocol.com:8888';
 // export const RAFT_URL = 'http://localhost:11001/key';
 // export const FS_URL = 'http://localhost:13000/buckets';
 export const BLOCKCHAIN_URL = 'http://master.wizeprotocol.com:4000';
+// common
+export const MONTH_ARRAY = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];

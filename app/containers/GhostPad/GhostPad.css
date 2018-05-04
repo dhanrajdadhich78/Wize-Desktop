@@ -1,0 +1,8 @@
+.AddNoteWrapper {
+  height: 50px;
+  margin: 15px 0;
+}
+
+.NoteListWrapper {
+  height: calc(100% - 80px);
+}

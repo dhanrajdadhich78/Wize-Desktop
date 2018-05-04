@@ -1,0 +1,160 @@
+/* main */
+.container {
+  width: 1333px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* geometric */
+.w100 {
+  width: 100%;
+}
+
+.h100 {
+  height: 100%;
+}
+
+.absolute100 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* flex boxes */
+.flex {
+  box-sizing: border-box;
+  display: flex;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.flexColumn {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.justifyBetween {
+  justify-content: space-between;
+}
+
+.justifyCenter {
+  justify-content: center;
+}
+
+.flexAlignCenter {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.flexBetweenCenter {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flexAllCenter {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flexColumnAllCenter {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flexEndCenter {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* colors */
+.blue {
+  color: #2195eb;
+}
+
+.blueBg {
+  background-color: #2195eb;
+}
+
+.shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* fonts */
+.h3 {
+  font-size: 14px;
+  font-family: 'Aldrich', sans-serif;
+  font-weight: 400;
+  margin-bottom: 7px;
+}
+
+.textUpper {
+  text-transform: uppercase;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+/* common */
+.objWithLeftDot {
+  margin-left: 15px;
+  position: relative;
+}
+
+.objWithLeftDot::before {
+  content: '';
+  display: inline-block;
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  background-color: #999;
+  position: absolute;
+  left: -10px;
+  bottom: calc(50% - 2.5px);
+}
+
+.transparentButton {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.emptyMessage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* media queries */
+@media (max-width: 1333px) {
+  .container {
+    width: calc(100% - 60px);
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: calc(100% - 30px);
+  }
+}
