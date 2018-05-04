@@ -67,7 +67,7 @@ class AddNote extends Component {
                     styles.h100,
                     styles.Button
                   ].join(' ')}
-                  onClick={() => this.setState({ input: !this.state.input })}
+                  onClick={() => this.props.createNote()}
                 >
                   add
                 </button>
@@ -92,7 +92,8 @@ class AddNote extends Component {
 
 AddNote.propTypes = {
   value: PropTypes.string.isRequired,
-  onchange: PropTypes.func.isRequired
+  onchange: PropTypes.func.isRequired,
+  createNote: PropTypes.func.isRequired
 };
 
 export default AddNote;
