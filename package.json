@@ -210,7 +210,8 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.85.0",
     "slash": "^2.0.0",
-    "source-map-support": "^0.5.3"
+    "source-map-support": "^0.5.3",
+    "uuid": "^3.2.1"
   },
   "devEngines": {
     "node": ">=7.x",

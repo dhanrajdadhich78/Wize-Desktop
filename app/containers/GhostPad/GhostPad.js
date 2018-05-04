@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import uuidv4 from 'uuid/v4';
+
+import * as actions from '../../store/actions/index';
 
 import AddNote from '../../components/Notes/AddNote/AddNote';
 import NotesList from '../../components/Notes/NotesList/NotesList';
@@ -16,6 +19,15 @@ class GhostPad extends Component {
   state = {
     newNote: ''
   };
+  handleCreateNote = () => {
+    const note = {
+      id: uuidv4(),
+      date: Math.floor(Date.now() / 1000),
+      text: this.state.newNote
+    };
+    return this.props.createNote(note, this.props.userData, this.props.raftNode);
+  };
+  handleDeleteNote = id => console.log(id);
   render() {
     return (
       <div
@@ -30,12 +42,14 @@ class GhostPad extends Component {
           <AddNote
             value={this.state.newNote}
             onchange={newNote => this.setState({ newNote })}
+            createNote={() => this.handleCreateNote()}
           />
         </div>
         <div className={styles.NoteListWrapper}>
           <WithCustomScrollbar>
             <NotesList
               notes={this.props.notes}
+              deleteNote={id => this.handleDeleteNote(id)}
             />
           </WithCustomScrollbar>
         </div>
@@ -45,11 +59,22 @@ class GhostPad extends Component {
 }
 
 GhostPad.propTypes = {
-  notes: PropTypes.arrayOf(PropTypes.shape()).isRequired
+  notes: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  createNote: PropTypes.func.isRequired,
+  // deleteNode: PropTypes.func.isRequired,
+  userData: PropTypes.shape().isRequired,
+  raftNode: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({
-  notes: state.notes.notes
+  notes: state.notes.notes,
+  userData: state.auth.userData,
+  raftNode: state.digest.digestInfo.raftNodes[0]
 });
 
-export default connect(mapStateToProps)(GhostPad);
+const mapDispatchToProps = dispatch => ({
+  createNote: (note, userData, raftNode) => dispatch(actions.createNote(note, userData, raftNode)),
+  deleteNode: (id, userData, raftNode) => dispatch(actions.deleteNote(id, userData, raftNode))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(GhostPad);
