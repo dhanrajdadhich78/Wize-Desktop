@@ -1,53 +1,44 @@
 const axios = require('axios');
-const { /* app, BrowserWindow, */ ipcMain, dialog } = require('electron');
+const { ipcMain, dialog } = require('electron');
 const cF = require('../utils/commonFunc');
 
-const ghostPad = (mainWindow) => {
+const ghostPad = mainWindow => {
   ipcMain.on('get-notes:start', (event, { userData, raftNode }) => {
     const key = `${userData.cpk}_gpd`;
-    const prom = new Promise((resolve, reject) => (
-      axios.get(`${raftNode}/key/${key}`)
-        .then(({ data }) => {
-          const notes = data[key] ? JSON.parse(cF.aesDecrypt(data[key], userData.csk).strData) : [];
-          // console.log(notes);
-          console.log('notes success');
-          resolve(notes);
-        })
-        .catch(({ response }) => {
-          reject(response.data);
-        })));
-    return prom
-      .then(notes => mainWindow.webContents.send('get-notes:complete', notes))
-      .catch(response => {
+    return axios.get(`${raftNode}/key/${key}`)
+      .then(({ data }) => {
+        const notes = data[key] ? JSON.parse(cF.aesDecrypt(data[key], userData.csk).strData) : [];
+        return mainWindow.webContents.send('get-notes:complete', notes);
+      })
+      .catch(({ response }) => {
         console.log(response.data);
         return dialog.showErrorBox('Error', response.data);
       });
   });
 
   ipcMain.on('create-note:start', (event, { note, userData, raftNode }) => {
-    // console.log('start', JSON.stringify(note), JSON.stringify(userData), raftNode);
     const key = `${userData.cpk}_gpd`;
-    // console.log(`${userData.cpk}_gpd`);
     return axios.get(`${raftNode}/key/${key}`)
-      .then(({ data }) => (data[key] ? cF.aesDecrypt(data[key], userData.csk).strData : []))
-      .then(rawData => {
-        // console.log('2', rawData);
-        return cF.aesEncrypt(JSON.stringify([
+      .then(({ data }) => (
+        data[key]
+          ? cF.aesDecrypt(data[key], userData.csk).strData
+          : JSON.stringify([])
+      ))
+      .then(rawData => (
+        cF.aesEncrypt(JSON.stringify([
           note,
-          ...rawData
-        ]), userData.csk).encryptedHex;
-      })
-      .then(prepData => {
-        // console.log('3', { [key]: prepData });
-        // return axios.post(`${raftNode}/key`, { [key]: prepData });
-        return new Promise((resolve, reject) => {
+          ...JSON.parse(rawData)
+        ]), userData.csk).encryptedHex
+      ))
+      .then(prepData => (
+        new Promise((resolve, reject) => {
           setTimeout(() => (
             axios.post(`${raftNode}/key`, { [key]: prepData })
               .then(resp => resolve(resp.data))
               .catch(error => reject(error.response.data))
           ), 100);
-        });
-      })
+        })
+      ))
       .then(() => mainWindow.webContents.send('create-note:complete'))
       .catch(({ response }) => {
         console.log(response.data);
@@ -57,12 +48,28 @@ const ghostPad = (mainWindow) => {
 
   ipcMain.on('delete-note:start', (event, { id, userData, raftNode }) => {
     const key = `${userData.cpk}_gpd`;
-    return axios.get(`${raftNode}/key/${userData.cpk}_gpd`)
-      .then(({data}) => (data[key] ? cF.aesDecrypt(data[key], userData.csk).strData : []))
-      .then(data => cF.aesEncrypt(data.filter(el => el.id !== id), userData.csk).encryptedHex)
-      .then(prepData => axios.post(`${raftNode}/key`, { key: prepData }))
+    return axios.get(`${raftNode}/key/${key}`)
+      .then(({ data }) => (
+        data[key]
+          ? cF.aesDecrypt(data[key], userData.csk).strData
+          : JSON.stringify([])
+      ))
+      .then(rawData => {
+        const filteredData = JSON.parse(rawData).filter(el => el.id !== id);
+        const strData = JSON.stringify(filteredData);
+        return cF.aesEncrypt(strData, userData.csk).encryptedHex;
+      })
+      .then(prepData => (
+        new Promise((resolve, reject) => {
+          setTimeout(() => (
+            axios.post(`${raftNode}/key`, { [key]: prepData })
+              .then(resp => resolve(resp.data))
+              .catch(error => reject(error.response.data))
+          ), 100);
+        })
+      ))
       .then(() => mainWindow.webContents.send('delete-note:complete'))
-      .catch(({response}) => {
+      .catch(({ response }) => {
         console.log(response.data);
         return dialog.showErrorBox('Error', response.data);
       });
