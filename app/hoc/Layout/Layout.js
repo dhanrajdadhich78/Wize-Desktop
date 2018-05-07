@@ -10,12 +10,6 @@ import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 
 class Layout extends Component {
-  // state = {
-  //   encryption: false,
-  //   twoFA: false,
-  //   keyLogin: false,
-  //   accessRole: false,
-  // };
   render() {
     return (
       <Aux>
@@ -40,11 +34,9 @@ Layout.propTypes = {
   isAuth: PropTypes.bool.isRequired,
   children: PropTypes.element.isRequired,
   balance: PropTypes.number
-  // bcNodes: PropTypes.arrayOf(PropTypes.string),
 };
 
 Layout.defaultProps = {
-  // bcNodes: []
   balance: 0
 };
 

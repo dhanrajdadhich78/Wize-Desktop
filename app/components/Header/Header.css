@@ -11,8 +11,23 @@
   position: relative;
 }
 
-.Logo img {
-  height: 37px;
+.Logo > img:first-of-type {
+  height: 40px;
+  margin-right: 18px;
+}
+
+.Logo > img:nth-of-type(2) {
+  height: 18px;
+  margin-right: 7px;
+}
+
+.Logo > div {
+  color: #2f96ba;
+  font-size: 10px;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 1.04px;
+  margin-bottom: 10px;
 }
 
 .ReleaseVersion {

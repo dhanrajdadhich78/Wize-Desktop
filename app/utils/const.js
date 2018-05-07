@@ -1,4 +1,4 @@
-export const RELEASE_VERSION = 'BETA 1.1';
+export const RELEASE_VERSION = 'BETA .01';
 export const DIGEST_URL = 'http://localhost:8888';
 export const BLOCKCHAIN_URL = 'http://localhost:4000';
 
