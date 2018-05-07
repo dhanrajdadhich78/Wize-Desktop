@@ -25,9 +25,10 @@ class GhostPad extends Component {
       date: Math.floor(Date.now() / 1000),
       text: this.state.newNote
     };
+    this.setState({ newNote: '' });
     return this.props.createNote(note, this.props.userData, this.props.raftNode);
   };
-  handleDeleteNote = id => console.log(id);
+  handleDeleteNote = id => this.props.deleteNote(id, this.props.userData, this.props.raftNode);
   render() {
     return (
       <div
@@ -61,7 +62,7 @@ class GhostPad extends Component {
 GhostPad.propTypes = {
   notes: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   createNote: PropTypes.func.isRequired,
-  // deleteNode: PropTypes.func.isRequired,
+  deleteNote: PropTypes.func.isRequired,
   userData: PropTypes.shape().isRequired,
   raftNode: PropTypes.string.isRequired
 };
@@ -74,7 +75,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   createNote: (note, userData, raftNode) => dispatch(actions.createNote(note, userData, raftNode)),
-  deleteNode: (id, userData, raftNode) => dispatch(actions.deleteNote(id, userData, raftNode))
+  deleteNote: (id, userData, raftNode) => dispatch(actions.deleteNote(id, userData, raftNode))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GhostPad);
