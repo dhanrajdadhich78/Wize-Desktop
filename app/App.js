@@ -18,7 +18,6 @@ import Wallet from './containers/Wallet/Wallet';
 import Account from './containers/Account/Account';
 import GhostPad from './containers/GhostPad/GhostPad';
 import Deposit from './containers/Deposit/Deposit';
-import SwapKeys from './containers/SwapKeys/SwapKeys';
 import XFiles from './containers/XFiles/XFiles';
 import Logout from './containers/Homepage/Logout/Logout';
 import Ghost from './components/Animations/Ghost/Ghost';
@@ -54,7 +53,6 @@ class App extends Component {
               <Route exact path="/files" component={FilesList} key={Math.random()} />
               <Route exact path="/ghost-pad" component={GhostPad} key={Math.random()} />
               <Route exact path="/deposit" component={Deposit} key={Math.random()} />
-              <Route exact path="/swap-keys" component={SwapKeys} key={Math.random()} />
               <Route exact path="/x-files" component={XFiles} key={Math.random()} />
               <Route exact path="/logout" component={Logout} key={Math.random()} />
               <Redirect to="/files" />

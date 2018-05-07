@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
+import { RELEASE_VERSION } from '../../utils/const';
+
 import classes from './Footer.css';
 
 const footer = props => {
@@ -17,16 +19,12 @@ const footer = props => {
     {
       link: '/deposit',
       label: 'Deposit'
-    },
-    {
-      link: '/swap-keys',
-      label: 'Swap keys'
     }
   ];
   return (
     <div className={classes.Footer}>
       <div className={classes.InfoLeft}>
-        <h3>WizeBit Blockchain</h3>
+        <h3>{ RELEASE_VERSION }</h3>
         <div className={classes.Subtitle}>
           <div>ERC 721</div>
           <div>SHARDING</div>

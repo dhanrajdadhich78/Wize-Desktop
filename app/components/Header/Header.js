@@ -3,12 +3,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import NavLink from '../UI/NavLink/NavLink';
 
-import classes from './Header.css';
-import { logo } from '../../assets/img/img';
+import { logoGhost, logoTitle } from '../../assets/img/img';
+import css from './Header.css';
+import commonCss from '../../assets/css/common.css';
+// global classes names starts with lowercase letter: styles.class
+// and component classes - uppercase: styles.Class
+const styles = { ...commonCss, ...css };
 
-import { RELEASE_VERSION } from '../../utils/const';
-
-const header = props => {
+const Header = props => {
   let listItems = [
     {
       link: '/access',
@@ -44,13 +46,21 @@ const header = props => {
     ];
   }
   return (
-    <div className={classes.Header}>
-      <div className={classes.Logo}>
-        <img src={logo} alt="Ghostdrive" />
-        <div className={classes.ReleaseVersion}>{ RELEASE_VERSION }</div>
+    <div className={styles.Header}>
+      <div
+        className={[
+          styles.flexAlignCenter,
+          styles.Logo
+        ].join(' ')}
+      >
+        <img src={logoGhost} alt="Ghostdrive" />
+        <img src={logoTitle} alt="Ghostdrive" />
+        <div>
+          TM
+        </div>
       </div>
       <nav>
-        <ul className={classes.NavList}>
+        <ul className={styles.NavList}>
           {
             listItems.map((item, index) => (
               <li key={index}>
@@ -67,8 +77,8 @@ const header = props => {
   );
 };
 
-header.propTypes = {
+Header.propTypes = {
   isAuth: PropTypes.bool.isRequired
 };
 
-export default header;
+export default Header;

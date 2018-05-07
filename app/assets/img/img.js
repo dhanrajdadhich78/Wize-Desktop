@@ -1,4 +1,5 @@
-import logo from './logo.png';
+import logoGhost from './logo-ghost.svg';
+import logoTitle from './logo-title.svg';
 import bg from './bg.png';
 import arrDown from './v.png';
 import fileImg from './file-img.png';
@@ -20,7 +21,8 @@ import ghost2 from './ghost2.svg';
 import polygon2 from './polygon2.svg';
 
 export default {
-  logo,
+  logoGhost,
+  logoTitle,
   bg,
   arrDown,
   fileImg,
