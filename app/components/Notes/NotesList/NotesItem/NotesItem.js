@@ -26,6 +26,7 @@ const notesItem = props => (
     <div>
       <button
         type="button"
+        onClick={() => props.deleteNote(props.note.id)}
       >
         delete
       </button>
@@ -34,7 +35,8 @@ const notesItem = props => (
 );
 
 notesItem.propTypes = {
-  note: PropTypes.shape().isRequired
+  note: PropTypes.shape().isRequired,
+  deleteNote: PropTypes.func.isRequired
 };
 
 export default notesItem;

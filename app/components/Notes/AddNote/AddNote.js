@@ -43,12 +43,13 @@ class AddNote extends Component {
               </div>
             )
             : (
-              <div
+              <form
                 className={[
                   styles.w100,
                   styles.h100,
                   styles.flexBetweenCenter
                 ].join(' ')}
+                onSubmit={e => { e.preventDefault(); this.props.createNote(); }}
               >
                 <input
                   type="text"
@@ -61,13 +62,11 @@ class AddNote extends Component {
                   onChange={e => this.props.onchange(e.target.value)}
                 />
                 <button
-                  type="button"
                   className={[
                     styles.flexAllCenter,
                     styles.h100,
                     styles.Button
                   ].join(' ')}
-                  onClick={() => this.props.createNote()}
                 >
                   add
                 </button>
@@ -82,7 +81,7 @@ class AddNote extends Component {
                 >
                   -
                 </button>
-              </div>
+              </form>
             )
         }
       </div>

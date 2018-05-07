@@ -21,12 +21,26 @@ const notesList = props => (
     {
       props.notes && props.notes.length
         ? (
-          <div>
-            <ul className={styles.Ul}>
+          <div
+            className={[
+              styles.h100,
+              styles.w100,
+              styles.flexColumn,
+              styles.justifyCenter
+            ].join(' ')}
+          >
+            <ul
+              className={[
+                styles.h100,
+                styles.w100,
+                styles.flexColumn,
+                styles.Ul
+              ].join(' ')}
+            >
               {
                 props.notes.map(note => (
                   <li key={note.id}>
-                    <NotesItem note={note} />
+                    <NotesItem note={note} deleteNote={id => props.deleteNote(id)} />
                   </li>
                 ))
               }
@@ -43,7 +57,8 @@ const notesList = props => (
 );
 
 notesList.propTypes = {
-  notes: PropTypes.arrayOf(PropTypes.shape())
+  notes: PropTypes.arrayOf(PropTypes.shape()),
+  deleteNote: PropTypes.func.isRequired
 };
 
 notesList.defaultProps = {
