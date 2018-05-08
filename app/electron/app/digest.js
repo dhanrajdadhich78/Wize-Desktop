@@ -30,7 +30,6 @@ const digest = mainWindow => {
       };
       mainWindow.webContents.send('digest:success', data);
     } else {
-      console.log(userData.address, userData.cpk, userData.csk, cF.getHash(password));
       const reqData = {
         address: userData.address,
         pubKey: userData.cpk,
@@ -45,8 +44,12 @@ const digest = mainWindow => {
               PrivKey: userData.csk
             })
               .then(({ data }) => mainWindow.webContents.send('digest:success', data))
-              .catch(({ res }) => dialog.showErrorBox('Error', res.data.message));
+              .catch(({ res }) => {
+                console.log(res.data);
+                return dialog.showErrorBox('Error', res.data.message);
+              });
           } else {
+            console.log(response.data);
             dialog.showErrorBox('Error', response.data.message);
           }
         });
