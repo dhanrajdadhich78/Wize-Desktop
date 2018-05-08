@@ -4,7 +4,11 @@ import { NavLink } from 'react-router-dom';
 
 import { RELEASE_VERSION } from '../../utils/const';
 
-import classes from './Footer.css';
+import css from './Footer.css';
+import commonCss from '../../assets/css/common.css';
+// global classes names starts with lowercase letter: styles.class
+// and component classes - uppercase: styles.Class
+const styles = { ...commonCss, ...css };
 
 const footer = props => {
   const listItems = [
@@ -22,21 +26,31 @@ const footer = props => {
     }
   ];
   return (
-    <div className={classes.Footer}>
-      <div className={classes.InfoLeft}>
-        <h3>{ RELEASE_VERSION }</h3>
-        <div className={classes.Subtitle}>
-          <div>ERC 721</div>
-          <div>SHARDING</div>
-          <div>WizeBit Blockchain</div>
+    <div className={styles.Footer}>
+      <div
+        className={[
+          styles.flexColumn,
+          styles.flexJustifyCenter,
+          styles.InfoLeft
+        ].join(' ')}
+      >
+        <h3 className={styles.white}>
+          { RELEASE_VERSION }
+        </h3>
+        <h3 className={styles.blue}>
+          Powered by WizeBit
+        </h3>
+        <div className={styles.flexAlignCenter}>
+          <div className={styles.orangeBar} />
+          BLOCKCHAIN TECHNOLOGY
         </div>
       </div>
       {
         !props.isAuth
           ? null
           : (
-            <div className={classes.InfoRight}>
-              <nav className={classes.Menu}>
+            <div className={styles.InfoRight}>
+              <nav className={styles.Menu}>
                 <ul>
                   {
                     listItems.map((item, index) => (
@@ -50,7 +64,7 @@ const footer = props => {
                   }
                 </ul>
               </nav>
-              <div className={classes.Balance}>
+              <div className={styles.Balance}>
                 <div>BALANCE</div>
                 <div>
                   {
