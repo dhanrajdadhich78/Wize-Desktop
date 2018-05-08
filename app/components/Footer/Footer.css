@@ -10,7 +10,6 @@
 
 .Footer > div {
   display: inline-flex;
-  align-items: center;
 }
 
 .Balance > div:first-of-type {
@@ -37,58 +36,17 @@
   text-transform: uppercase;
 }
 
-.InfoLeft {
-  display: flex;
-  flex-direction: column;
-}
-
-.InfoLeft h3 {
-  color: #2f96ba;
-  font-size: 19px;
-  font-weight: 400;
-  position: relative;
-  margin: 0 0 15px;
-}
-
-.InfoLeft h3::after {
-  position: absolute;
-  content: "";
-  display: block;
-  bottom: -8px;
-  left: 0;
-  width: 13px;
-  height: 3.5px;
-  background-color: #e14737;
-  transition: all 0.2s linear;
-}
-
-.InfoLeft .Subtitle {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.InfoLeft .Subtitle > div:first-of-type {
-  color: #30d6d6;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.InfoLeft .Subtitle > div:nth-of-type(2) {
-  color: #2f96ba;
+.InfoLeft div {
   font-size: 9px;
   font-weight: 400;
   text-transform: uppercase;
 }
 
-.InfoLeft .Subtitle > div:last-of-type {
-  color: #fff;
-  font-size: 6px;
+.InfoLeft h3 {
+  font-size: 13px;
   font-weight: 400;
   text-transform: uppercase;
-  white-space: pre-wrap;
+  margin: 0 0 7px 0;
 }
 
 .Menu {

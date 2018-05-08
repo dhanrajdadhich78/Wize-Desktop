@@ -44,6 +44,10 @@
   justify-content: space-between;
 }
 
+.alignStart {
+  align-items: flex-start;
+}
+
 .justifyCenter {
   justify-content: center;
 }
@@ -85,11 +89,15 @@
 
 /* colors */
 .blue {
-  color: #2195eb;
+  color: #2f96ba;
 }
 
 .blueBg {
-  background-color: #2195eb;
+  background-color: #2f96ba;
+}
+
+.white {
+  color: white;
 }
 
 .shadow {
@@ -144,6 +152,14 @@
   justify-content: center;
   align-items: center;
   font-size: 14px;
+}
+
+.orangeBar {
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  margin-right: 7px;
+  background-color: #e14737;
 }
 
 /* media queries */
