@@ -1,0 +1,34 @@
+.ControlPanel {
+  margin: 21px 0;
+}
+
+.ControlPanel > button {
+  width: 64px;
+  height: 25px;
+  background-color: rgba(227, 69, 48, 0.5);
+  margin-right: 15px;
+  outline: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ControlPanel > input {
+  pointer-events: none;
+  outline: none;
+  width: calc(100% - 79px);
+  background-color: #207c7f;
+  color: #30d6d6;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  border: none;
+  height: 25px;
+  padding: 0 11px;
+}
+
+.ControlPanel > input::placeholder {
+  color: #30d6d6;
+}

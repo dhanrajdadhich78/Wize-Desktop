@@ -5,9 +5,8 @@ import uuidv4 from 'uuid/v4';
 
 import * as actions from '../../store/actions/index';
 
-import AddNote from '../../components/Notes/AddNote/AddNote';
-import NotesList from '../../components/Notes/NotesList/NotesList';
-import WithCustomScrollbar from '../../components/UI/WithCustomScrollbar/WithCustomScrollbar';
+import ControlPanel from '../../components/Notes/ControlPanel/ControlPanel';
+import NotesPanel from '../../components/Notes/NotesPanel/NotesPanel';
 
 import css from './GhostPad.css';
 import commonCss from '../../assets/css/common.css';
@@ -17,19 +16,64 @@ const styles = { ...commonCss, ...css };
 
 class GhostPad extends Component {
   state = {
-    newNote: ''
+    pinCode: '',
+    notes: [],
+    selectedNote: {}
   };
-  handleCreateNote = () => {
-    const note = {
+  componentWillMount() {
+    this.setState({
+      notes: [...this.props.notes],
+      selectedNote: this.props.notes[0]
+    });
+  }
+  handleAddNote = () => {
+    const newNote = {
       id: uuidv4(),
-      date: Math.floor(Date.now() / 1000),
-      text: this.state.newNote
+      date: +new Date() / 1000,
+      title: 'Untitled',
+      text: ''
     };
-    this.setState({ newNote: '' });
-    return this.props.createNote(note, this.props.userData, this.props.raftNode);
+    this.setState({
+      notes: [
+        newNote,
+        ...this.state.notes
+      ],
+      selectedNote: newNote
+    });
   };
-  handleDeleteNote = id => this.props.deleteNote(id, this.props.userData, this.props.raftNode);
+  handleSelectNote = id => (
+    this.setState({
+      pinCode: '',
+      selectedNote: this.state.notes.find(el => el.id === id)
+    })
+  );
+  handleEditNote = text => (
+    this.setState({
+      selectedNote: {
+        ...this.state.selectedNote,
+        title: text.match(/\n/) ? text.substr(0, text.match(/\n/).index) : text,
+        text
+      },
+      notes: [
+        {
+          ...this.state.notes.find(el => el.id === this.state.selectedNote.id),
+          title: text.match(/\n/) ? text.substr(0, text.match(/\n/).index) : text
+        },
+        ...this.state.notes.filter(el => el.id !== this.state.selectedNote.id)
+      ]
+    })
+  );
+  handleSaveNotesList = () => {
+    const updNotes = [
+      this.state.selectedNote,
+      ...this.state.notes.filter(el => el.id !== this.state.selectedNote.id)
+    ];
+    this.props.editNotesList(updNotes, this.props.userData, this.props.raftNode);
+  };
   render() {
+    // console.log((this.state.selectedNote && this.state.selectedNote.text
+    // ? (this.state.selectedNote.text.match(/\n/g) || [])
+    // : []).length);
     return (
       <div
         className={[
@@ -39,20 +83,20 @@ class GhostPad extends Component {
           styles.GhostPad
         ].join(' ')}
       >
-        <div className={styles.AddNoteWrapper}>
-          <AddNote
-            value={this.state.newNote}
-            onchange={newNote => this.setState({ newNote })}
-            createNote={() => this.handleCreateNote()}
+        <div>
+          <ControlPanel
+            pinCode={this.state.pinCode}
+            addNote={() => this.handleAddNote()}
           />
         </div>
-        <div className={styles.NoteListWrapper}>
-          <WithCustomScrollbar>
-            <NotesList
-              notes={this.props.notes}
-              deleteNote={id => this.handleDeleteNote(id)}
-            />
-          </WithCustomScrollbar>
+        <div className={styles.flexColumn}>
+          <NotesPanel
+            notes={this.state.notes}
+            selectNote={id => this.handleSelectNote(id)}
+            handleEditNote={val => this.handleEditNote(val)}
+            selectedNote={this.state.selectedNote}
+            saveNotesList={() => this.handleSaveNotesList()}
+          />
         </div>
       </div>
     );
@@ -61,8 +105,8 @@ class GhostPad extends Component {
 
 GhostPad.propTypes = {
   notes: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  createNote: PropTypes.func.isRequired,
-  deleteNote: PropTypes.func.isRequired,
+  editNotesList: PropTypes.func.isRequired,
+  // deleteNote: PropTypes.func.isRequired,
   userData: PropTypes.shape().isRequired,
   raftNode: PropTypes.string.isRequired
 };
@@ -74,7 +118,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  createNote: (note, userData, raftNode) => dispatch(actions.createNote(note, userData, raftNode)),
+  editNotesList: (notes, userData, raftNode) => (
+    dispatch(actions.editNotesList(notes, userData, raftNode))
+  ),
   deleteNote: (id, userData, raftNode) => dispatch(actions.deleteNote(id, userData, raftNode))
 });
 

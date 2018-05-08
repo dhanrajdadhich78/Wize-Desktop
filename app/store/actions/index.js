@@ -12,6 +12,6 @@ export { getBalance } from './blockchain';
 export { getDigest } from './digest';
 export {
   getNotes,
-  createNote,
+  editNotesList,
   deleteNote
 } from './notes';

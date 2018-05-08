@@ -15,25 +15,24 @@ const getNotesSuccess = notes => ({
 export const getNotes = (userData, raftNode) => dispatch => {
   dispatch(getNotesStart(userData, raftNode));
   ipcRenderer.once('get-notes:complete', (event, notes) => {
-    console.log(notes);
     dispatch(getNotesSuccess(notes));
   });
 };
 
-const createNoteStart = (note, userData, raftNode) => {
-  ipcRenderer.send('create-note:start', { note, userData, raftNode });
-  return { type: actionTypes.CREATE_NOTE_START };
+const editNotesListStart = (notes, userData, raftNode) => {
+  ipcRenderer.send('edit-notes-list:start', { notes, userData, raftNode });
+  return { type: actionTypes.EDIT_NOTE_LIST_START };
 };
 
-const createNoteSuccess = note => ({
-  type: actionTypes.CREATE_NOTE_SUCCESS,
-  note
+const editNotesListSuccess = notes => ({
+  type: actionTypes.EDIT_NOTE_LIST_SUCCESS,
+  notes
 });
 
-export const createNote = (note, userData, raftNode) => dispatch => {
-  dispatch(createNoteStart(note, userData, raftNode));
-  ipcRenderer.once('create-note:complete', () => (
-    dispatch(createNoteSuccess(note))
+export const editNotesList = (notes, userData, raftNode) => dispatch => {
+  dispatch(editNotesListStart(notes, userData, raftNode));
+  ipcRenderer.once('edit-notes-list:complete', () => (
+    dispatch(editNotesListSuccess(notes))
   ));
 };
 

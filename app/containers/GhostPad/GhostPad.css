@@ -1,8 +1,9 @@
-.AddNoteWrapper {
-  height: 50px;
-  margin: 15px 0;
+.GhostPad > div:first-of-type {
+  height: 67px;
 }
 
-.NoteListWrapper {
-  height: calc(100% - 80px);
+.GhostPad > div:last-of-type {
+  height: calc(100% - 67px);
+  padding-bottom: 21px;
 }
+

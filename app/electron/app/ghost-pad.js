@@ -16,34 +16,41 @@ const ghostPad = mainWindow => {
       });
   });
 
-  ipcMain.on('create-note:start', (event, { note, userData, raftNode }) => {
+  ipcMain.on('edit-notes-list:start', (event, { notes, userData, raftNode }) => {
     const key = `${userData.cpk}_gpd`;
-    return axios.get(`${raftNode}/key/${key}`)
-      .then(({ data }) => (
-        data[key]
-          ? cF.aesDecrypt(data[key], userData.csk).strData
-          : JSON.stringify([])
-      ))
-      .then(rawData => (
-        cF.aesEncrypt(JSON.stringify([
-          note,
-          ...JSON.parse(rawData)
-        ]), userData.csk).encryptedHex
-      ))
-      .then(prepData => (
-        new Promise((resolve, reject) => {
-          setTimeout(() => (
-            axios.post(`${raftNode}/key`, { [key]: prepData })
-              .then(resp => resolve(resp.data))
-              .catch(error => reject(error.response.data))
-          ), 100);
-        })
-      ))
-      .then(() => mainWindow.webContents.send('create-note:complete'))
+    const prepData = cF.aesEncrypt(JSON.stringify(notes), userData.csk).encryptedHex;
+    return axios.post(`${raftNode}/key`, { [key]: prepData })
+      .then(() => mainWindow.webContents.send('edit-notes-list:complete'))
       .catch(({ response }) => {
         console.log(response.data);
         return dialog.showErrorBox('Error', response.data);
       });
+    // return axios.get(`${raftNode}/key/${key}`)
+    //   .then(({ data }) => (
+    //     data[key]
+    //       ? cF.aesDecrypt(data[key], userData.csk).strData
+    //       : JSON.stringify([])
+    //   ))
+    //   .then(rawData => (
+    //     cF.aesEncrypt(JSON.stringify([
+    //       note,
+    //       ...JSON.parse(rawData)
+    //     ]), userData.csk).encryptedHex
+    //   ))
+    //   .then(prepData => (
+    //     new Promise((resolve, reject) => {
+    //       setTimeout(() => (
+    //         axios.post(`${raftNode}/key`, { [key]: prepData })
+    //           .then(resp => resolve(resp.data))
+    //           .catch(error => reject(error.response.data))
+    //       ), 100);
+    //     })
+    //   ))
+    //   .then(() => mainWindow.webContents.send('edit-notes-list:complete'))
+    //   .catch(({ response }) => {
+    //     console.log(response.data);
+    //     return dialog.showErrorBox('Error', response.data);
+    //   });
   });
 
   ipcMain.on('delete-note:start', (event, { id, userData, raftNode }) => {
