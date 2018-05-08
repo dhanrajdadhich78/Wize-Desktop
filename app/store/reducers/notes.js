@@ -16,11 +16,8 @@ const getNotes = (state, action) => (updateObject(state, {
   loading: false
 }));
 
-const createNote = (state, action) => (updateObject(state, {
-  notes: [
-    action.note,
-    ...state.notes
-  ],
+const editNotesList = (state, action) => (updateObject(state, {
+  notes: [...action.notes],
   loading: false
 }));
 
@@ -34,8 +31,8 @@ const reducer = (state = initialState, action) => {
     switch (action.type) {
       case actionTypes.GET_NOTES_START: return actionStart(state, action);
       case actionTypes.GET_NOTES_SUCCESS: return getNotes(state, action);
-      case actionTypes.CREATE_NOTE_START: return actionStart(state, action);
-      case actionTypes.CREATE_NOTE_SUCCESS: return createNote(state, action);
+      case actionTypes.EDIT_NOTE_LIST_START: return actionStart(state, action);
+      case actionTypes.EDIT_NOTE_LIST_SUCCESS: return editNotesList(state, action);
       case actionTypes.DELETE_NOTE_START: return actionStart(state, action);
       case actionTypes.DELETE_NOTE_SUCCESS: return deleteNote(state, action);
       default: return state;

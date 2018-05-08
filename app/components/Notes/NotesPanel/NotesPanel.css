@@ -1,0 +1,7 @@
+.NotesPanel > ul {
+  flex: 1;
+}
+
+.NotesPanel > div {
+  flex: 3;
+}
