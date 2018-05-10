@@ -3,12 +3,9 @@ import { updateObject } from '../../utils/utility';
 
 const initialState = {
   userData: {
-    // csk: null,
-    // cpk: null,
-    // address: null
-    csk: 1,
-    cpk: 1,
-    address: 1
+    csk: null,
+    cpk: null,
+    address: null
   },
   encryptedData: '',
   error: null,

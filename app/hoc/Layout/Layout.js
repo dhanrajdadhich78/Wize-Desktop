@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import classes from './Layout.css';
-import { bg } from '../../assets/img/img';
 
 import Aux from '../Aux/Aux';
 import Header from '../../components/Header/Header';
@@ -15,7 +14,7 @@ class Layout extends Component {
       <Aux>
         <div className={classes.Layout}>
           <Header isAuth={this.props.isAuth} />
-          <main style={{ backgroundImage: `url(${bg})` }}>
+          <main>
             <article>
               { this.props.children }
             </article>
