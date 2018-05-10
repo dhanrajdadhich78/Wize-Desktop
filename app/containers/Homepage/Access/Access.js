@@ -16,7 +16,11 @@ class Access extends Component {
   };
   handleOnPinCode = val => {
     if (`${this.state.password}${val}`.length <= 12) {
-      this.setState({ password: this.state.password ? `${this.state.password}${val}` : val });
+      this.setState({
+        password: this.state.password || (this.state.password === 0 || val === 0)
+          ? `${this.state.password}${val}`
+          : val
+      });
     }
   };
   handleDropCredFile = file => this.setState({ credFilePath: file.path, dropzoneAlert: false });
@@ -28,6 +32,7 @@ class Access extends Component {
       setTimeout(() => this.setState({ dropzoneAlert: false }), 5000);
     }
   };
+  handleClearPassword = () => this.setState({ password: '' });
   render() {
     return (
       <div className={classes.Access}>
@@ -37,6 +42,7 @@ class Access extends Component {
           password={this.state.password}
           handleAuth={() => this.handleSubmitAuthForm()}
           dropzoneAlert={this.state.dropzoneAlert}
+          handleClearPassword={() => this.handleClearPassword()}
         />
       </div>
     );

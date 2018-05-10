@@ -1,7 +1,6 @@
 .Header {
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 15px 40px;
   box-sizing: border-box;
@@ -14,6 +13,7 @@
 .Logo > img:first-of-type {
   height: 40px;
   margin-right: 18px;
+  transform: rotate(270deg);
 }
 
 .Logo > img:nth-of-type(2) {
@@ -51,4 +51,10 @@
 
 .NavList > li:not(:last-of-type) {
   margin-right: 15px;
+}
+
+.Bar {
+  transform: rotate(90deg);
+  display: inline-block;
+  margin: 0 15px 0 0 !important;
 }

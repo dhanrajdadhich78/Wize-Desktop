@@ -54,10 +54,13 @@ const Header = props => {
         ].join(' ')}
       >
         <img src={logoGhost} alt="Ghostdrive" />
-        <img src={logoTitle} alt="Ghostdrive" />
-        <div>
-          TM
-        </div>
+        {/* <img src={logoTitle} alt="Ghostdrive" /> */}
+        <div
+          className={[
+            styles.orangeBar,
+            styles.Bar
+          ].join(' ')}
+        />
       </div>
       <nav>
         <ul className={styles.NavList}>
