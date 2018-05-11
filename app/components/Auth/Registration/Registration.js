@@ -13,13 +13,13 @@ const registration = props => (
         <input
           type="password"
           tabIndex={-1}
-          value={props.regForm.password}
+          value={props.password}
           placeholder="enter password"
         />
         <input
           type="password"
           tabIndex={-1}
-          value={props.regForm.repeatPassword}
+          value={props.repeatPassword}
           placeholder="repeat password"
         />
       </div>
@@ -48,11 +48,20 @@ const registration = props => (
 );
 
 registration.propTypes = {
-  regForm: PropTypes.shape({
-    password: PropTypes.string,
-    repeatPassword: PropTypes.string
-  }).isRequired,
+  password: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  repeatPassword: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   handleDownload: PropTypes.func.isRequired
+};
+
+registration.defaultProps = {
+  password: '',
+  repeatPassword: ''
 };
 
 export default registration;

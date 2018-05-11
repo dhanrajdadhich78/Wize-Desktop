@@ -46,36 +46,62 @@ const Header = props => {
     ];
   }
   return (
-    <div className={styles.Header}>
-      <div
-        className={[
-          styles.flexAlignCenter,
-          styles.Logo
-        ].join(' ')}
-      >
-        <img src={logoGhost} alt="Ghostdrive" />
-        {/* <img src={logoTitle} alt="Ghostdrive" /> */}
+    <div
+      className={[
+        styles.flexBetweenCenter,
+        styles.Header
+      ].join(' ')}
+    >
+      <div className={styles.flexAllCenter}>
         <div
           className={[
-            styles.orangeBar,
-            styles.Bar
+            styles.flexAlignCenter,
+            styles.Logo
           ].join(' ')}
-        />
+        >
+          <img src={logoGhost} alt="Ghostdrive" />
+          {/* <img src={logoTitle} alt="Ghostdrive" /> */}
+          <div
+            className={[
+              styles.orangeBar,
+              styles.Bar
+            ].join(' ')}
+          />
+        </div>
+        <nav>
+          <ul className={styles.NavList}>
+            {
+              listItems.map((item, index) => (
+                <li key={index}>
+                  <NavLink
+                    link={item.link}
+                    label={item.label}
+                  />
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
       </div>
-      <nav>
-        <ul className={styles.NavList}>
-          {
-            listItems.map((item, index) => (
-              <li key={index}>
-                <NavLink
-                  link={item.link}
-                  label={item.label}
-                />
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
+      <div>
+        {/*<ul>*/}
+          {/*<li>*/}
+            {/*<NavLink>*/}
+
+            {/*</NavLink>*/}
+          {/*</li>*/}
+          {/*<li>*/}
+
+          {/*</li>*/}
+          {/*<li>*/}
+
+          {/*</li>*/}
+          {/*<li>*/}
+
+          {/*</li>*/}
+        {/*</ul>*/}
+        menu
+      </div>
     </div>
   );
 };

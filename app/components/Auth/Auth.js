@@ -30,7 +30,8 @@ class Auth extends Component {
               )
               : (
                 <Registration
-                  regForm={this.props.regForm}
+                  password={this.props.password}
+                  repeatPassword={this.props.repeatPassword}
                   handleDownload={() => this.props.handleDownload()}
                 />
               )
@@ -46,10 +47,13 @@ Auth.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
+  repeatPassword: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   handleAuth: PropTypes.func.isRequired,
   login: PropTypes.bool,
   buttonClick: PropTypes.func.isRequired,
-  regForm: PropTypes.shape({}),
   handleDropCredFile: PropTypes.func,
   handleDownload: PropTypes.func,
   handleClearPassword: PropTypes.func.isRequired
@@ -58,7 +62,7 @@ Auth.propTypes = {
 Auth.defaultProps = {
   login: true,
   password: '',
-  regForm: {},
+  repeatPassword: '',
   handleDropCredFile: () => null,
   handleDownload: () => null
 };
