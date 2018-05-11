@@ -13,6 +13,7 @@ import blockchainReducer from './store/reducers/blockchain';
 import digestReducer from './store/reducers/digest';
 import notesReducer from './store/reducers/notes';
 
+import './reset.css';
 import './app.global.css';
 import App from './App';
 
