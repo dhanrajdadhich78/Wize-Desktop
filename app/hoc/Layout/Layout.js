@@ -14,7 +14,7 @@ class Layout extends Component {
       <Aux>
         <div className={classes.Layout}>
           <Header isAuth={this.props.isAuth} />
-          <main>
+          <main className={this.props.isAuth ? null : classes.NoFooter}>
             <article>
               { this.props.children }
             </article>
