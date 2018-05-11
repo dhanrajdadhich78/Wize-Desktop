@@ -92,20 +92,20 @@
   left: 0;
 }
 
-.ButtonInnerContainer > div:first-of-type {
+.SupTitle {
   color: #30d6d6;
   font-size: 12px;
   font-weight: 400;
   text-transform: uppercase;
 }
 
-.ButtonInnerContainer > div:nth-of-type(2) {
+.Title {
   color: #fff;
   font-size: 36px;
   font-weight: 400;
 }
 
-.ButtonInnerContainer > div:nth-of-type(3) {
+.SubTitle {
   color: #96bd0d;
   font-size: 14px;
   font-weight: 400;
@@ -423,5 +423,33 @@
 @media (max-height: 800px) {
   .Heading {
     margin-bottom: 7px;
+  }
+}
+
+@media (max-width: 1600px) {
+  .SupTitle {
+    font-size: 12px;
+  }
+
+  .Title {
+    font-size: 22px;
+  }
+
+  .SubTitle {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .SupTitle {
+    font-size: 10px;
+  }
+
+  .Title {
+    font-size: 18px;
+  }
+
+  .SubTitle {
+    font-size: 10px;
   }
 }

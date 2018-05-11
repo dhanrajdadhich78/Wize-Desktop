@@ -49,7 +49,7 @@ const login = props => (
     >
       <input
         tabIndex={-1}
-        type="text"
+        type="password"
         className={[
           styles.w100,
           styles.dontTouchMe

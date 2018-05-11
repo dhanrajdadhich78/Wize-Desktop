@@ -14,15 +14,15 @@ const pincodeButton = props => (
     className={styles.Button}
     onClick={() => props.buttonClick(props.value)}
     style={
-      props.reRendrer
-        ? { opacity: 0, transition: `opacity ${Math.random()}s linear` }
-        : { opacity: 1, transition: `opacity ${Math.random()}s linear` }
+      props.timer < 1 || props.timer > props.maxTimerVal
+        ? { opacity: 0, transition: `all ${Math.random()}s linear` }
+        : { transition: `all ${Math.random()}s linear` }
     }
   >
     <div
       className={styles.ButtonInnerContainer}
       style={
-        props.reRendrer
+        props.timer < 1 || props.timer > props.maxTimerVal
           ? { pointerEvents: 'none', cursor: 'default' }
           : {}
       }
@@ -67,14 +67,18 @@ pincodeButton.propTypes = {
   ]).isRequired,
   letters: PropTypes.arrayOf(PropTypes.string),
   buttonClick: PropTypes.func.isRequired,
-  reRendrer: PropTypes.bool
+  // reRendrer: PropTypes.bool
+  timer: PropTypes.number,
+  maxTimerVal: PropTypes.number
 };
 
 pincodeButton.defaultProps = {
   value: '',
   suptitle: '',
   letters: [],
-  reRendrer: false
+  // reRendrer: false,
+  timer: 1,
+  maxTimerVal: 39
 };
 
 export default pincodeButton;

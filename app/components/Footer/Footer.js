@@ -53,7 +53,7 @@ class Footer extends Component {
               DATA Available:  <span>{this.state.available} GB</span>
             </div>
             <div className={styles.flexAllCenter}>
-              MASTERNODES:  <span>{this.state.masternodes} GB</span>
+              MASTERNODES:  <span>{this.state.masternodes}</span>
             </div>
           </div>
         </div>
