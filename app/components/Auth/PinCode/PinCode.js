@@ -121,13 +121,11 @@ class PinCode extends Component {
       // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
-
       // And swap it with the current element.
       temporaryValue = updatedArray[currentIndex];
       updatedArray[currentIndex] = updatedArray[randomIndex];
       updatedArray[randomIndex] = temporaryValue;
     }
-
     return updatedArray;
   };
   handleButtonClick = val => {
@@ -160,7 +158,6 @@ class PinCode extends Component {
           {
             this.state.buttons.map((button, i) => {
               const buttonVar = (
-                /*
                 <button
                   onClick={() => this.handleButtonClick(button.value)}
                   // eslint-disable-next-line react/no-array-index-key
@@ -180,10 +177,10 @@ class PinCode extends Component {
                         : {}
                     }
                   >
-                    <div>
+                    <div className={styles.SupTitle}>
                       {button.view.suptitle}
                     </div>
-                    <div>
+                    <div className={styles.Title}>
                       {button.view.title}
                     </div>
                     {
@@ -201,21 +198,22 @@ class PinCode extends Component {
                     <div /><div /><div /><div />
                   </div>
                 </button>
-                */
+                /*
                 <PincodeButton
                   value={button.value}
                   suptitle={button.view.suptitle}
                   title={button.view.title}
                   letters={button.view.letters}
                   buttonClick={val => this.handleButtonClick(val)}
-                  // timer={this.state.timer}
-                  // maxTimerVal={buttonSwapTimer - 1}
+                  timer={this.state.timer}
+                  maxTimerVal={buttonSwapTimer - 1}
                   // transition={
                   //   (+this.state.timer < 1 || +this.state.timer > (buttonSwapTimer - 1))
                   //     ? Math.random() : 0
                   // }
-                  reRendrer={this.state.timer < 1 || this.state.timer > (buttonSwapTimer - 1)}
+                  // reRendrer={this.state.timer < 1 || this.state.timer > (buttonSwapTimer - 1)}
                 />
+                */
               );
               return (i + 1) !== this.state.buttons.length
                 ? buttonVar
