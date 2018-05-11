@@ -16,6 +16,12 @@
   height: 100%;
 }
 
+.wh100 {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
 .absolute100 {
   position: absolute;
   width: 100%;
@@ -34,6 +40,10 @@
 
 .flex1 {
   flex: 1;
+}
+
+.flex3 {
+  flex: 3;
 }
 
 .flexColumn {

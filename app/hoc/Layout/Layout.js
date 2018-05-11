@@ -19,10 +19,17 @@ class Layout extends Component {
               { this.props.children }
             </article>
           </main>
+          {/*
           <Footer
             isAuth={this.props.isAuth}
             balance={this.props.balance}
           />
+          */}
+          {
+            this.props.isAuth
+              ? <Footer />
+              : null
+          }
         </div>
       </Aux>
     );

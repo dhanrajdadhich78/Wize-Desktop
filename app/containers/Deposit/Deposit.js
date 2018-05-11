@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import classes from './Deposit.css';
+// import classes from './Deposit.css';
 
 import DepositWallet from '../../components/PagesSections/DepositWallet/DepositWallet';
-import InfoPanel from '../../components/InfoPanel/InfoPanel';
+import PageWithInfoPanel from '../PageWithInfoPanel/PageWithInfoPanel';
 
 class Deposit extends Component {
   state = {
@@ -95,23 +95,38 @@ class Deposit extends Component {
     });
   };
   render() {
-    return (
+    { /*
       <div className={classes.Deposit}>
-        <div className={classes.ContentWrapper}>
-          <DepositWallet
-            depositPlanSelect={this.state.depositPlanSelect}
-            handleDepositPlanChange={val => this.handleDepositPlanChange(val)}
-            calculator={this.state.calculator}
-            handleCalculatorFieldChange={(val, key) => this.handleCalculatorFieldChange(val, key)}
+          <div className={classes.ContentWrapper}>
+            <DepositWallet
+              depositPlanSelect={this.state.depositPlanSelect}
+              handleDepositPlanChange={val => this.handleDepositPlanChange(val)}
+              calculator={this.state.calculator}
+              handleCalculatorFieldChange={(val, key) => this.handleCalculatorFieldChange(val, key)}
+            />
+          </div>
+          <InfoPanel
+            rightColumn={[
+              'Data2',
+              'Statistic'
+            ]}
           />
         </div>
-        <InfoPanel
-          rightColumn={[
-            'Data2',
-            'Statistic'
-          ]}
+    */ }
+    return (
+      <PageWithInfoPanel
+        rightColumn={[
+          'Data2',
+          'Statistic'
+        ]}
+      >
+        <DepositWallet
+          depositPlanSelect={this.state.depositPlanSelect}
+          handleDepositPlanChange={val => this.handleDepositPlanChange(val)}
+          calculator={this.state.calculator}
+          handleCalculatorFieldChange={(val, key) => this.handleCalculatorFieldChange(val, key)}
         />
-      </div>
+      </PageWithInfoPanel>
     );
   }
 }

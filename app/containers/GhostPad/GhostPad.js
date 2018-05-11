@@ -7,6 +7,7 @@ import * as actions from '../../store/actions/index';
 
 import ControlPanel from '../../components/Notes/ControlPanel/ControlPanel';
 import NotesPanel from '../../components/Notes/NotesPanel/NotesPanel';
+// import PageWithInfoPanel from '../PageWithInfoPanel/PageWithInfoPanel.css';
 
 import css from './GhostPad.css';
 import commonCss from '../../assets/css/common.css';

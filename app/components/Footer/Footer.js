@@ -1,8 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
+import React, { Component } from 'react';
 
-import { RELEASE_VERSION } from '../../utils/const';
+import { gbytes2Tbytes } from '../../utils/commonFunctions';
 
 import css from './Footer.css';
 import commonCss from '../../assets/css/common.css';
@@ -10,85 +8,58 @@ import commonCss from '../../assets/css/common.css';
 // and component classes - uppercase: styles.Class
 const styles = { ...commonCss, ...css };
 
-const footer = props => {
-  const listItems = [
-    {
-      link: '/account',
-      label: 'Account'
-    },
-    {
-      link: '/wallet',
-      label: 'Wallet'
-    },
-    {
-      link: '/deposit',
-      label: 'Deposit'
-    }
-  ];
-  return (
-    <div className={styles.Footer}>
+class Footer extends Component {
+  state = {
+    total: 1024,
+    used: 800,
+    available: 123,
+    masternodes: 0
+  };
+  render() {
+    return (
       <div
         className={[
-          styles.flexColumn,
-          styles.flexJustifyCenter,
-          styles.InfoLeft
+          styles.flex,
+          styles.wh100,
+          styles.Footer
         ].join(' ')}
       >
-        <h3 className={styles.white}>
-          { RELEASE_VERSION }
-        </h3>
-        <h3 className={styles.blue}>
-          Powered by WizeBit
-        </h3>
-        <div className={styles.flexAlignCenter}>
-          <div className={styles.orangeBar} />
-          BLOCKCHAIN TECHNOLOGY
+        <div
+          className={[
+            styles.flex3,
+            styles.wh100,
+            styles.flexAllCenter
+          ].join(' ')}
+        >
+          {gbytes2Tbytes(this.state.total)} TB
+        </div>
+        <div
+          className={[
+            styles.flex1,
+            styles.wh100,
+            styles.flexAllCenter
+          ].join(' ')}
+        >
+          <div
+            className={[
+              styles.flex,
+              styles.DataInfo
+            ].join(' ')}
+          >
+            <div className={styles.flexAllCenter}>
+              DATA USED:  <span>{this.state.used} GB</span>
+            </div>
+            <div className={styles.flexAllCenter}>
+              DATA Available:  <span>{this.state.available} GB</span>
+            </div>
+            <div className={styles.flexAllCenter}>
+              MASTERNODES:  <span>{this.state.masternodes} GB</span>
+            </div>
+          </div>
         </div>
       </div>
-      {
-        !props.isAuth
-          ? null
-          : (
-            <div className={styles.InfoRight}>
-              <nav className={styles.Menu}>
-                <ul>
-                  {
-                    listItems.map((item, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <li key={index}>
-                        <NavLink to={item.link}>
-                          {item.label}
-                        </NavLink>
-                      </li>
-                    ))
-                  }
-                </ul>
-              </nav>
-              <div className={styles.Balance}>
-                <div>BALANCE</div>
-                <div>
-                  {
-                    props.balance || props.balance === 0
-                      ? props.balance
-                      : 'LOADING...'
-                  }
-                </div>
-                <div>WALLET</div>
-              </div>
-            </div>
-          )
-      }
-    </div>
-  );
-};
+    );
+  }
+}
 
-footer.propTypes = {
-  isAuth: PropTypes.bool.isRequired,
-  balance: PropTypes.number
-};
-
-footer.defaultProps = {
-  balance: 0
-};
-
-export default footer;
+export default Footer;

@@ -40,7 +40,7 @@ class Header extends Component {
         label: 'Upload'
       },
       {
-        link: '/ghost-files',
+        link: '/x-files',
         label: 'Ghost Files'
       },
       {
@@ -50,20 +50,24 @@ class Header extends Component {
     ],
     iconsMenu: [
       {
-        link: '/',
-        label: <img src={loop} alt="search" />
+        link: '/deposit',
+        label: loop,
+        alt: 'logout'
       },
       {
-        link: '/',
-        label: <img src={wallet} alt="wallet" />
+        link: '/wallet',
+        label: wallet,
+        alt: 'settings'
       },
       {
-        link: '/',
-        label: <img src={settings} alt="settings" />
+        link: '/account',
+        label: settings,
+        alt: 'settings'
       },
       {
         link: '/logout',
-        label: <img src={logout} alt="logout" />
+        label: logout,
+        alt: 'logout'
       },
     ]
   };
@@ -115,19 +119,24 @@ class Header extends Component {
         {
           rightMenu
             ? (
-              <div>
+              <ul
+                className={[
+                  styles.flexBetweenCenter,
+                  styles.IconsMenu
+                ].join(' ')}
+              >
                 {
                   rightMenu.map((item, index) => (
                     <li key={index}>
                       <NavLink
                         to={item.link}
                       >
-                        {item.label}
+                        <img src={item.label} alt={item.alt} height={18} />
                       </NavLink>
                     </li>
                   ))
                 }
-              </div>
+              </ul>
             )
             : null
         }

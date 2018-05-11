@@ -58,3 +58,7 @@
   display: inline-block;
   margin: 0 15px 0 0 !important;
 }
+
+.IconsMenu > li:not(:last-of-type) {
+  margin-right: 21px;
+}
