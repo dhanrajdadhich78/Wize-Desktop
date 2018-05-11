@@ -47,7 +47,10 @@ const infoPanel = props => {
   );
   return (
     <div className={classes.InfoPanel}>
-      <InfoPanelWrapper>
+      <InfoPanelWrapper
+        action={() => props.handleTogglePanel()}
+        hide={props.hide}
+      >
         <div className={classes.InnerWrapper}>
           {leftColumn}
           {rightColumn}
@@ -59,10 +62,13 @@ const infoPanel = props => {
 
 infoPanel.propTypes = {
   leftColumn: PropTypes.arrayOf(PropTypes.string),
-  rightColumn: PropTypes.arrayOf(PropTypes.string)
+  rightColumn: PropTypes.arrayOf(PropTypes.string),
+  handleTogglePanel: PropTypes.func.isRequired,
+  hide: PropTypes.bool
 };
 
 infoPanel.defaultProps = {
+  hide: false,
   leftColumn: [
     'ProgressBar',
     'NavMenu'

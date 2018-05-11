@@ -7,7 +7,7 @@
 }
 
 .DropzoneWrapper {
-  height: calc(100% - 219px);
+  height: 100%;
   margin-bottom: 19px;
   position: relative;
 }

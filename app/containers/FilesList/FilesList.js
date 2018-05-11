@@ -1,23 +1,28 @@
-/* eslint-disable prefer-destructuring */
+/* eslint-disable prefer-destructuring,max-len */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ipcRenderer } from 'electron';
 import { saveAs } from 'file-saver';
 
-import classes from './FilesList.css';
-
 import b64toBlob from '../../utils/b64toBlob';
 import FilesTableHeading from '../../components/PagesSections/FilesList/FilesTableHeading/FilesTableHeading';
 import FilesTable from '../../components/PagesSections/FilesList/FilesTable/FilesTable';
 import WithCustomScrollbar from '../../components/UI/WithCustomScrollbar/WithCustomScrollbar';
-import InfoPanel from '../../components/InfoPanel/InfoPanel';
+
+import PageWithInfoPanel from '../PageWithInfoPanel/PageWithInfoPanel';
+
+import css from './FilesList.css';
+import commonCss from '../../assets/css/common.css';
+// global classes names starts with lowercase letter: styles.class
+// and component classes - uppercase: styles.Class
+const styles = { ...commonCss, ...css };
 
 class FilesList extends Component {
   state = {
     files: []
   };
-  componentDidMount() {
+  componentWillMount() {
     this.handleGetFiles();
   }
   //  request to raft through ipcRenderer, that gets file list
@@ -46,12 +51,11 @@ class FilesList extends Component {
       this.handleGetFiles();
     });
   };
-  render() {
-    return (
-      <div className={classes.FilesListWrapper}>
-        <div className={classes.FilesListMainContent}>
+  /*
+      <div className={styles.FilesListWrapper}>
+        <div className={styles.FilesListMainContent}>
           <FilesTableHeading />
-          <div className={classes.TheContent}>
+          <div className={styles.TheContent}>
             <WithCustomScrollbar>
               <FilesTable
                 files={this.state.files}
@@ -63,6 +67,28 @@ class FilesList extends Component {
         </div>
         <InfoPanel />
       </div>
+      */
+  render() {
+    return (
+      <PageWithInfoPanel>
+        <div
+          className={[
+            styles.wh100,
+            styles.flexColumnAllCenter
+          ].join(' ')}
+        >
+          <FilesTableHeading />
+          <div className={styles.TheContent}>
+            <WithCustomScrollbar>
+              <FilesTable
+                files={this.state.files}
+                handleDownload={filename => this.handleDownload(filename)}
+                handleDelete={filename => this.handleDelete(filename)}
+              />
+            </WithCustomScrollbar>
+          </div>
+        </div>
+      </PageWithInfoPanel>
     );
   }
 }
@@ -82,3 +108,4 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps)(FilesList);
+// export default FilesList;

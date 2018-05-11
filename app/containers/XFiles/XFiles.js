@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
 
-import classes from './XFiles.css';
-
 import Chat from '../../components/Chat/Chat';
-import InfoPanel from '../../components/InfoPanel/InfoPanel';
+import PageWithInfoPanel from '../PageWithInfoPanel/PageWithInfoPanel';
 import WithCustomScrollbar from '../../components/UI/WithCustomScrollbar/WithCustomScrollbar';
 import XFilesList from '../../components/PagesSections/XFiles/List/List';
+
+import css from './XFiles.css';
+import commonCss from '../../assets/css/common.css';
+// global classes names starts with lowercase letter: styles.class
+// and component classes - uppercase: styles.Class
+const styles = { ...commonCss, ...css };
 
 class XFiles extends Component {
   state = {
@@ -88,7 +92,7 @@ class XFiles extends Component {
   };
   handleFileSelection = indexOfActive => this.setState({ indexOfActive });
   render() {
-    return (
+    { /*
       <div className={classes.XFiles}>
         <div className={classes.Left}>
           <div className={classes.ContentWrapper}>
@@ -116,6 +120,51 @@ class XFiles extends Component {
           <Chat />
         </div>
       </div>
+    */ }
+    return (
+      <PageWithInfoPanel
+        leftColumn={[
+          'NewBlock',
+          'NavMenu'
+        ]}
+        rightColumn={[
+          'SecurityLayer'
+        ]}
+      >
+        <div
+          className={[
+            styles.wh100,
+            styles.flex
+          ].join(' ')}
+        >
+          <div
+            className={[
+              styles.flexColumn,
+              styles.justifyCenter,
+              styles.h100,
+              styles.flex3
+            ].join(' ')}
+          >
+            <WithCustomScrollbar>
+              <XFilesList
+                files={this.state.fileList}
+                activeFile={this.state.indexOfActive}
+                onClick={index => this.handleFileSelection(index)}
+              />
+            </WithCustomScrollbar>
+          </div>
+          <div
+            className={[
+              styles.flexColumn,
+              styles.justifyCenter,
+              styles.h100,
+              styles.flex1
+            ].join(' ')}
+          >
+            <Chat />
+          </div>
+        </div>
+      </PageWithInfoPanel>
     );
   }
 }
