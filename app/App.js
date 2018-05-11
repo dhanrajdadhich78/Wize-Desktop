@@ -4,9 +4,6 @@ import { connect } from 'react-redux';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import { checkInternet } from './store/actions/index';
-
-import classes from './App.css';
-
 import PreventSelection from './utils/preventSelection';
 import Spinner from './components/UI/Spinner/Spinner';
 import Layout from './hoc/Layout/Layout';
@@ -21,6 +18,10 @@ import Deposit from './containers/Deposit/Deposit';
 import XFiles from './containers/XFiles/XFiles';
 import Logout from './containers/Homepage/Logout/Logout';
 import Ghost from './components/Animations/Ghost/Ghost';
+
+import { bg } from './assets/img/img';
+
+import classes from './App.css';
 
 class App extends Component {
   state = {
@@ -69,7 +70,7 @@ class App extends Component {
       </div>
     );
     return (
-      <div>
+      <div style={{ backgroundImage: `url(${bg})` }}>
         {
           this.state.content
             ? (
