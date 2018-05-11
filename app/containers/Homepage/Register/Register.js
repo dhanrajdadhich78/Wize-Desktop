@@ -32,12 +32,9 @@ class Register extends Component {
     }
   };
   handleSubmitAuthForm = () => {
-    console.log('boom');
     if (this.state.password && this.state.password.length >= 4 && !this.state.repeatPassword) {
-      console.log('boom1');
       this.setState({ first: !this.state.first });
     } else if (this.state.repeatPassword && this.state.repeatPassword.length >= 4) {
-      console.log('boom2');
       if (this.state.password === this.state.repeatPassword) {
         this.props.handleRegister(this.state.password);
       }
