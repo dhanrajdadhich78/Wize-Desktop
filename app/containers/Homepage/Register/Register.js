@@ -13,36 +13,35 @@ import Auth from '../../../components/Auth/Auth';
 class Register extends Component {
   state = {
     password: '',
-    regForm: {
-      password: '',
-      repeatPassword: ''
-    }
+    repeatPassword: '',
+    first: true
   };
   handleOnPinCode = val => {
-    if (`${this.state.password}${val}`.length <= 12) {
-      this.setState({ password: this.state.password ? `${this.state.password}${val}` : val });
+    if (this.state.first && `${this.state.password}${val}`.length <= 12) {
+      this.setState({
+        password: this.state.password || (this.state.password === 0 || val === 0)
+          ? `${this.state.password}${val}`
+          : val
+      });
+    } else if (!this.state.first && `${this.state.repeatPassword}${val}`.length <= 12) {
+      this.setState({
+        repeatPassword: this.state.repeatPassword || (this.state.repeatPassword === 0 || val === 0)
+          ? `${this.state.repeatPassword}${val}`
+          : val
+      });
     }
   };
   handleSubmitAuthForm = () => {
-    if (!this.state.regForm.password && this.state.password.length >= 4) {
-      this.setState({
-        regForm: {
-          ...this.state.regForm,
-          password: this.state.password
-        },
-        password: ''
-      });
-    } else if (!this.state.regForm.repeatPassword && this.state.password.length >= 4) {
-      if (this.state.regForm.password === this.state.password) {
-        this.props.handleRegister(this.state.regForm.password);
+    console.log('boom');
+    if (this.state.password && this.state.password.length >= 4 && !this.state.repeatPassword) {
+      console.log('boom1');
+      this.setState({ first: !this.state.first });
+    } else if (this.state.repeatPassword && this.state.repeatPassword.length >= 4) {
+      console.log('boom2');
+      if (this.state.password === this.state.repeatPassword) {
+        this.props.handleRegister(this.state.password);
       }
-      this.setState({
-        regForm: {
-          ...this.state.regForm,
-          repeatPassword: this.state.password
-        },
-        password: ''
-      });
+      this.setState({ first: !this.state.first });
       return new Promise(resolve => {
         if (this.props.encryptedData) {
           resolve();
@@ -75,16 +74,18 @@ class Register extends Component {
     };
     return filesaver;
   };
+  handleClearPassword = () => this.setState({ password: '' });
   render() {
     return (
       <div className={classes.Register}>
         <Auth
           buttonClick={val => this.handleOnPinCode(val)}
           password={this.state.password}
+          repeatPassword={this.state.repeatPassword}
           handleAuth={() => this.handleSubmitAuthForm()}
           handleDownload={() => this.handleDownload()}
-          regForm={this.state.regForm}
           login={false}
+          handleClearPassword={() => this.handleClearPassword()}
         />
       </div>
     );
