@@ -19,6 +19,10 @@ import polygon from './polygon.svg';
 import folder from './folder.png';
 import ghost2 from './ghost2.svg';
 import polygon2 from './polygon2.svg';
+import loop from './loop-icon.png';
+import logout from './logout-icon.png';
+import settings from './settings-icon.png';
+import wallet from './wallet-icon.png';
 
 export default {
   logoGhost,
@@ -42,4 +46,8 @@ export default {
   folder,
   ghost2,
   polygon2,
+  loop,
+  logout,
+  settings,
+  wallet
 };

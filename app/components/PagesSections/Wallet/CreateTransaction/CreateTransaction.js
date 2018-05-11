@@ -105,16 +105,22 @@ class CreateTransaction extends Component {
             />
           ))
         }
-        <div className={classes.FormGroup} style={{ display: 'none' }}>
-          <input
-            id="wallet-minenow"
-            type="checkbox"
-            checked={this.props.minenow}
-            onChange={() => this.props.handleOnMineNowCheck()}
-          />
-          {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-          <label htmlFor="wallet-minenow">Minenow</label>
-        </div>
+        {
+          process.env.NODE_ENV !== 'development'
+            ? null
+            : (
+              <div className={classes.FormGroup}>
+                <input
+                  id="wallet-minenow"
+                  type="checkbox"
+                  checked={this.props.minenow}
+                  onChange={() => this.props.handleOnMineNowCheck()}
+                />
+                {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+                <label htmlFor="wallet-minenow">Minenow</label>
+              </div>
+            )
+        }
         <Button
           disabled={
             // !this.state.controls.from.valid ||
