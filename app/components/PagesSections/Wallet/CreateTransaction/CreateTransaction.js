@@ -49,19 +49,19 @@ class CreateTransaction extends Component {
       }
     }
   };
-  inputChangedHandler = (event, controlName) => {
+  inputChangedHandler = (val, controlName) => {
     const updatedControls = {
       ...this.state.controls,
       [controlName]: {
         ...this.state.controls[controlName],
-        value: event.target.value,
+        value: val,
         valid: checkValidity(
-          event.target.value,
+          val,
           this.state.controls[controlName].validation,
           controlName
         ).isValid,
         errorMessage: checkValidity(
-          event.target.value,
+          val,
           this.state.controls[controlName].validation,
           controlName
         ).errorMessage,
@@ -101,7 +101,7 @@ class CreateTransaction extends Component {
               invalid={!formElement.config.valid}
               shouldValidate={formElement.config.validation.required}
               touched={formElement.config.touched}
-              changed={event => this.inputChangedHandler(event, formElement.id)}
+              changed={val => this.inputChangedHandler(val, formElement.id)}
             />
           ))
         }
