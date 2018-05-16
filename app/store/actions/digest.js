@@ -22,6 +22,7 @@ const getDigestSuccess = digestInfo => ({
 export const getDigest = (userData, password) => dispatch => {
   dispatch(getDigestStart(userData, password));
   ipcRenderer.once('digest:success', (event, data) => {
+    console.log(data);
     dispatch(getDigestSuccess(data));
     dispatch(getNotes(userData, data.raftNodes[0]));
     const fsNodes = data.storageNodes.map(item => `${item}/buckets`);

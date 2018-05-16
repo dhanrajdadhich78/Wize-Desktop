@@ -142,30 +142,56 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
     ];
   } else {
     reqs = threeUrls.map(url => axios.post(url, { data: { origin } }));
-    reqs2 = threeUrls.map(url => axios.post(`${url}/${origin}/mount`, { data: { origin } }));
+    reqs2 = threeUrls.map(url => axios.post(`${url}/${origin}/mount`));
   }
   // user origin create and mount requests
-  setTimeout(() => axios.all(reqs)
-    .then(() => (setTimeout(() => axios.all(reqs2)
-      // .then(() => mainWindow.webContents.send('fs:mounted'))
-      .catch(error => console.log(error.response)), 100)
-    ))
-    .catch(error => {
-      if (error.response.status === 500) {
-        return setTimeout(() => axios.all(reqs2)
-        // .then(() => mainWindow.webContents.send('fs:mounted'))
-          .catch(err => {
-            if (err.response.status === 500) {
-              // mainWindow.webContents.send('fs:mounted');
-            } else {
-              console.log(err.response.message);
-            }
-          }), 100);
-      }
-      console.log(error.response);
-    }), 100);
+  // return Promise.all(reqs)
+  //   .then(() => {
+  //     return setTimeout(() => axios.all(reqs2)
+  //       .then(() => mainWindow.webContents.send('fs:mounted'))
+  //       .catch(error => {
+  //         if (error.response.data.status === 500) {
+  //           mainWindow.webContents.send('fs:mounted');
+  //         } else {
+  //           console.log(error.response);
+  //         }
+  //       }), 100);
+  //   })
+  //   .catch(error => {
+  //     if (error.response.data.status === 500) {
+  //       setTimeout(() => axios.all(reqs2)
+  //         .then(() => mainWindow.webContents.send('fs:mounted'))
+  //         .catch(err => {
+  //           if (err.response.data.status === 500) {
+  //             mainWindow.webContents.send('fs:mounted');
+  //           } else {
+  //             console.log(err.response);
+  //           }
+  //         }), 100);
+  //     }
+  //   });
+  // setTimeout(() => axios.all(reqs)
+  //
+  //     console.log(error.response);
+  //   }), 100);
 
-  mainWindow.webContents.send('fs:mounted');
+  return Promise.all(reqs2)
+    .then(() => mainWindow.webContents.send('fs:mounted'))
+    .catch(({ response }) => {
+      if (response.data.status === 500) {
+        return setTimeout(() => (
+          Promise.all(reqs)
+            .then(() => mainWindow.webContents.send('fs:mounted'))
+            .catch(({ res }) => {
+              if (res.data.status === 500) {
+                return mainWindow.webContents.send('fs:mounted');
+              }
+              console.log(response);
+            })
+        ), 100);
+      }
+      console.log(response);
+    });
 });
 //  on auth listener
 ipcMain.on('auth:start', (event, { password, filePath }) => {

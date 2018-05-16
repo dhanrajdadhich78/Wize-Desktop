@@ -109,19 +109,22 @@ const filesListeners = mainWindow => {
           };
         })
       ))
-      .then(reqsArray => (
-        reqsArray.map((res, i) => (
+      .then(reqsArray => {
+        return reqsArray.map((res, i) => (
           setTimeout(() => {
-            const reqs = res.requests.map(({ url, data }) => axios.post(url, data));
+            const reqs = res.requests.map(({url, data}) => axios.post(url, data));
             return Promise.all([
               axios.get(`${raftNode}/${userData.cpk}`),
               ...reqs
             ])
               .then(results => updRaft(results[0].data, res.filename, res.fileInfo))
-              .catch(reason => dialog.showErrorBox('Error', reason.response.data));
+              .catch(reason => {
+                console.log(reason.response);
+                dialog.showErrorBox('Error', reason.response.data);
+              });
           }, ((i + 1) * 1000))
-        ))
-      ))
+        ));
+      })
       .catch(error => dialog.showErrorBox('Error', error.response.data));
   });
   //  on file download listener
