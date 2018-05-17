@@ -138,7 +138,7 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
       axios.post(threeUrls[0], { data: { origin } })
     ];
     reqs2 = [
-      axios.post(`${threeUrls[0]}/${origin}/mount`, { data: { origin } })
+      axios.post(`${threeUrls[0]}/${origin}/mount`)
     ];
   } else {
     reqs = threeUrls.map(url => axios.post(url, { data: { origin } }));
