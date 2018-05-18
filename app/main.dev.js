@@ -131,66 +131,88 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
   const threeUrls = fsUrl.slice(0, 3);
   //  send fs url of user to main func
   fsUrlGlob = threeUrls;
-  let reqs = [];
-  let reqs2 = [];
+  const reqAllState = [];
+  const reqAllMount = [];
+  // const reqAllCreate = [];
   if (threeUrls[0] === threeUrls[2]) {
-    reqs = [
-      axios.post(threeUrls[0], { data: { origin } })
-    ];
-    reqs2 = [
-      axios.post(`${threeUrls[0]}/${origin}/mount`)
-    ];
+    reqAllState.push(axios.get(`${threeUrls[0]}/${origin}/state`));
+    reqAllMount.push(axios.post(`${threeUrls[0]}/${origin}/mount`));
+    // reqAllCreate.push(axios.post(threeUrls[0], { data: { origin } }));
   } else {
-    reqs = threeUrls.map(url => axios.post(url, { data: { origin } }));
-    reqs2 = threeUrls.map(url => axios.post(`${url}/${origin}/mount`));
+    for (let i = 0; i < threeUrls.length; i += 1) {
+      console.log(threeUrls[i]);
+      reqAllState.push(axios.get(`${threeUrls[i]}/${origin}/state`));
+      reqAllMount.push(axios.post(`${threeUrls[i]}/${origin}/mount`));
+      //  unexpected trigger on create request
+      // reqAllCreate.push(axios.post(`${threeUrls[i]}`, { data: { origin }}));
+    }
   }
-  // user origin create and mount requests
-  // return Promise.all(reqs)
-  //   .then(() => {
-  //     return setTimeout(() => axios.all(reqs2)
-  //       .then(() => mainWindow.webContents.send('fs:mounted'))
-  //       .catch(error => {
-  //         if (error.response.data.status === 500) {
-  //           mainWindow.webContents.send('fs:mounted');
-  //         } else {
-  //           console.log(error.response);
-  //         }
-  //       }), 100);
-  //   })
-  //   .catch(error => {
-  //     if (error.response.data.status === 500) {
-  //       setTimeout(() => axios.all(reqs2)
-  //         .then(() => mainWindow.webContents.send('fs:mounted'))
-  //         .catch(err => {
-  //           if (err.response.data.status === 500) {
-  //             mainWindow.webContents.send('fs:mounted');
-  //           } else {
-  //             console.log(err.response);
-  //           }
-  //         }), 100);
+  // // user origin create and mount requests
+  // return Promise.all(reqAllMount)
+  //   .then(() => mainWindow.webContents.send('fs:mounted'))
+  //   .catch(({ response }) => {
+  //     if (response.data.data.exitcode === 7) {
+  //       return mainWindow.webContents.send('fs:mounted');
   //     }
+  //     return setTimeout(() => (
+  //       Promise.all(reqAllCreate)
+  //         .then(() => mainWindow.webContents.send('fs:mounted'))
+  //         .catch(({ response }) => {
+  //           if (response.data.data.exitcode === 7) {
+  //             return mainWindow.webContents.send('fs:mounted');
+  //           }
+  //           console.log(response.data.data);
+  //         })
+  //     ), 100);
   //   });
-  // setTimeout(() => axios.all(reqs)
-  //
-  //     console.log(error.response);
-  //   }), 100);
 
-  return Promise.all(reqs2)
-    .then(() => mainWindow.webContents.send('fs:mounted'))
-    .catch(({ response }) => {
-      if (response.data.status === 500) {
-        return setTimeout(() => (
-          Promise.all(reqs)
-            .then(() => mainWindow.webContents.send('fs:mounted'))
-            .catch(({ res }) => {
-              if (res.data.status === 500) {
-                return mainWindow.webContents.send('fs:mounted');
-              }
-              console.log(response);
-            })
-        ), 100);
+  // with status method
+  return Promise.all(reqAllState)
+    .then(responses => {
+      //  find out what nodes are not mounted
+      const reqMount = cF.cleanArray(responses.map((response, i) => (
+        !response.data.mounted
+          ? reqAllMount[i]
+          : null
+      )));
+      // not created
+      const urlsCreate = cF.cleanArray(responses.map((response, i) => (
+        !response.data.created
+          ? threeUrls[i]
+          : null
+      )));
+      // if we have nodes to create
+      if (urlsCreate.length) {
+        return Promise.all(urlsCreate.map(url => (
+          axios.post(url, { data: { origin } })
+        )))
+          .then(() => (
+            Promise.all(reqMount)
+              .then(() => mainWindow.webContents.send('fs:mounted'))
+              .catch(({ response }) => {
+                console.log(response.data);
+                return dialog.showErrorBox('Error', response.data.message);
+              })
+          ))
+          .catch(({ response }) => {
+            console.log(response.data);
+            return dialog.showErrorBox('Error', response.data.message);
+          });
+      } else
+      if (!urlsCreate && reqMount.length) {
+        //  only mount
+        return Promise.all(reqMount)
+          .then(() => mainWindow.webContents.send('fs:mounted'))
+          .catch(({ response }) => {
+            console.log(response.data);
+            return dialog.showErrorBox('Error', response.data.message);
+          });
       }
-      console.log(response);
+      return mainWindow.webContents.send('fs:mounted');
+    })
+    .catch(({ response }) => {
+      console.log(response.data);
+      return dialog.showErrorBox('Error', response.data.message);
     });
 });
 //  on auth listener
@@ -207,8 +229,7 @@ ipcMain.on('auth:start', (event, { password, filePath }) => {
     }
     encryptedHex = data;
     if (!encryptedHex) {
-      dialog.showErrorBox('Error', 'There is no credentials file');
-      return;
+      return dialog.showErrorBox('Error', 'There is no credentials file');
     }
     const decrypt = cF.aesDecrypt(encryptedHex, password, 'hex');
 
