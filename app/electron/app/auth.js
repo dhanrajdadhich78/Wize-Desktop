@@ -5,14 +5,14 @@ const cF = require('../utils/commonFunc');
 const wallet = require('../utils/wallet');
 
 
-const auth = (mainWindow) => {
+const auth = mainWindow => {
   //  on credentials generate listener
   ipcMain.on('registration:start', (event, password) => {
     //  create user data with wallet service
     const userData = wallet.newCredentials();
     const strData = JSON.stringify(userData);
     const encryptedData = cF.aesEncrypt(strData, password, 'hex').encryptedHex;
-    mainWindow.webContents.send('registration:complete', encryptedData);
+    return mainWindow.webContents.send('registration:complete', encryptedData);
     //  save to file
     // if (cF.ensureDirectoryExistence(configFolder)) {
     //   const aes = cF.aesEncrypt(strData, password, 'hex');
@@ -64,9 +64,9 @@ const auth = (mainWindow) => {
   // });
 
   // decrypt credentials with password
-  ipcMain.on('crypto:decrypt-credentials', (event, { string, password }) => {
+  ipcMain.on('credentials:decrypt', (event, { string, password }) => {
     const credentials = cF.aesDecrypt(string, password, 'hex').strData;
-    mainWindow.webContents.send('crypto:decrypted-credentials', credentials);
+    return mainWindow.webContents.send('credentials:decrypt-complete', credentials);
   });
 };
 

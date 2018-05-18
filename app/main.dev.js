@@ -140,7 +140,6 @@ ipcMain.on('fs:mount', (event, fsUrl) => {
     // reqAllCreate.push(axios.post(threeUrls[0], { data: { origin } }));
   } else {
     for (let i = 0; i < threeUrls.length; i += 1) {
-      console.log(threeUrls[i]);
       reqAllState.push(axios.get(`${threeUrls[i]}/${origin}/state`));
       reqAllMount.push(axios.post(`${threeUrls[i]}/${origin}/mount`));
       //  unexpected trigger on create request
