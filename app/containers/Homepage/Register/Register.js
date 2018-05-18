@@ -58,16 +58,17 @@ class Register extends Component {
     });
     const filesaver = saveAs(blob, 'credentials.bak');
     filesaver.onwriteend = () => {
-      ipcRenderer.send('crypto:decrypt-credentials', {
-        string: this.props.encryptedData,
-        password: this.state.regForm.password
-      });
-      ipcRenderer.once('crypto:decrypted-credentials', (event, credentials) => {
-        const creds = JSON.parse(credentials);
-        if (creds.csk && creds.cpk && creds.address) {
-          this.props.authSuccess(creds);
-        }
-      });
+      this.props.history.push('/');
+      // ipcRenderer.send('credentials:decrypt', {
+      //   string: this.props.encryptedData,
+      //   password: this.state.regForm.password
+      // });
+      // ipcRenderer.once('credentials:decrypt-complete', (event, credentials) => {
+      //   const creds = JSON.parse(credentials);
+      //   if (creds.csk && creds.cpk && creds.address) {
+      //     this.props.authSuccess(creds);
+      //   }
+      // });
     };
     return filesaver;
   };
@@ -90,6 +91,7 @@ class Register extends Component {
 }
 
 Register.propTypes = {
+  history: PropTypes.shape().isRequired,
   handleRegister: PropTypes.func.isRequired,
   encryptedData: PropTypes.string.isRequired,
   authSuccess: PropTypes.func.isRequired
