@@ -1,0 +1,35 @@
+.Wrapper {
+  position: relative;
+}
+
+.Content {
+  height: calc(100% - 219px);
+  overflow: hidden;
+  margin-bottom: 19px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  transition: height 0.4s linear;
+}
+
+.Content.ContentWithHidenInfo {
+  height: calc(100% - 6px);
+}
+
+.InfoPanel {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 200px;
+  transition: height 0.4s linear;
+  overflow: hidden;
+}
+
+.InfoPanel.HidenPanel {
+  height: 6px;
+}

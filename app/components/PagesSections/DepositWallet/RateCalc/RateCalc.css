@@ -1,0 +1,49 @@
+.RateCalc {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.Heading h3 {
+  color: #095779;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 4px 0 22px;
+}
+
+.FormWrapper > form {
+  width: 100%;
+  display: flex;
+}
+
+.FormWrapper > form > div:not(:last-of-type) {
+  margin-right: 15px;
+}
+
+.FormWrapper > form input {
+  font-family: "Digital Counter 7", sans-serif;
+}
+
+.FormWrapper > form > div:first-of-type > div > div {
+  position: relative;
+}
+
+.FormWrapper > form > div:first-of-type > div > div::after {
+  content: 'GB';
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2px 15px 0 0;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  font-family: "Digital Counter 7", sans-serif;
+  text-transform: uppercase;
+  color: #30d6d6;
+  font-size: 14px;
+}

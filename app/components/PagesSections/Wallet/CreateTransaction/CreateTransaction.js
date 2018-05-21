@@ -49,19 +49,19 @@ class CreateTransaction extends Component {
       }
     }
   };
-  inputChangedHandler = (event, controlName) => {
+  inputChangedHandler = (val, controlName) => {
     const updatedControls = {
       ...this.state.controls,
       [controlName]: {
         ...this.state.controls[controlName],
-        value: event.target.value,
+        value: val,
         valid: checkValidity(
-          event.target.value,
+          val,
           this.state.controls[controlName].validation,
           controlName
         ).isValid,
         errorMessage: checkValidity(
-          event.target.value,
+          val,
           this.state.controls[controlName].validation,
           controlName
         ).errorMessage,
@@ -101,20 +101,26 @@ class CreateTransaction extends Component {
               invalid={!formElement.config.valid}
               shouldValidate={formElement.config.validation.required}
               touched={formElement.config.touched}
-              changed={event => this.inputChangedHandler(event, formElement.id)}
+              changed={val => this.inputChangedHandler(val, formElement.id)}
             />
           ))
         }
-        <div className={classes.FormGroup} style={{ display: 'none' }}>
-          <input
-            id="wallet-minenow"
-            type="checkbox"
-            checked={this.props.minenow}
-            onChange={() => this.props.handleOnMineNowCheck()}
-          />
-          {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-          <label htmlFor="wallet-minenow">Minenow</label>
-        </div>
+        {
+          process.env.NODE_ENV !== 'development'
+            ? null
+            : (
+              <div className={classes.FormGroup}>
+                <input
+                  id="wallet-minenow"
+                  type="checkbox"
+                  checked={this.props.minenow}
+                  onChange={() => this.props.handleOnMineNowCheck()}
+                />
+                {/* eslint-disable-next-line jsx-a11y/label-has-for */}
+                <label htmlFor="wallet-minenow">Minenow</label>
+              </div>
+            )
+        }
         <Button
           disabled={
             // !this.state.controls.from.valid ||

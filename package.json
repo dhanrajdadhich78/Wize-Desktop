@@ -182,6 +182,8 @@
     "aes-js": "^3.1.0",
     "axios": "^0.18.0",
     "bitcoinjs-lib": "^3.3.2",
+    "bs58": "^4.0.1",
+    "buffer-reverse": "^1.0.1",
     "crypto-js": "^3.1.9-1",
     "devtron": "^1.4.0",
     "electron-debug": "^1.5.0",
@@ -190,12 +192,13 @@
     "font-awesome": "^4.7.0",
     "fs": "0.0.1-security",
     "history": "^4.7.2",
-    "html2canvas": "^1.0.0-alpha.11",
+    "html2canvas": "^1.0.0-alpha.12",
     "http": "0.0.0",
     "https": "^1.0.0",
     "is-online": "^7.0.0",
     "pbkdf2": "^3.0.14",
     "react": "^16.3.1",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.3.1",
     "react-dropzone": "^4.2.9",
     "react-hot-loader": "^4.0.1",
@@ -207,7 +210,8 @@
     "redux-thunk": "^2.2.0",
     "request": "^2.85.0",
     "slash": "^2.0.0",
-    "source-map-support": "^0.5.3"
+    "source-map-support": "^0.5.3",
+    "uuid": "^3.2.1"
   },
   "devEngines": {
     "node": ">=7.x",

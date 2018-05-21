@@ -1,0 +1,23 @@
+.NotesContent {
+  position: relative;
+}
+
+.NotesContent > textarea {
+  background-color: rgba(22, 94, 106, 0.3);
+  border: none;
+  padding: 30px 25px;
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px;
+  resize: none;
+  outline: none;
+}
+
+.SaveButton {
+  position: absolute;
+  left: 25px;
+  border-left: 1px solid #2f96ba;
+  padding: 11px;
+}
+

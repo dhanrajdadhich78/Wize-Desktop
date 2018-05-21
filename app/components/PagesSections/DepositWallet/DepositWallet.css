@@ -1,0 +1,13 @@
+.DepositWallet {
+  height: 100%;
+  width: 100%;
+  display: flex;
+}
+
+.DepositWallet > div {
+  flex: 1;
+}
+
+.DepositWallet > div:first-of-type {
+  margin-right: 15px;
+}
