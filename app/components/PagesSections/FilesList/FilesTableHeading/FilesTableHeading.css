@@ -1,0 +1,47 @@
+.FilesTableHeading {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  margin: 19px 0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.FilesTableHeading > div {
+  background-color: #207c7f;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.FilesTableHeading > div:not(:last-of-type) {
+  margin-right: 2px;
+  justify-content: center;
+  text-transform: uppercase;
+}
+
+.FilesTableHeading > div:first-of-type {
+  padding-top: 2px;
+  width: 75px;
+}
+
+.FilesTableHeading > div:nth-of-type(2) {
+  width: 25px;
+  padding-bottom: 2px;
+}
+
+.FilesTableHeading > div:last-of-type {
+  justify-content: space-between;
+  width: calc(100% - 104px);
+  padding: 0 7px;
+  box-sizing: border-box;
+}
+
+.FilesTableHeading > div:last-of-type > div:last-of-type {
+  padding-top: 2px;
+  text-transform: uppercase;
+}

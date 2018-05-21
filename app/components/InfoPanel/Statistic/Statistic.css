@@ -1,0 +1,44 @@
+.Statistic {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 0;
+  box-sizing: border-box;
+  flex: 5;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.InfoLine {
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.InfoLine > span {
+  color: #e34530;
+}
+
+.Numline {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.Numline > div {
+  color: #2f96ba;
+  font-size: 6px;
+  font-weight: 400;
+}
+
+.Numline > div:not(:first-child) {
+  margin-left: 9px;
+}
+
+@media (max-width: 1300px) {
+  .Numline > div:not(:first-child) {
+    margin-left: 4px;
+  }
+}

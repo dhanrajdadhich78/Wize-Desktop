@@ -3,15 +3,42 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import "~font-awesome/css/font-awesome.css";
-@import url('https://fonts.googleapis.com/css?family=Montserrat');
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+@import url('https://fonts.googleapis.com/css?family=Aldrich');
+
+/*
+@font-face {
+  font-family: Aldrich;
+  src: url("assets/fonts/Aldrich/Aldrich-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Digital Counter 7";
+  src: url("assets/fonts/digital_counter_7/digital_counter_7.ttf") format("truetype");
+  font-style: oblique;
+}
+
+@font-face {
+  font-family: "Digital Counter 7";
+  src: url("assets/fonts/digital_counter_7/digital_counter_7_italic.ttf") format("truetype");
+  font-style: italic;
+}
+*/
+
+/* @import url('https://fonts.googleapis.com/css?family=Montserrat'); */
+
+/* @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro'); */
+
+html {
+  font-size: 10px;
+}
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif;
-  background-color: #181819;
-  color: white;
+  font-family: 'Aldrich', sans-serif;
+  background-color: #05293a;
+  color: #2f96ba;
+  font-weight: 400;
 }
 
 #root {

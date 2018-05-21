@@ -1,0 +1,34 @@
+.Plank {
+  background-color: #207c7f;
+  width: 100%;
+  height: 9px;
+  color: #071e23;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  line-height: 6px;
+  font-size: 24px;
+  cursor: default;
+  z-index: 100500;
+}
+
+.Plank > button > i {
+  margin-top: -50%;
+}
+
+.Info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100% - 9px);
+}
+
+.Arrow {
+  transition: all 0.4s linear;
+}
+
+.Plank > button > i.ArrowUp {
+  margin-top: 1px;
+}
+

@@ -11,7 +11,9 @@ import authReducer from './store/reducers/auth';
 import commonInfoReducer from './store/reducers/commonInfo';
 import blockchainReducer from './store/reducers/blockchain';
 import digestReducer from './store/reducers/digest';
+import notesReducer from './store/reducers/notes';
 
+import './reset.css';
 import './app.global.css';
 import App from './App';
 
@@ -21,7 +23,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   commonInfo: commonInfoReducer,
   blockchain: blockchainReducer,
-  digest: digestReducer
+  digest: digestReducer,
+  notes: notesReducer
 });
 
 let composeEnhancers = null || compose;
