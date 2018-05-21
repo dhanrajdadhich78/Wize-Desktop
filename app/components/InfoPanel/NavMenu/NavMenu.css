@@ -1,0 +1,29 @@
+.NavMenu {
+  width: 132px;
+}
+
+.NavMenu > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.NavMenu > ul > li {
+  text-align: right;
+}
+
+.NavMenu > ul > li > a {
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: none;
+  padding: 3px 15px;
+  white-space: nowrap;
+}
+
+.NavMenu > ul > li > a:hover,
+.NavMenu > ul > li > a:active,
+.NavMenu > ul > li > a.Active {
+  background-color: rgba(22, 94, 106, 0.3);
+  color: white;
+}

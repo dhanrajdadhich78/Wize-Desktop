@@ -5,44 +5,31 @@ import { connect } from 'react-redux';
 import classes from './Layout.css';
 
 import Aux from '../Aux/Aux';
-import SideMenu from '../../components/SideMenu/SideMenu';
-// import BugReport from '../../containers/BugReport/BugReport';
-import ToggleControllers from '../../components/ToggleControllers/ToggleControllers';
+import Header from '../../components/Header/Header';
+import Footer from '../../components/Footer/Footer';
 
 class Layout extends Component {
-  state = {
-    encryption: false,
-    twoFA: false,
-    keyLogin: false,
-    accessRole: false,
-  };
   render() {
     return (
       <Aux>
         <div className={classes.Layout}>
-          <main>
-            <SideMenu
-              blockChain={this.props.bcNodes.length > 0}
-              toggleMenu={() => this.setState({ menuClosed: !this.state.menuClosed })}
-            />
+          <Header isAuth={this.props.isAuth} />
+          <main className={this.props.isAuth ? null : classes.NoFooter}>
             <article>
-              <ToggleControllers
-                encryption={this.state.encryption}
-                twoFA={this.state.twoFA}
-                keyLogin={this.state.keyLogin}
-                accessRole={this.state.accessRole}
-                toggleEncryption={() => this.setState({ encryption: !this.state.encryption })}
-                toggle2fa={() => this.setState({ twoFA: !this.state.twoFA })}
-                toggleKeyLogin={() => this.setState({ keyLogin: !this.state.keyLogin })}
-                toggleAccessRole={() => this.setState({ accessRole: !this.state.accessRole })}
-                bcNodes={this.props.bcNodes}
-              />
-              <div className={classes.MainContent}>
-                { this.props.children }
-              </div>
+              { this.props.children }
             </article>
           </main>
-          {/* <BugReport /> */}
+          {/*
+          <Footer
+            isAuth={this.props.isAuth}
+            balance={this.props.balance}
+          />
+          */}
+          {
+            this.props.isAuth
+              ? <Footer />
+              : null
+          }
         </div>
       </Aux>
     );
@@ -50,15 +37,18 @@ class Layout extends Component {
 }
 
 Layout.propTypes = {
+  isAuth: PropTypes.bool.isRequired,
   children: PropTypes.element.isRequired,
-  bcNodes: PropTypes.arrayOf(PropTypes.string),
+  balance: PropTypes.number
 };
 
 Layout.defaultProps = {
-  bcNodes: []
+  balance: 0
 };
 
 const mapStateToProps = state => ({
+  isAuth: state.auth.userData.csk !== null,
+  balance: state.blockchain.balance,
   bcNodes: state.digest.digestInfo.bcNodes
 });
 

@@ -1,0 +1,75 @@
+.Data2 {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 30px;
+  box-sizing: border-box;
+  flex: 2;
+}
+
+.Top,
+.Middle {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.SubTop {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+
+.SubTop > div:first-of-type {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.SubTop > div:last-of-type {
+  color: #96bd0d;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.SubBottom {
+  display: flex;
+  justify-content: space-between;
+}
+
+.SubBottom > div:first-of-type img {
+  height: 35px;
+  margin: 0 15px 0 0;
+}
+
+.SubBottom > div:last-of-type {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.SubBottom > div:last-of-type > div:first-of-type {
+  color: #2f96ba;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.SubBottom > div:last-of-type > div:last-of-type {
+  color: #fff;
+  font-size: 8px;
+  font-weight: 400;
+  text-align: right;
+}
+
+.Bottom {
+  color: #2f96ba;
+  font-size: 10px;
+  font-weight: 400;
+}

@@ -1,0 +1,59 @@
+.vmSquare {
+  display: inline-block;
+  width: 23px;
+  height: 23px;
+  margin-right: 20px;
+  border: 1px solid #9698a2;
+}
+
+.vmListBlock {
+  height: 90px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin-bottom: 7px;
+  background-color: white;
+  padding: 28px 22px;
+  color: black;
+}
+
+.vmProgressBar {
+  background-color: #2195eb;
+  z-index: 0;
+}
+
+.vmBlockIcon {
+  width: 56px;
+  text-align: center;
+  margin: 0 15px 0 0;
+}
+
+.vmListBlock > div:last-of-type {
+  text-align: right;
+}
+
+.vmListBlock > div:not(.vmSquare):not(.vmBlockIcon):not(.vmProgressBar) {
+  width: calc((100% - (23px + 20px) - (56px + 15px)) / 3);
+}
+
+.vmTopTextLine {
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 300;
+  color: #9698a2;
+  margin: 0 0 15px 0;
+}
+
+.vmBottomTextLine {
+  font-size: 14px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.vmButtonSection {
+  opacity: 0;
+  transition: opacity 0.2s linear;
+}
+
+.vmListBlock:hover > .vmButtonSection,
+.vmActiveButtonSection {
+  opacity: 1;
+}

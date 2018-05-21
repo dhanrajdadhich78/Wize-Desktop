@@ -1,0 +1,86 @@
+.Login {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.Login > div:first-of-type {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.Content > h1 {
+  color: #30d6d6;
+  font-size: 19px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0 0 7px 0;
+  pointer-events: none;
+}
+
+.Content > h2 {
+  color: #2f96ba;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0 0 60px 0;
+  pointer-events: none;
+}
+
+.FileLine {
+  display: flex;
+}
+
+.FileLine > img {
+  height: 35px;
+  margin-right: 7px;
+}
+
+.FileLine > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.FileLine > div p {
+  margin: 0;
+}
+
+.FileLine > div > div:first-of-type p {
+  color: #2f96ba;
+  font-size: 6px;
+  font-weight: 400;
+}
+
+.FileLine > div h2 {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.FileLine > div > div:last-of-type p {
+  color: #fff;
+  font-size: 4px;
+  font-weight: 400;
+}
+
+.InnerTextWrapper {
+  width: 360px;
+}
+
+.PassWrapper {
+  position: absolute;
+  top: calc(50% - 17px);
+  left: calc(50% - 360px / 2);
+  width: 360px;
+  height: 35px;
+  display: block;
+}

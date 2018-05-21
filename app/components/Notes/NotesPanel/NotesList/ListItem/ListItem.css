@@ -1,0 +1,21 @@
+.ListItem {
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 7px;
+}
+
+.ListItem > div {
+  text-align: left;
+}
+
+.ListItem > div:first-of-type {
+  flex: 1;
+  min-width: 90px;
+}
+
+.ListItem > div:last-of-type {
+  flex: 3;
+
+}
+

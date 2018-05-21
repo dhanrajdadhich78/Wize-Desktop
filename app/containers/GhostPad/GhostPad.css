@@ -1,0 +1,9 @@
+.GhostPad > div:first-of-type {
+  height: 67px;
+}
+
+.GhostPad > div:last-of-type {
+  height: calc(100% - 67px);
+  padding-bottom: 21px;
+}
+

@@ -1,0 +1,198 @@
+.Item {
+  width: 100%;
+  display: block;
+  position: relative;
+  padding-top: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  background-size: 58%;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+.Corners {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  display: none;
+}
+
+.Corners > div {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+}
+
+.Corners > div::before,
+.Corners > div::after {
+  content: '';
+  display: block;
+  background-color: #e34530;
+  position: absolute;
+}
+
+.Corners > div::before {
+  width: 4px;
+  height: 100%;
+}
+
+.Corners > div::after {
+  height: 4px;
+  width: 100%;
+}
+
+.Corners > div:first-of-type {
+  top: 0;
+  left: 0;
+}
+
+.Corners > div:first-of-type::before,
+.Corners > div:first-of-type::after {
+  top: 0;
+  left: 0;
+}
+
+.Corners > div:nth-of-type(2) {
+  top: 0;
+  right: 0;
+}
+
+.Corners > div:nth-of-type(2)::before,
+.Corners > div:nth-of-type(2)::after {
+  top: 0;
+  right: 0;
+}
+
+.Corners > div:nth-of-type(3) {
+  right: 0;
+  bottom: 0;
+}
+
+.Corners > div:nth-of-type(3)::before,
+.Corners > div:nth-of-type(3)::after {
+  right: 0;
+  bottom: 0;
+}
+
+.Corners > div:last-of-type {
+  bottom: 0;
+  left: 0;
+}
+
+.Corners > div:last-of-type::before,
+.Corners > div:last-of-type::after {
+  bottom: 0;
+  left: 0;
+}
+
+.Item.Active .Corners {
+  display: block;
+}
+
+.InnerWrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+  padding: 15% 30% 17% 27%;
+  box-sizing: border-box;
+}
+
+.Extension {
+  text-align: left;
+  width: 100%;
+  color: #2f96ba;
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.Encryption {
+  text-align: right;
+  width: 100%;
+  color: #2f96ba;
+  font-size: 7px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.OptionsKey,
+.OptionsLocked {
+  position: absolute;
+  right: -5%;
+  justify-content: center;
+  height: 50%;
+  padding: 7px 0;
+  box-sizing: border-box;
+  display: none;
+}
+
+.OptionsKey {
+  top: 0;
+  bottom: 50%;
+  align-items: flex-end;
+  margin-right: -5%;
+}
+
+.OptionsLocked {
+  top: 50%;
+  bottom: 0;
+  align-items: flex-start;
+}
+
+.OptionsKey > img,
+.OptionsLocked > img {
+  height: 50%;
+  max-height: 25px;
+}
+
+.Button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  display: none;
+}
+
+.Button button {
+  color: #e34530;
+  font-size: 8px;
+  font-weight: 400;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  z-index: 2;
+}
+
+.Item.Active .OptionsKey,
+.Item.Active .OptionsLocked {
+  display: flex;
+}
+
+.Item.Active .Button {
+  display: block;
+}
+
+.Item.Active .Extension,
+.Item.Active .Encryption {
+  color: #e34530;
+}
