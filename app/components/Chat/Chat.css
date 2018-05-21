@@ -1,0 +1,89 @@
+.Chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.Heading {
+  width: 100%;
+  display: block;
+  position: relative;
+  text-align: right;
+  margin-bottom: 7px;
+}
+
+.Heading::before {
+  content: '';
+  display: block;
+  height: 50px;
+  width: 50px;
+  background-color: #207c7f;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.Heading h3 {
+  width: calc(100% - 52px);
+  height: 50px;
+  left: 52px;
+  background-color: #207c7f;
+  color: #40f4f4;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  display: inline-flex;
+  padding: 15px;
+  align-items: center;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.ChatBody {
+  height: calc(100% - 57px);
+}
+
+.ChatBody > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ChatBody > ul > li {
+  display: flex;
+  color: #2f96ba;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.ChatBody > ul > li:not(:last-of-type) {
+  margin-bottom: 2px;
+}
+
+.ChatBody > ul > li > span {
+  box-sizing: border-box;
+}
+
+.ChatBody > ul > li > span:first-of-type {
+  width: 50px;
+  margin-right: 2px;
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ChatBody > ul > li > span:last-of-type {
+  width: calc(100% - 52px);
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px;
+}
+
+@media (max-width: 1300px) {
+  .Heading h3 {
+    font-size: 12px;
+  }
+}

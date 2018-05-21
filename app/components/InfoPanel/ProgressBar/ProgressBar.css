@@ -1,0 +1,75 @@
+.ProgressBar {
+  width: calc(100% - 132px);
+}
+
+.HeadingWrapper {
+  margin-bottom: 12px;
+}
+
+.HeadingWrapper > div:first-of-type {
+  color: #30d6d6;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.HeadingWrapper > div:last-of-type {
+  color: #2f96ba;
+  font-size: 7px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.ProgressBarWrapper {
+  border-top: 1px solid rgba(22, 94, 106, 0.3);
+  width: 100%;
+  height: 10px;
+  margin-bottom: 12px;
+}
+
+.ProgressBarWrapper > div {
+  width: 50%;
+  height: 100%;
+  background-color: #3bd5d5;
+}
+
+.NameWrapper {
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+.InfoWrapper {
+  display: flex;
+}
+
+.InfoWrapper img {
+  height: 32px;
+  margin-right: 7px;
+}
+
+.InfoWrapper > div:last-of-type {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 32px;
+}
+
+.InfoWrapper > div:last-of-type > div:first-of-type {
+  color: #2f96ba;
+  font-size: 8px;
+  font-weight: 400;
+}
+
+.InfoWrapper > div:last-of-type > div:nth-of-type(2) {
+  color: #30d6d6;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.InfoWrapper > div:last-of-type > div:last-of-type {
+  color: #fff;
+  font-size: 6px;
+  font-weight: 400;
+}

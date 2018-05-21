@@ -1,0 +1,455 @@
+.PinCode {
+  padding-right: calc(100% / 3);
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.TopSection {
+  margin-bottom: 15px;
+}
+
+.Heading {
+  color: #e34530;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.Buttons {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-flow: wrap;
+  box-sizing: border-box;
+}
+
+.Button {
+  width: calc((100% - 24px) / 3);
+  padding-top: calc((100% - 24px) / 3);
+  position: relative;
+  border: 1px solid #165e6a;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.Button:hover,
+.Button:active {
+  background-color: rgba(22, 94, 106, 0.3);
+}
+
+.FocusBlock {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  transition: all 0.4s linear;
+}
+
+.ButtonInnerContainer > div {
+  text-align: left;
+}
+
+.InputBlock > div {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  width: 100%;
+}
+
+.FocusBlock > div {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+}
+
+.FocusBlock > div:first-of-type {
+  top: 0;
+  left: 0;
+}
+
+.FocusBlock > div:nth-of-type(2) {
+  top: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(3) {
+  right: 0;
+  bottom: 0;
+}
+
+.FocusBlock > div:last-of-type {
+  bottom: 0;
+  left: 0;
+}
+
+.SupTitle {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.Title {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.SubTitle {
+  color: #96bd0d;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  position: absolute;
+  left: 8px;
+  bottom: 10px;
+}
+
+.FormLine button > div:first-of-type {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.FormLine button > div:last-of-type {
+  z-index: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.FormLine button > div:last-of-type > div {
+  width: 10px;
+  height: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+}
+
+.Button:focus .FocusBlock > div {
+  opacity: 1;
+}
+
+.FocusBlock > div:first-of-type::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.FocusBlock > div:first-of-type::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.FocusBlock > div:nth-of-type(2)::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(2)::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(3)::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.FocusBlock > div:nth-of-type(3)::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.FocusBlock > div:last-of-type::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 4px;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.FocusBlock > div:last-of-type::after {
+  content: '';
+  display: block;
+  height: 4px;
+  width: 100%;
+  background-color: #3bd5d5;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.ButtonInnerContainer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  margin: 5px;
+  box-sizing: border-box;
+  border: 2px solid #3596b7;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px;
+  z-index: 1;
+}
+
+.ButtonInnerContainer::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  background-color: #3596b7;
+  transform: rotate(45deg);
+}
+
+.FormLine button > div:last-of-type > div:first-of-type {
+  top: 0;
+  left: 0;
+}
+
+.FormLine button > div:last-of-type > div:nth-of-type(2) {
+  top: 0;
+  right: 0;
+}
+
+.FormLine button > div:last-of-type > div:nth-of-type(3) {
+  right: 0;
+  bottom: 0;
+}
+
+.FormLine button > div:last-of-type > div:last-of-type {
+  bottom: 0;
+  left: 0;
+}
+
+.Button:nth-of-type(3n) .FocusBlock::before,
+.Button:nth-of-type(3n) .FocusBlock::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  width: 1px;
+  height: calc(100% + 20px);
+  background-color: #3bd5d5;
+  opacity: 0.3;
+}
+
+.Button:nth-of-type(3n) .FocusBlock::before {
+  left: calc(50%);
+  transform: rotate(-44deg);
+}
+
+.Button:nth-of-type(3n) .FocusBlock::after {
+  right: calc(50%);
+  transform: rotate(44deg);
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: block;
+  width: 10px;
+  height: 10px;
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::before,
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::after {
+  content: '';
+  display: block;
+  background-color: #3596b7;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::before {
+  width: 100%;
+  height: 4px;
+}
+
+.Button:not(:nth-of-type(3n + 2)) .ButtonInnerContainer > div:last-of-type::after {
+  width: 4px;
+  height: 100%;
+}
+
+.FormLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.FormLine button {
+  border: none;
+  flex: 1;
+  color: #30d6d6;
+  font-size: 16px;
+  font-weight: 400;
+  text-transform: uppercase;
+  width: 100%;
+  background-color: rgba(22, 94, 106, 0.3);
+  padding: 15px 0;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.FormLine button::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 6px;
+  height: 100%;
+  background-color: white;
+  opacity: 0.2;
+}
+
+.FormLine .InputBlock {
+  flex: 2;
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.InputBlock input {
+  outline: none;
+  pointer-events: none;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  color: #3bd5d5;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 4px;
+}
+
+.Timer {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #30d6d6;
+  font-size: 14px;
+  font-weight: 500;
+  padding-left: 7px;
+  box-sizing: border-box;
+}
+
+/*.Timer > span {*/
+  /*color: #0c6791;*/
+  /*font-weight: 900;*/
+  /*font-size: 16px;*/
+/*}*/
+
+.ToTheRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+@media (max-width: 1600px) {
+  .PinCode {
+    padding-right: calc(100% - 350px + 38px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .PinCode {
+    padding-right: 90px;
+  }
+}
+
+@media (max-height: 800px) {
+  .Heading {
+    margin-bottom: 7px;
+  }
+}
+
+@media (max-width: 1600px) {
+  .SupTitle {
+    font-size: 12px;
+  }
+
+  .Title {
+    font-size: 22px;
+  }
+
+  .SubTitle {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1300px) {
+  .SupTitle {
+    font-size: 10px;
+  }
+
+  .Title {
+    font-size: 18px;
+  }
+
+  .SubTitle {
+    font-size: 10px;
+  }
+}

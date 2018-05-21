@@ -1,0 +1,117 @@
+.Registration {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Registration > div {
+  display: block;
+}
+
+.Content > h1 {
+  color: #30d6d6;
+  font-size: 19px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0 0 7px 0;
+  pointer-events: none;
+}
+
+.Content > h2 {
+  color: #2f96ba;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0 0 15px 0;
+  pointer-events: none;
+}
+
+.Inputs {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% + 90px);
+}
+
+.Inputs input {
+  background-color: transparent;
+  border: none;
+  pointer-events: none;
+  text-transform: lowercase;
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+  text-align: right;
+  padding: 15px 0;
+  width: 50%;
+  margin-left: 50%;
+}
+
+.Inputs input::placeholder {
+  text-transform: lowercase;
+  color: #2f96ba;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.Inputs input:first-of-type {
+  border-bottom: 1px solid #0c6791;
+}
+
+.FileLine {
+  display: flex;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  cursor: pointer;
+}
+
+.FileLine > img {
+  height: 35px;
+  margin-right: 7px;
+}
+
+.FileLine > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 35px;
+}
+
+.FileLine > div p {
+  margin: 0;
+}
+
+.FileLine > div > div:first-of-type p {
+  color: #2f96ba;
+  font-size: 6px;
+  font-weight: 400;
+}
+
+.FileLine > div h2 {
+  color: #30d6d6;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.FileLine > div > div:last-of-type p {
+  color: #fff;
+  font-size: 4px;
+  font-weight: 400;
+}
+
+.ImgLine {
+  display: flex;
+  justify-content: flex-end;
+  width: calc(100% + 90px);
+}
+
+.ImgLine > img {
+  height: 35px;
+}
